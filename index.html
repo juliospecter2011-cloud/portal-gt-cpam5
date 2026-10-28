@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE TROCA DE SENHA (1º ACESSO OU MANUAL) -->
+    <!-- MODAL DE TROCA DE SENHA -->
     <div id="modal-troca-senha" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 text-left relative">
             <div class="mb-4 border-b pb-3 flex justify-between items-start">
@@ -144,7 +144,7 @@
         <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
         <main class="flex-1 p-8 overflow-y-auto bg-slate-50">
 
-            <!-- ABA PORTAL / MAPA FORÇA (TELA INICIAL PADRÃO) -->
+            <!-- ABA PORTAL / MAPA FORÇA -->
             <section id="aba-portal" class="aba-conteudo">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -258,10 +258,47 @@
                                 <th class="p-3">Síntese / Ocorrência</th>
                                 <th class="p-3">Anotado Por</th>
                                 <th class="p-3">Status Recurso</th>
-                                <th class="p-3 text-center admin-only">Ações</th>
+                                <th class="p-3 text-center">Ações / Recurso</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-anotacoes" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ABA RECURSOS DISCIPLINARES -->
+            <section id="aba-recursos" class="aba-conteudo hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-600"></span> PAINEL DE RECURSOS DISCIPLINARES
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5" id="subtitulo-painel-recursos">Acompanhamento e Julgamento de Recursos Protocolados</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-3">
+                        <div class="relative">
+                            <input type="text" id="input-busca-recurso" onkeyup="filtrarRecursos()" placeholder="Buscar por Nome, RE ou Status..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-72 focus:outline-none">
+                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                        </div>
+                        <span id="total-recursos" class="text-xs font-semibold text-slate-500">Recursos Protocolados: 0</span>
+                    </div>
+
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                <th class="p-3">Data Protocolo</th>
+                                <th class="p-3">RE</th>
+                                <th class="p-3">Nome do Aluno</th>
+                                <th class="p-3">Justificativa do Recurso</th>
+                                <th class="p-3">Status do Recurso</th>
+                                <th class="p-3">Parecer da Secretaria / Comando</th>
+                                <th class="p-3 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-recursos" class="divide-y divide-slate-200"></tbody>
                     </table>
                 </div>
             </section>
@@ -277,6 +314,82 @@
             </section>
 
         </main>
+    </div>
+
+    <!-- MODAL PROTOCOLAR NOVO RECURSO (ALUNO) -->
+    <div id="modal-novo-recurso" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature text-red-500"></i> Protocolar Recurso Disciplinar
+                </h3>
+                <button onclick="fecharModalNovoRecurso()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="salvarNovoRecurso(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="rec-anotacao-id">
+                
+                <div class="bg-red-50 p-3 rounded-lg border border-red-200 text-red-900 space-y-1">
+                    <p class="font-bold uppercase text-[11px]" id="rec-info-codigo">Enquadramento: ---</p>
+                    <p class="text-xs" id="rec-info-sintese">Síntese: ---</p>
+                    <p class="text-[10px] text-red-700 mt-1 font-semibold" id="rec-info-data">Data da Anotação: ---</p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Razões do Recurso / Justificativa *</label>
+                    <textarea id="rec-justificativa" rows="5" required placeholder="Apresente detalhadamente os fatos e argumentos que justificam a revisão ou cancelamento desta anotação..." class="w-full border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="fecharModalNovoRecurso()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane"></i> Protocolar Recurso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL JULGAR RECURSO (ADMIN / SECRETARIA) -->
+    <div id="modal-analisar-recurso" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-gavel text-amber-500"></i> Julgamento de Recurso Disciplinar
+                </h3>
+                <button onclick="fecharModalAnalisarRecurso()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="salvarJulgamentoRecurso(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="julgar-recurso-id">
+                <input type="hidden" id="julgar-anotacao-id">
+
+                <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 space-y-1">
+                    <p class="font-bold text-slate-800" id="julgar-aluno-nome">Aluno: ---</p>
+                    <p class="text-slate-600" id="julgar-recurso-justificativa">Justificativa: ---</p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Decisão / Resultado *</label>
+                    <select id="julgar-status" required class="w-full border border-slate-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 bg-white font-semibold">
+                        <option value="Deferido">DEFERIDO (Aceitar recurso e anular anotação)</option>
+                        <option value="Indeferido">INDEFERIDO (Rejeitar recurso e manter anotação)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Parecer / Resposta Oficial *</label>
+                    <textarea id="julgar-resposta" rows="4" required placeholder="Digite a fundamentação da decisão da Secretaria ou Comando..." class="w-full border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="fecharModalAnalisarRecurso()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check-double"></i> Registrar Decisão
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- MODAL NOVA ANOTAÇÃO DISCIPLINAR -->
@@ -448,684 +561,3 @@
                         <label class="block font-semibold mb-1">Efetivo Existente</label>
                         <input type="number" id="mf-p1-exi" value="35" class="w-full border p-2 rounded focus:outline-none">
                     </div>
-                    <div>
-                        <label class="block font-semibold mb-1">Novidades / Observações</label>
-                        <input type="text" id="mf-p1-nov" class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Sem novidades">
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-2 pt-4 border-t">
-                    <button type="button" onclick="fecharModalMapaForca()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800">Atualizar Quadro</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- SCRIPT PRINCIPAL -->
-    <script>
-        const SUPABASE_URL = "https://rvywrmiafdcxirjnkgnf.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_9HPz3qa-w4oUFjDMZheghQ_1pCxT-J9";
-        var _supabase = null;
-
-        let usuarioLogado = null;
-        var listaAlunos = [];
-        var listaAnotacoes = [];
-
-        document.addEventListener('DOMContentLoaded', function() {
-            conectarSupabase();
-            carregarMapaForca();
-            escutarMudancasAoVivo();
-            carregarAlunosDoBanco();
-            carregarAnotacoesDoBanco();
-        });
-
-        function conectarSupabase() {
-            try {
-                if (window.supabase && !_supabase) {
-                    _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                }
-            } catch(e) {}
-        }
-
-        // LOGIN RESILIENTE COM SUPORTE COMPATÍVEL A E-MAIL, RE E CPF
-        async function executarLogin(e) {
-            e.preventDefault();
-            conectarSupabase();
-
-            const termo = document.getElementById('login-identificador').value.trim();
-            const termoLimpo = termo.replace(/[^0-9]/g, '');
-            const senha = document.getElementById('login-senha').value.trim();
-            const msgErro = document.getElementById('msg-erro-login');
-            msgErro.classList.add('hidden');
-
-            if (!_supabase) {
-                msgErro.innerText = "Erro: Conexão com o banco de dados não inicializada.";
-                msgErro.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                const { data: usuarios, error } = await _supabase.from('alunos').select('*');
-
-                if (error) {
-                    console.error("Erro Supabase no login:", error);
-                    msgErro.innerText = "Erro no Banco de Dados: " + (error.message || error.details || "Acesso negado.");
-                    msgErro.classList.remove('hidden');
-                    return;
-                }
-
-                if (!usuarios || usuarios.length === 0) {
-                    msgErro.innerText = "Nenhum integrante cadastrado na base do GT.";
-                    msgErro.classList.remove('hidden');
-                    return;
-                }
-
-                const termoLower = termo.toLowerCase();
-                const usuario = usuarios.find(u => {
-                    const emailOk = u.email && u.email.toLowerCase() === termoLower;
-                    const reOk = u.re && (u.re === termo || u.re.replace(/[^0-9]/g, '') === termoLimpo);
-                    const cpfOk = (u.cpf && u.cpf === termo) || (u.cpf_limpo && u.cpf_limpo === termoLimpo) || (u.cpf && u.cpf.replace(/[^0-9]/g, '') === termoLimpo);
-                    return emailOk || reOk || cpfOk;
-                });
-
-                if (!usuario) {
-                    msgErro.innerText = "Usuário não encontrado. Verifique seu E-mail, RE ou CPF.";
-                    msgErro.classList.remove('hidden');
-                    return;
-                }
-
-                const senhaCorreta = usuario.senha || "PMSP@2026";
-
-                if (senha !== senhaCorreta) {
-                    msgErro.innerText = "Senha incorreta. Verifique os dados digitados.";
-                    msgErro.classList.remove('hidden');
-                    return;
-                }
-
-                usuarioLogado = usuario;
-
-                if (usuario.primeiro_acesso === true || usuario.primeiro_acesso === null || senha === "PMSP@2026") {
-                    abrirModalTrocaSenhaPrimeiroAcesso();
-                    return;
-                }
-
-                definirUsuario(usuario);
-
-            } catch (err) {
-                console.error("Erro no fluxo de login:", err);
-                msgErro.innerText = "Erro de conexão ao efetuar login.";
-                msgErro.classList.remove('hidden');
-            }
-        }
-
-        function abrirModalTrocaSenhaPrimeiroAcesso() {
-            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-lock text-red-700"></i> Primeiro Acesso - Cadastrar Nova Senha';
-            document.getElementById('subtitulo-modal-senha').innerText = 'Identificamos que este é o seu primeiro acesso. Por segurança, crie uma nova senha pessoal.';
-            document.getElementById('btn-fechar-modal-senha').classList.add('hidden');
-            document.getElementById('modal-troca-senha').classList.remove('hidden');
-        }
-
-        function abrirModalTrocaSenhaManual() {
-            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-key text-red-700"></i> Alterar Senha Pessoal';
-            document.getElementById('subtitulo-modal-senha').innerText = 'Digite a nova senha que deseja utilizar nos seus próximos acessos ao portal.';
-            document.getElementById('btn-fechar-modal-senha').classList.remove('hidden');
-            document.getElementById('nova-senha-1').value = '';
-            document.getElementById('nova-senha-2').value = '';
-            document.getElementById('msg-erro-troca').classList.add('hidden');
-            document.getElementById('modal-troca-senha').classList.remove('hidden');
-        }
-
-        function fecharModalTrocaSenha() {
-            document.getElementById('modal-troca-senha').classList.add('hidden');
-        }
-
-        async function confirmarTrocaSenha(e) {
-            e.preventDefault();
-            const s1 = document.getElementById('nova-senha-1').value;
-            const s2 = document.getElementById('nova-senha-2').value;
-            const msgErro = document.getElementById('msg-erro-troca');
-            msgErro.classList.add('hidden');
-
-            if (s1.length < 6) {
-                msgErro.innerText = "A senha deve conter no mínimo 6 caracteres.";
-                msgErro.classList.remove('hidden');
-                return;
-            }
-
-            if (s1 !== s2) {
-                msgErro.innerText = "As senhas digitadas não coincidem.";
-                msgErro.classList.remove('hidden');
-                return;
-            }
-
-            if (_supabase && usuarioLogado) {
-                try {
-                    const { error } = await _supabase
-                        .from('alunos')
-                        .update({ senha: s1, primeiro_acesso: false })
-                        .eq('id', usuarioLogado.id);
-
-                    if (error) throw error;
-
-                    usuarioLogado.senha = s1;
-                    usuarioLogado.primeiro_acesso = false;
-
-                    fecharModalTrocaSenha();
-
-                    if (document.getElementById('tela-login').style.display !== 'none') {
-                        definirUsuario(usuarioLogado);
-                    } else {
-                        alert("Sua senha foi alterada com sucesso!");
-                    }
-
-                } catch(err) {
-                    msgErro.innerText = "Falha ao salvar nova senha no banco de dados.";
-                    msgErro.classList.remove('hidden');
-                }
-            }
-        }
-
-        function definirUsuario(user) {
-            usuarioLogado = user;
-            document.getElementById('tela-login').style.display = 'none';
-            document.getElementById('msg-erro-login').classList.add('hidden');
-
-            document.getElementById('user-display-nome').innerText = `${usuarioLogado.posto_grad || ''} ${usuarioLogado.nome_guerra}`.trim();
-            document.getElementById('user-display-permissao').innerText = usuarioLogado.nivel_acesso || 'Aluno';
-
-            const icon = document.getElementById('user-display-icon');
-            if (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria') {
-                icon.className = "fa-solid fa-user-shield text-sm";
-            } else {
-                icon.className = "fa-solid fa-user-graduate text-sm";
-            }
-
-            aplicarPermissoesUI();
-            mudarAba('portal', document.getElementById('btn-menu-portal'));
-        }
-
-        function aplicarPermissoesUI() {
-            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
-            
-            document.querySelectorAll('.admin-only').forEach(el => {
-                if (ehAdmin) {
-                    el.classList.remove('hidden');
-                } else {
-                    el.classList.add('hidden');
-                }
-            });
-        }
-
-        function mudarAba(idAba, elemento) {
-            try {
-                document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active-menu'));
-                if(elemento) elemento.classList.add('active-menu');
-                document.querySelectorAll('.aba-conteudo').forEach(aba => aba.classList.add('hidden'));
-
-                if (idAba === 'efetivo') {
-                    document.getElementById('aba-efetivo').classList.remove('hidden');
-                    renderizarTabela(listaAlunos);
-                } else if (idAba === 'anotacoes') {
-                    document.getElementById('aba-anotacoes').classList.remove('hidden');
-                    carregarAnotacoesDoBanco();
-                } else if (idAba === 'portal') {
-                    document.getElementById('aba-portal').classList.remove('hidden');
-                    carregarMapaForca();
-                } else {
-                    document.getElementById('titulo-aba-generica').innerHTML = `<span class="w-2 h-2 rounded-full bg-red-600"></span> ${idAba.toUpperCase()}`;
-                    document.getElementById('aba-generica').classList.remove('hidden');
-                }
-            } catch(err) { console.error(err); }
-        }
-
-        // MAPA FORÇA (QUADRO FÍSICO DIGITAL - ID = 1)
-        async function carregarMapaForca() {
-            conectarSupabase();
-            if (!_supabase) return;
-
-            const { data, error } = await _supabase
-                .from('mapa_forca')
-                .select('*')
-                .eq('id', 1)
-                .maybeSingle();
-
-            if (data) {
-                document.getElementById('mf-aluno-dia').innerText = data.aluno_dia || '---';
-                document.getElementById('mf-chefe-gt').innerText = data.chefe_gt || '---';
-                document.getElementById('mf-sgt-semana').innerText = data.sgt_semana || '---';
-
-                document.getElementById('mf-in-aluno-dia').value = data.aluno_dia || '';
-                document.getElementById('mf-in-chefe-gt').value = data.chefe_gt || '';
-                document.getElementById('mf-in-sgt-semana').value = data.sgt_semana || '';
-                document.getElementById('mf-p1-fix').value = data.p1_fix ?? 35;
-                document.getElementById('mf-p1-exi').value = data.p1_exi ?? 35;
-                document.getElementById('mf-p1-nov').value = data.p1_nov || '';
-
-                renderizarPelotoes(data);
-            }
-        }
-
-        async function salvarMapaForca(event) {
-            event.preventDefault();
-            conectarSupabase();
-
-            const dadosAtualizados = {
-                id: 1,
-                aluno_dia: document.getElementById('mf-in-aluno-dia').value,
-                chefe_gt: document.getElementById('mf-in-chefe-gt').value,
-                sgt_semana: document.getElementById('mf-in-sgt-semana').value,
-                p1_fix: parseInt(document.getElementById('mf-p1-fix').value) || 0,
-                p1_exi: parseInt(document.getElementById('mf-p1-exi').value) || 0,
-                p1_nov: document.getElementById('mf-p1-nov').value,
-                atualizado_em: new Date().toISOString()
-            };
-
-            if (_supabase) {
-                const { error } = await _supabase.from('mapa_forca').upsert(dadosAtualizados);
-                if (!error) {
-                    fecharModalMapaForca();
-                    await carregarMapaForca();
-                } else {
-                    console.error("Erro no Supabase:", error);
-                    alert("Erro do Banco de Dados: " + (error.message || error.details || JSON.stringify(error)));
-                }
-            } else {
-                alert("Erro: Conexão com o Supabase não inicializada.");
-            }
-        }
-
-        function renderizarPelotoes(dados) {
-            const grid = document.getElementById('grid-pelotoes');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            const pelotoes = [
-                { nome: '1º PELOTÃO "A"', fix: dados?.p1_fix ?? 35, exi: dados?.p1_exi ?? 35, nov: dados?.p1_nov || 'Sem novidades' },
-                { nome: '2º PELOTÃO "B"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '3º PELOTÃO "C"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '4º PELOTÃO "D"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '5º PELOTÃO "E"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '6º PELOTÃO "F"', fix: '-', exi: '-', nov: 'Sem novidades' },
-            ];
-
-            pelotoes.forEach(p => {
-                grid.innerHTML += `
-                    <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-                        <div class="border-b pb-2 mb-3 flex justify-between items-center">
-                            <h3 class="font-bold text-xs text-slate-800">${p.nome}</h3>
-                            <span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Fix: ${p.fix} | Exist: ${p.exi}</span>
-                        </div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">NOVIDADES</p>
-                        <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-dashed">${p.nov}</p>
-                    </div>
-                `;
-            });
-        }
-
-        function escutarMudancasAoVivo() {
-            if (!_supabase) return;
-            _supabase
-                .channel('schema-db-changes')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'mapa_forca' }, () => {
-                    carregarMapaForca();
-                })
-                .subscribe();
-        }
-
-        // CARREGAR E GERENCIAR EFETIVO
-        async function carregarAlunosDoBanco() {
-            conectarSupabase();
-            if (!_supabase) return;
-            try {
-                const { data, error } = await _supabase
-                    .from('alunos')
-                    .select('*')
-                    .order('numero_pelotao', { ascending: true });
-
-                if (!error && data) {
-                    listaAlunos = data;
-                    renderizarTabela(listaAlunos);
-                    atualizarOpcoesFiltros();
-                } else if (error) {
-                    console.error("Erro ao carregar alunos:", error);
-                }
-            } catch(e) {
-                console.error("Exceção ao buscar alunos:", e);
-            }
-        }
-
-        async function salvarEfetivo(event) {
-            event.preventDefault();
-            conectarSupabase();
-
-            const id = document.getElementById('efetivo-id').value;
-            const cpfInformado = document.getElementById('efetivo-cpf').value.trim();
-
-            const dadosAluno = {
-                re: document.getElementById('efetivo-re').value.trim(),
-                posto_grad: document.getElementById('efetivo-posto').value.trim(),
-                nome_guerra: document.getElementById('efetivo-guerra').value.trim(),
-                nome_completo: document.getElementById('efetivo-nome').value.trim(),
-                cpf: cpfInformado,
-                cpf_limpo: cpfInformado.replace(/[^0-9]/g, ''),
-                email: document.getElementById('efetivo-email').value.trim().toLowerCase(),
-                senha: document.getElementById('efetivo-senha').value.trim(),
-                pelotao: document.getElementById('efetivo-pelotao').value.trim(),
-                turma: document.getElementById('efetivo-turma').value.trim(),
-                numero_pelotao: parseInt(document.getElementById('efetivo-numero').value) || 1,
-                nivel_acesso: document.getElementById('efetivo-acesso').value,
-                status: document.getElementById('efetivo-status').value,
-                primeiro_acesso: id ? false : true
-            };
-
-            if (!_supabase) {
-                alert("Erro: Conexão com o banco de dados não estabelecida.");
-                return;
-            }
-
-            try {
-                let res;
-                if (id) {
-                    res = await _supabase.from('alunos').update(dadosAluno).eq('id', id);
-                } else {
-                    res = await _supabase.from('alunos').insert([dadosAluno]);
-                }
-
-                if (res.error) {
-                    console.error("Erro Supabase ao salvar aluno:", res.error);
-                    alert("Erro do Banco de Dados ao salvar integrante: " + (res.error.message || res.error.details));
-                    return;
-                }
-
-                fecharModalEfetivo();
-                await carregarAlunosDoBanco();
-
-            } catch(e) {
-                console.error("Erro de conexão ao salvar:", e);
-                alert("Erro ao tentar conectar e salvar o aluno.");
-            }
-        }
-
-        // MÓDULO ANOTAÇÕES DISCIPLINARES (CONECTADO AO SUPABASE)
-        async function carregarAnotacoesDoBanco() {
-            conectarSupabase();
-            if (!_supabase) return;
-
-            try {
-                const { data, error } = await _supabase
-                    .from('anotacoes')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (!error && data) {
-                    listaAnotacoes = data;
-                    renderizarAnotacoes(listaAnotacoes);
-                } else if (error) {
-                    console.error("Erro ao buscar anotações:", error);
-                }
-            } catch(e) {
-                console.error("Exceção ao buscar anotações:", e);
-            }
-        }
-
-        function abrirModalAnotacao() {
-            const selectAluno = document.getElementById('anotacao-aluno-id');
-            selectAluno.innerHTML = '<option value="">Selecione o Aluno / Integrante...</option>';
-            
-            if (listaAlunos.length === 0) {
-                selectAluno.innerHTML = '<option value="">Nenhum aluno cadastrado no Efetivo</option>';
-            } else {
-                listaAlunos.forEach(a => {
-                    selectAluno.innerHTML += `<option value="${a.id}">${a.re} - ${a.posto_grad || 'Al Sd PM'} ${a.nome_guerra} (${a.pelotao || 'Sem Pelotão'})</option>`;
-                });
-            }
-
-            document.getElementById('form-anotacao').reset();
-            document.getElementById('anotacao-data').value = new Date().toISOString().split('T')[0];
-            document.getElementById('modal-anotacao').classList.remove('hidden');
-        }
-
-        function fecharModalAnotacao() {
-            document.getElementById('modal-anotacao').classList.add('hidden');
-        }
-
-        async function salvarAnotacao(e) {
-            e.preventDefault();
-            conectarSupabase();
-
-            const alunoId = document.getElementById('anotacao-aluno-id').value;
-            const aluno = listaAlunos.find(a => String(a.id) === String(alunoId));
-            
-            if (!aluno) {
-                alert("Por favor, selecione um aluno válido na lista.");
-                return;
-            }
-
-            const novaAnotacao = {
-                aluno_id: String(aluno.id),
-                aluno_re: aluno.re,
-                aluno_nome: `${aluno.posto_grad || 'Al Sd PM'} ${aluno.nome_guerra}`,
-                data_fato: document.getElementById('anotacao-data').value,
-                codigo: document.getElementById('anotacao-codigo').value.toUpperCase().trim(),
-                sintese: document.getElementById('anotacao-sintese').value.trim(),
-                anotado_por: usuarioLogado ? `${usuarioLogado.posto_grad || ''} ${usuarioLogado.nome_guerra}`.trim() : 'ADMINISTRADOR',
-                status_recurso: 'Sem Recurso'
-            };
-
-            if (!_supabase) {
-                alert("Erro: Conexão com o banco de dados não estabelecida.");
-                return;
-            }
-
-            try {
-                const { error } = await _supabase.from('anotacoes').insert([novaAnotacao]);
-
-                if (error) {
-                    console.error("Erro do Supabase ao salvar anotação:", error);
-                    alert("Erro do Banco de Dados: " + (error.message || error.details));
-                    return;
-                }
-
-                fecharModalAnotacao();
-                await carregarAnotacoesDoBanco();
-
-            } catch(err) {
-                console.error("Erro ao salvar anotação:", err);
-                alert("Erro de conexão ao salvar anotação disciplinar.");
-            }
-        }
-
-        async function deletarAnotacao(id) {
-            if (!confirm("Tem certeza que deseja excluir esta anotação disciplinar?")) return;
-
-            conectarSupabase();
-            if (!_supabase) return;
-
-            try {
-                const { error } = await _supabase.from('anotacoes').delete().eq('id', id);
-
-                if (error) {
-                    alert("Erro ao excluir anotação: " + error.message);
-                } else {
-                    await carregarAnotacoesDoBanco();
-                }
-            } catch(e) {
-                console.error("Erro ao deletar anotação:", e);
-            }
-        }
-
-        function renderizarAnotacoes(dados) {
-            const tbody = document.getElementById('tabela-anotacoes');
-            if (!tbody) return;
-            document.getElementById('total-anotacoes').innerText = `Total de Registros: ${dados.length}`;
-            tbody.innerHTML = '';
-
-            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
-
-            if (dados.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="p-6 text-center text-slate-400">Nenhuma anotação disciplinar registrada até o momento.</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            dados.forEach(item => {
-                const dataFormatada = item.data_fato ? item.data_fato.split('-').reverse().join('/') : '---';
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-                        <td class="p-3 font-semibold text-slate-700">${dataFormatada}</td>
-                        <td class="p-3 font-mono text-slate-600">${item.aluno_re || '---'}</td>
-                        <td class="p-3 font-bold text-slate-900">${item.aluno_nome || '---'}</td>
-                        <td class="p-3"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${item.codigo || '---'}</span></td>
-                        <td class="p-3 text-slate-600 max-w-xs truncate" title="${item.sintese}">${item.sintese || '---'}</td>
-                        <td class="p-3 text-slate-500">${item.anotado_por || '---'}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">${item.status_recurso || 'Sem Recurso'}</span></td>
-                        <td class="p-3 text-center admin-only ${ehAdmin ? '' : 'hidden'}">
-                            <button onclick="deletarAnotacao('${item.id}')" title="Excluir Anotação" class="text-slate-400 hover:text-red-600 transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function filtrarAnotacoes() {
-            const termo = document.getElementById('input-busca-anotacao').value.toLowerCase().trim();
-            const filtrados = listaAnotacoes.filter(a => 
-                (a.aluno_nome && a.aluno_nome.toLowerCase().includes(termo)) ||
-                (a.aluno_re && a.aluno_re.toLowerCase().includes(termo)) ||
-                (a.codigo && a.codigo.toLowerCase().includes(termo)) ||
-                (a.sintese && a.sintese.toLowerCase().includes(termo))
-            );
-            renderizarAnotacoes(filtrados);
-        }
-
-        function atualizarOpcoesFiltros() {
-            const selectPelotao = document.getElementById('filtro-pelotao');
-            const selectTurma = document.getElementById('filtro-turma');
-
-            if (!selectPelotao || !selectTurma) return;
-
-            const valorPelotaoAtual = selectPelotao.value;
-            const valorTurmaAtual = selectTurma.value;
-
-            const pelotoes = [...new Set(listaAlunos.map(a => a.pelotao).filter(Boolean))].sort();
-            const turmas = [...new Set(listaAlunos.map(a => a.turma).filter(Boolean))].sort();
-
-            selectPelotao.innerHTML = '<option value="">Todos os Pelotões / Seções</option>';
-            pelotoes.forEach(p => {
-                selectPelotao.innerHTML += `<option value="${p}">${p}</option>`;
-            });
-            selectPelotao.value = valorPelotaoAtual;
-
-            selectTurma.innerHTML = '<option value="">Todas as Turmas / Edital</option>';
-            turmas.forEach(t => {
-                selectTurma.innerHTML += `<option value="${t}">${t}</option>`;
-            });
-            selectTurma.value = valorTurmaAtual;
-        }
-
-        function filtrarTabela() {
-            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
-            const pelotaoSel = document.getElementById('filtro-pelotao').value;
-            const turmaSel = document.getElementById('filtro-turma').value;
-
-            const filtrados = listaAlunos.filter(a => {
-                const bateTexto = !termo || 
-                    (a.nome_completo && a.nome_completo.toLowerCase().includes(termo)) ||
-                    (a.re && a.re.toLowerCase().includes(termo)) ||
-                    (a.nome_guerra && a.nome_guerra.toLowerCase().includes(termo)) ||
-                    (a.cpf && a.cpf.includes(termo));
-
-                const batePelotao = !pelotaoSel || a.pelotao === pelotaoSel;
-                const bateTurma = !turmaSel || a.turma === turmaSel;
-
-                return bateTexto && batePelotao && bateTurma;
-            });
-
-            renderizarTabela(filtrados);
-        }
-
-        function limparFiltros() {
-            document.getElementById('input-busca').value = '';
-            document.getElementById('filtro-pelotao').value = '';
-            document.getElementById('filtro-turma').value = '';
-            renderizarTabela(listaAlunos);
-        }
-
-        function renderizarTabela(dados) {
-            const tbody = document.getElementById('tabela-alunos');
-            if (!tbody) return;
-            document.getElementById('total-alunos').innerText = `Integrantes: ${dados.length}`;
-            tbody.innerHTML = '';
-
-            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
-
-            dados.forEach(aluno => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 font-mono font-bold text-slate-700">${aluno.re}</td>
-                        <td class="p-3 text-slate-600">${aluno.posto_grad || 'Al Sd PM'}</td>
-                        <td class="p-3 font-bold text-slate-900">${aluno.nome_guerra}</td>
-                        <td class="p-3 text-slate-600">${aluno.nome_completo}</td>
-                        <td class="p-3"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-medium">${aluno.pelotao}</span></td>
-                        <td class="p-3 text-slate-500">${aluno.turma || 'Edital 02/2026'}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700">${aluno.nivel_acesso}</span></td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">${aluno.status}</span></td>
-                        <td class="p-3 text-center admin-only ${ehAdmin ? '' : 'hidden'}">
-                            <button onclick="editarEfetivo('${aluno.id}')" class="text-blue-600 font-semibold hover:underline"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function abrirModalEfetivo() {
-            document.getElementById('form-efetivo').reset();
-            document.getElementById('efetivo-id').value = '';
-            document.getElementById('efetivo-senha').value = 'PMSP@2026';
-            document.getElementById('modal-titulo').innerText = 'Cadastrar Integrante do Efetivo';
-            document.getElementById('modal-efetivo').classList.remove('hidden');
-        }
-
-        function fecharModalEfetivo() {
-            document.getElementById('modal-efetivo').classList.add('hidden');
-        }
-
-        function editarEfetivo(id) {
-            const item = listaAlunos.find(a => String(a.id) === String(id));
-            if (!item) return;
-
-            document.getElementById('efetivo-id').value = item.id;
-            document.getElementById('efetivo-re').value = item.re;
-            document.getElementById('efetivo-posto').value = item.posto_grad || 'Al Sd PM';
-            document.getElementById('efetivo-guerra').value = item.nome_guerra;
-            document.getElementById('efetivo-nome').value = item.nome_completo;
-            document.getElementById('efetivo-cpf').value = item.cpf || '';
-            document.getElementById('efetivo-email').value = item.email || '';
-            document.getElementById('efetivo-senha').value = item.senha || 'PMSP@2026';
-            document.getElementById('efetivo-pelotao').value = item.pelotao;
-            document.getElementById('efetivo-turma').value = item.turma || 'Edital 02/2026';
-            document.getElementById('efetivo-numero').value = item.numero_pelotao || 1;
-            document.getElementById('efetivo-acesso').value = item.nivel_acesso || 'Aluno';
-            document.getElementById('efetivo-status').value = item.status || 'Ativo';
-
-            document.getElementById('modal-titulo').innerText = 'Editar Integrante do Efetivo';
-            document.getElementById('modal-efetivo').classList.remove('hidden');
-        }
-
-        function abrirModalMapaForca() { document.getElementById('modal-mapa-forca').classList.remove('hidden'); }
-        function fecharModalMapaForca() { document.getElementById('modal-mapa-forca').classList.add('hidden'); }
-
-        function executarLogout() {
-            usuarioLogado = null;
-            document.getElementById('tela-login').style.display = 'flex';
-        }
-    </script>
-</body>
-</html>
