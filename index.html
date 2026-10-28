@@ -276,7 +276,6 @@
                         <p class="text-xs text-slate-500 mt-0.5" id="subtitulo-painel-recursos">Acompanhamento e Julgamento de Recursos Protocolados</p>
                     </div>
 
-                    <!-- BOTÃO DIRETO PARA O ALUNO PROTOCOLAR RECURSO -->
                     <button id="btn-novo-recurso-aba" onclick="abrirModalNovoRecurso()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-3 py-1.5 rounded shadow text-xs transition flex items-center gap-2 hidden">
                         <i class="fa-solid fa-file-signature"></i> Protocolar Recurso
                     </button>
@@ -305,6 +304,123 @@
                         </thead>
                         <tbody id="tabela-recursos" class="divide-y divide-slate-200"></tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- ABA DASHBOARD DE CONDUTA -->
+            <section id="aba-dashboard-conduta" class="aba-conteudo hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 tracking-tight">DASHBOARD DE CONDUTA & DISCIPLINA</h2>
+                        <p class="text-xs text-slate-500">Indicadores e Estatísticas Gerais de Comportamento</p>
+                    </div>
+                </div>
+
+                <!-- CARDS KPI (MÉTRICAS RÁPIDAS) -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Anotações Lançadas</p>
+                            <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="dash-total-anotacoes">0</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center">
+                            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Recursos Em Análise</p>
+                            <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="dash-recursos-analise">0</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                            <i class="fa-solid fa-clock text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Anuladas (Deferidos)</p>
+                            <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="dash-recursos-deferidos">0</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Mantidas (Indeferidos)</p>
+                            <h3 class="text-2xl font-extrabold text-slate-700 mt-1" id="dash-recursos-indeferidos">0</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
+                            <i class="fa-solid fa-circle-xmark text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARTÃO DE CONDUTA INDIVIDUAL PARA O PERFIL ALUNO -->
+                <div id="dash-container-aluno" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl font-bold" id="dash-aluno-avatar">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900" id="dash-aluno-nome">---</h3>
+                            <p class="text-xs text-slate-500" id="dash-aluno-detalhes">RE: --- | Pelotão: ---</p>
+                            <div class="mt-2 flex items-center gap-2">
+                                <span class="text-xs font-semibold text-slate-600">Conceito Disciplinar Atual:</span>
+                                <span id="dash-aluno-conceito" class="px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">EXCELENTE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAINÉIS DE ANÁLISE COMPILADA -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- TABELA DE ANOTAÇÕES POR PELOTÃO -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-users text-red-600"></i> Incidência por Pelotão / Seção
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                        <th class="p-2.5">Pelotão / Seção</th>
+                                        <th class="p-2.5 text-center">Qtd Anotações</th>
+                                        <th class="p-2.5 text-right">% do Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-tabela-pelotoes" class="divide-y divide-slate-100">
+                                    <tr><td colspan="3" class="p-4 text-center text-slate-400">Sem dados acumulados.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TABELA DE CÓDIGOS MAIS FREQUENTES -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-red-600"></i> Códigos / Enquadramentos Recorrentes
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                        <th class="p-2.5">Enquadramento</th>
+                                        <th class="p-2.5 text-center">Ocorrências</th>
+                                        <th class="p-2.5 text-right">Participação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-tabela-codigos" class="divide-y divide-slate-100">
+                                    <tr><td colspan="3" class="p-4 text-center text-slate-400">Sem dados acumulados.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
@@ -606,7 +722,6 @@
             } catch(e) {}
         }
 
-        // COMPARAÇÃO RESILIENTE PARA IDENTIFICAR SE O REGISTRO É DO ALUNO LOGADO
         function eMesmoAluno(itemAlunoId, itemAlunoRe, user) {
             if (!user) return false;
             if (itemAlunoId && user.id && String(itemAlunoId).trim() === String(user.id).trim()) return true;
@@ -620,7 +735,6 @@
             return false;
         }
 
-        // LOGIN RESILIENTE COM SUPORTE A E-MAIL, RE E CPF
         async function executarLogin(e) {
             e.preventDefault();
             conectarSupabase();
@@ -802,6 +916,9 @@
                 } else if (idAba === 'recursos') {
                     document.getElementById('aba-recursos').classList.remove('hidden');
                     carregarRecursosDoBanco();
+                } else if (idAba === 'dashboard-conduta') {
+                    document.getElementById('aba-dashboard-conduta').classList.remove('hidden');
+                    carregarDashboardConduta();
                 } else if (idAba === 'portal') {
                     document.getElementById('aba-portal').classList.remove('hidden');
                     carregarMapaForca();
@@ -812,7 +929,7 @@
             } catch(err) { console.error(err); }
         }
 
-        // MAPA FORÇA (QUADRO FÍSICO DIGITAL - ID = 1)
+        // MAPA FORÇA
         async function carregarMapaForca() {
             conectarSupabase();
             if (!_supabase) return;
@@ -1065,7 +1182,6 @@
 
             const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
 
-            // SE FOR ALUNO, EXIBE APENAS AS ANOTAÇÕES DELE
             let exibidos = dados;
             if (!ehAdmin && usuarioLogado) {
                 exibidos = dados.filter(item => eMesmoAluno(item.aluno_id, item.aluno_re, usuarioLogado));
@@ -1143,7 +1259,6 @@
         function abrirModalNovoRecurso(anotacaoIdDesejada) {
             if (!usuarioLogado) return;
 
-            // Filtra anotações elegíveis do próprio aluno
             const minhasAnotacoesElegiveis = listaAnotacoes.filter(a => 
                 eMesmoAluno(a.aluno_id, a.aluno_re, usuarioLogado) &&
                 (!a.status_recurso || a.status_recurso === 'Sem Recurso')
@@ -1193,11 +1308,9 @@
             };
 
             try {
-                // 1. Grava o recurso
                 const resRecurso = await _supabase.from('recursos').insert([novoRecurso]);
                 if (resRecurso.error) throw resRecurso.error;
 
-                // 2. Atualiza a anotação para 'Em Recurso'
                 await _supabase.from('anotacoes').update({ status_recurso: 'Em Recurso' }).eq('id', anotacao.id);
 
                 fecharModalNovoRecurso();
@@ -1217,7 +1330,6 @@
             const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
             const btnNovo = document.getElementById('btn-novo-recurso-aba');
 
-            // SE FOR ALUNO, EXIBE APENAS OS RECURSOS DELE E ATIVA BOTÃO DIRETO
             let exibidos = dados;
             if (!ehAdmin && usuarioLogado) {
                 exibidos = dados.filter(r => eMesmoAluno(r.aluno_id, r.aluno_re, usuarioLogado));
@@ -1296,7 +1408,6 @@
             if (!_supabase) return;
 
             try {
-                // 1. Atualiza tabela recursos
                 const resRec = await _supabase
                     .from('recursos')
                     .update({
@@ -1308,7 +1419,6 @@
 
                 if (resRec.error) throw resRec.error;
 
-                // 2. Atualiza tabela anotacoes
                 await _supabase
                     .from('anotacoes')
                     .update({ status_recurso: novoStatus })
@@ -1321,6 +1431,109 @@
 
             } catch(err) {
                 alert("Erro ao gravar decisão do recurso.");
+            }
+        }
+
+        // MÓDULO DASHBOARD DE CONDUTA (CÁLCULO DE ESTATÍSTICAS EM TEMPO REAL)
+        async function carregarDashboardConduta() {
+            await carregarAnotacoesDoBanco();
+            await carregarRecursosDoBanco();
+
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+
+            // 1. Atualizar KPIs Gerais
+            document.getElementById('dash-total-anotacoes').innerText = listaAnotacoes.length;
+            
+            const emAnalise = listaRecursos.filter(r => r.status === 'Em Análise').length;
+            const deferidos = listaRecursos.filter(r => r.status === 'Deferido').length;
+            const indeferidos = listaRecursos.filter(r => r.status === 'Indeferido').length;
+
+            document.getElementById('dash-recursos-analise').innerText = emAnalise;
+            document.getElementById('dash-recursos-deferidos').innerText = deferidos;
+            document.getElementById('dash-recursos-indeferidos').innerText = indeferidos;
+
+            // 2. Cartão de Conduta Individual (Perfil Aluno)
+            const containerAluno = document.getElementById('dash-container-aluno');
+            if (!ehAdmin && usuarioLogado) {
+                containerAluno.classList.remove('hidden');
+                document.getElementById('dash-aluno-nome').innerText = `${usuarioLogado.posto_grad || 'Al Sd PM'} ${usuarioLogado.nome_guerra} (${usuarioLogado.nome_completo || ''})`;
+                document.getElementById('dash-aluno-detalhes').innerText = `RE: ${usuarioLogado.re} | Pelotão: ${usuarioLogado.pelotao || 'Não Atribuído'}`;
+
+                // Conta anotações ativas do aluno (desconsiderando deferidas)
+                const minhasAnotacoesAtivas = listaAnotacoes.filter(a => 
+                    eMesmoAluno(a.aluno_id, a.aluno_re, usuarioLogado) && 
+                    a.status_recurso !== 'Deferido'
+                );
+
+                const elConceito = document.getElementById('dash-aluno-conceito');
+                if (minhasAnotacoesAtivas.length === 0) {
+                    elConceito.innerText = "EXCELENTE (Sem registros ativos)";
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800";
+                } else if (minhasAnotacoesAtivas.length <= 2) {
+                    elConceito.innerText = `REGULAR (${minhasAnotacoesAtivas.length} registro(s) ativo(s))`;
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800";
+                } else {
+                    elConceito.innerText = `ATENÇÃO (${minhasAnotacoesAtivas.length} registros ativos)`;
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800";
+                }
+            } else {
+                containerAluno.classList.add('hidden');
+            }
+
+            // 3. Tabela de Anotações por Pelotão
+            const tbodyPelotoes = document.getElementById('dash-tabela-pelotoes');
+            tbodyPelotoes.innerHTML = '';
+
+            const mapaPelotoes = {};
+            listaAnotacoes.forEach(a => {
+                const aluno = listaAlunos.find(al => String(al.id) === String(a.aluno_id) || al.re === a.aluno_re);
+                const nomePelotao = aluno?.pelotao || 'Não Identificado';
+                mapaPelotoes[nomePelotao] = (mapaPelotoes[nomePelotao] || 0) + 1;
+            });
+
+            const total = listaAnotacoes.length || 1;
+            const pelotoesOrdenados = Object.entries(mapaPelotoes).sort((a, b) => b[1] - a[1]);
+
+            if (pelotoesOrdenados.length === 0) {
+                tbodyPelotoes.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Nenhum dado cadastrado.</td></tr>';
+            } else {
+                pelotoesOrdenados.forEach(([pelotao, qtd]) => {
+                    const perc = ((qtd / total) * 100).toFixed(1);
+                    tbodyPelotoes.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-2.5 font-semibold text-slate-800">${pelotao}</td>
+                            <td class="p-2.5 text-center font-bold text-slate-900">${qtd}</td>
+                            <td class="p-2.5 text-right text-slate-500 font-mono">${perc}%</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // 4. Tabela de Enquadramentos / Códigos Frequentes
+            const tbodyCodigos = document.getElementById('dash-tabela-codigos');
+            tbodyCodigos.innerHTML = '';
+
+            const mapaCodigos = {};
+            listaAnotacoes.forEach(a => {
+                const cod = a.codigo ? a.codigo.toUpperCase().trim() : 'N/I';
+                mapaCodigos[cod] = (mapaCodigos[cod] || 0) + 1;
+            });
+
+            const codigosOrdenados = Object.entries(mapaCodigos).sort((a, b) => b[1] - a[1]);
+
+            if (codigosOrdenados.length === 0) {
+                tbodyCodigos.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Nenhum dado cadastrado.</td></tr>';
+            } else {
+                codigosOrdenados.forEach(([cod, qtd]) => {
+                    const perc = ((qtd / total) * 100).toFixed(1);
+                    tbodyCodigos.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${cod}</span></td>
+                            <td class="p-2.5 text-center font-bold text-slate-900">${qtd}</td>
+                            <td class="p-2.5 text-right text-slate-500 font-mono">${perc}%</td>
+                        </tr>
+                    `;
+                });
             }
         }
 
