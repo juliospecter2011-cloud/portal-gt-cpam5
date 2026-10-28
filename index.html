@@ -668,8 +668,11 @@
                     fecharModalMapaForca();
                     await carregarMapaForca();
                 } else {
-                    alert("Erro ao atualizar o quadro do Mapa Força.");
+                    console.error("Erro no Supabase:", error);
+                    alert("Erro do Banco de Dados: " + (error.message || error.details || JSON.stringify(error)));
                 }
+            } else {
+                alert("Erro: Conexão com o Supabase não inicializada.");
             }
         }
 
