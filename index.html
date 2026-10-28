@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE TROCA DE SENHA (1º ACESSO OU MANUALL) -->
+    <!-- MODAL DE TROCA DE SENHA (1º ACESSO OU MANUAL) -->
     <div id="modal-troca-senha" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 text-left relative">
             <div class="mb-4 border-b pb-3 flex justify-between items-start">
@@ -94,13 +94,11 @@
                 <i class="fa-solid fa-user-shield text-sm" id="user-display-icon"></i>
             </div>
             
-            <!-- BOTÃO DE ALTERAR SENHA MANUAL -->
             <button onclick="abrirModalTrocaSenhaManual()" title="Alterar Senha" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-2.5 py-1.5 rounded transition flex items-center gap-1.5">
                 <i class="fa-solid fa-key text-red-700 text-[11px]"></i>
                 <span>Senha</span>
             </button>
 
-            <!-- BOTÃO SAIR -->
             <button onclick="executarLogout()" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-3 py-1.5 rounded transition">
                 Sair
             </button>
@@ -336,8 +334,8 @@
                         <input type="text" id="efetivo-re" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: 253887-3">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1">Posto / Graduação</label>
-                        <input type="text" id="efetivo-posto" class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Al Sd PM, 1º Sgt PM">
+                        <label class="block font-semibold mb-1">Posto / Graduação *</label>
+                        <input type="text" id="efetivo-posto" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Al Sd PM, 1º Sgt PM">
                     </div>
                     <div>
                         <label class="block font-semibold mb-1">Nome de Guerra *</label>
@@ -531,7 +529,6 @@
 
                 usuarioLogado = usuario;
 
-                // SE FOR O PRIMEIRO ACESSO (OU COM A SENHA PADRÃO PMSP@2026), FORÇA A TROCA DE SENHA
                 if (usuario.primeiro_acesso === true || usuario.primeiro_acesso === null || senha === "PMSP@2026") {
                     abrirModalTrocaSenhaPrimeiroAcesso();
                     return;
@@ -599,7 +596,6 @@
 
                     fecharModalTrocaSenha();
 
-                    // Se a tela de login ainda estiver visível, conclui o acesso
                     if (document.getElementById('tela-login').style.display !== 'none') {
                         definirUsuario(usuarioLogado);
                     } else {
@@ -613,7 +609,6 @@
             }
         }
 
-        // DEFINE O USUÁRIO E REDIRECIONA SEMPRE PARA A TELA 'MAPA FORÇA'
         function definirUsuario(user) {
             usuarioLogado = user;
             document.getElementById('tela-login').style.display = 'none';
@@ -630,8 +625,6 @@
             }
 
             aplicarPermissoesUI();
-            
-            // REDIRECIONA DIRETAMENTE PARA O MAPA FORÇA (PORTAL) AO LOGAR
             mudarAba('portal', document.getElementById('btn-menu-portal'));
         }
 
@@ -763,21 +756,78 @@
                 .subscribe();
         }
 
-        // CARREGAR E GERENCIAR EFETIVO
+        // CARREGAR E GERENCIAR EFETIVO COM PERSISTÊNCIA REAL NO SUPABASE
         async function carregarAlunosDoBanco() {
             conectarSupabase();
-            if (!_supabase) {
-                atualizarOpcoesFiltros();
-                return;
-            }
+            if (!_supabase) return;
             try {
-                const { data, error } = await _supabase.from('alunos').select('*').order('numero_pelotao', { ascending: true });
-                if (!error && data && data.length > 0) {
+                const { data, error } = await _supabase
+                    .from('alunos')
+                    .select('*')
+                    .order('numero_pelotao', { ascending: true });
+
+                if (!error && data) {
                     listaAlunos = data;
                     renderizarTabela(listaAlunos);
                     atualizarOpcoesFiltros();
+                } else if (error) {
+                    console.error("Erro ao carregar alunos:", error);
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Exceção ao buscar alunos:", e);
+            }
+        }
+
+        async function salvarEfetivo(event) {
+            event.preventDefault();
+            conectarSupabase();
+
+            const id = document.getElementById('efetivo-id').value;
+            const cpfInformado = document.getElementById('efetivo-cpf').value.trim();
+
+            const dadosAluno = {
+                re: document.getElementById('efetivo-re').value.trim(),
+                posto_grad: document.getElementById('efetivo-posto').value.trim(),
+                nome_guerra: document.getElementById('efetivo-guerra').value.trim(),
+                nome_completo: document.getElementById('efetivo-nome').value.trim(),
+                cpf: cpfInformado,
+                cpf_limpo: cpfInformado.replace(/[^0-9]/g, ''),
+                email: document.getElementById('efetivo-email').value.trim().toLowerCase(),
+                senha: document.getElementById('efetivo-senha').value.trim(),
+                pelotao: document.getElementById('efetivo-pelotao').value.trim(),
+                turma: document.getElementById('efetivo-turma').value.trim(),
+                numero_pelotao: parseInt(document.getElementById('efetivo-numero').value) || 1,
+                nivel_acesso: document.getElementById('efetivo-acesso').value,
+                status: document.getElementById('efetivo-status').value,
+                primeiro_acesso: id ? false : true
+            };
+
+            if (!_supabase) {
+                alert("Erro: Conexão com o banco de dados não estabelecida.");
+                return;
+            }
+
+            try {
+                let res;
+                if (id) {
+                    res = await _supabase.from('alunos').update(dadosAluno).eq('id', id);
+                } else {
+                    res = await _supabase.from('alunos').insert([dadosAluno]);
+                }
+
+                if (res.error) {
+                    console.error("Erro Supabase ao salvar aluno:", res.error);
+                    alert("Erro do Banco de Dados ao salvar integrante: " + (res.error.message || res.error.details));
+                    return;
+                }
+
+                fecharModalEfetivo();
+                await carregarAlunosDoBanco(); // Recarrega os dados diretamente do Supabase
+
+            } catch(e) {
+                console.error("Erro de conexão ao salvar:", e);
+                alert("Erro ao tentar conectar e salvar o aluno.");
+            }
         }
 
         async function carregarAnotacoesDoBanco() {
@@ -817,7 +867,6 @@
             if (!aluno) return;
 
             const novaAnotacao = {
-                id: Date.now().toString(),
                 aluno_id: aluno.id,
                 aluno_re: aluno.re,
                 aluno_nome: `${aluno.posto_grad || 'Al Sd PM'} ${aluno.nome_guerra}`,
@@ -828,13 +877,15 @@
                 status_recurso: 'Sem Recurso'
             };
 
-            listaAnotacoes.unshift(novaAnotacao);
-            renderizarAnotacoes(listaAnotacoes);
-            fecharModalAnotacao();
-
             if (_supabase) {
                 try {
-                    await _supabase.from('anotacoes').insert([novaAnotacao]);
+                    const { error } = await _supabase.from('anotacoes').insert([novaAnotacao]);
+                    if (!error) {
+                        fecharModalAnotacao();
+                        carregarAnotacoesDoBanco();
+                    } else {
+                        alert("Erro ao gravar anotação disciplinar.");
+                    }
                 } catch(err) {}
             }
         }
@@ -987,53 +1038,6 @@
 
             document.getElementById('modal-titulo').innerText = 'Editar Integrante do Efetivo';
             document.getElementById('modal-efetivo').classList.remove('hidden');
-        }
-
-        async function salvarEfetivo(event) {
-            event.preventDefault();
-            conectarSupabase();
-
-            const id = document.getElementById('efetivo-id').value;
-            const cpfInformado = document.getElementById('efetivo-cpf').value;
-
-            const novoObj = {
-                id: id || Date.now().toString(),
-                re: document.getElementById('efetivo-re').value,
-                posto_grad: document.getElementById('efetivo-posto').value,
-                nome_guerra: document.getElementById('efetivo-guerra').value,
-                nome_completo: document.getElementById('efetivo-nome').value,
-                cpf: cpfInformado,
-                cpf_limpo: cpfInformado.replace(/[^0-9]/g, ''),
-                email: document.getElementById('efetivo-email').value.toLowerCase(),
-                senha: document.getElementById('efetivo-senha').value,
-                pelotao: document.getElementById('efetivo-pelotao').value,
-                turma: document.getElementById('efetivo-turma').value,
-                numero_pelotao: parseInt(document.getElementById('efetivo-numero').value) || 1,
-                nivel_acesso: document.getElementById('efetivo-acesso').value,
-                status: document.getElementById('efetivo-status').value,
-                primeiro_acesso: id ? false : true // NOVO CADASTRO NASCE COM PRIMEIRO ACESSO = TRUE
-            };
-
-            if (id) {
-                const idx = listaAlunos.findIndex(a => a.id === id);
-                if (idx !== -1) listaAlunos[idx] = novoObj;
-            } else {
-                listaAlunos.push(novoObj);
-            }
-
-            renderizarTabela(listaAlunos);
-            atualizarOpcoesFiltros();
-            fecharModalEfetivo();
-
-            if (_supabase) {
-                try {
-                    if (id) {
-                        await _supabase.from('alunos').update(novoObj).eq('id', id);
-                    } else {
-                        await _supabase.from('alunos').insert([novoObj]);
-                    }
-                } catch(e) {}
-            }
         }
 
         function abrirModalMapaForca() { document.getElementById('modal-mapa-forca').classList.remove('hidden'); }
