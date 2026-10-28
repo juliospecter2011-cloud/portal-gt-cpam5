@@ -44,14 +44,19 @@
         </div>
     </div>
 
-    <!-- MODAL DE TROCA OBRIGATÓRIA DE SENHA NO PRIMEIRO ACESSO -->
+    <!-- MODAL DE TROCA DE SENHA (1º ACESSO OU MANUALL) -->
     <div id="modal-troca-senha" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 text-left relative">
-            <div class="mb-4 border-b pb-3">
-                <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-red-700"></i> Cadastrar Nova Senha
-                </h3>
-                <p class="text-[11px] text-slate-500 mt-1">Identificamos que este é o seu primeiro acesso. Por segurança, crie uma nova senha pessoal.</p>
+            <div class="mb-4 border-b pb-3 flex justify-between items-start">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2" id="titulo-modal-senha">
+                        <i class="fa-solid fa-lock text-red-700"></i> Cadastrar Nova Senha
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-1" id="subtitulo-modal-senha">Por segurança, crie uma nova senha pessoal para acessar o sistema.</p>
+                </div>
+                <button id="btn-fechar-modal-senha" onclick="fecharModalTrocaSenha()" class="text-slate-400 hover:text-slate-600 hidden">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <form onsubmit="confirmarTrocaSenha(event)" class="space-y-4 text-xs">
@@ -67,7 +72,7 @@
                 <p id="msg-erro-troca" class="text-xs text-red-600 font-semibold hidden"></p>
 
                 <button type="submit" class="w-full bg-red-700 text-white py-2.5 rounded-lg font-bold hover:bg-red-800 transition">
-                    Salvar e Acessar o Portal
+                    Salvar e Atualizar Senha
                 </button>
             </form>
         </div>
@@ -80,7 +85,7 @@
             <p class="text-[10px] text-slate-500 uppercase">Polícia Militar do Estado de São Paulo</p>
         </div>
         
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
             <div class="text-right">
                 <p class="text-xs font-bold text-slate-800" id="user-display-nome">---</p>
                 <p class="text-[10px] font-semibold text-red-600 tracking-wider uppercase" id="user-display-permissao">---</p>
@@ -88,6 +93,14 @@
             <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600">
                 <i class="fa-solid fa-user-shield text-sm" id="user-display-icon"></i>
             </div>
+            
+            <!-- BOTÃO DE ALTERAR SENHA MANUAL -->
+            <button onclick="abrirModalTrocaSenhaManual()" title="Alterar Senha" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-2.5 py-1.5 rounded transition flex items-center gap-1.5">
+                <i class="fa-solid fa-key text-red-700 text-[11px]"></i>
+                <span>Senha</span>
+            </button>
+
+            <!-- BOTÃO SAIR -->
             <button onclick="executarLogout()" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-3 py-1.5 rounded transition">
                 Sair
             </button>
@@ -102,7 +115,7 @@
             <div class="py-4">
                 <p class="px-6 text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-2">Navegação</p>
                 <nav class="space-y-0.5" id="nav-menu">
-                    <button onclick="mudarAba('portal', this)" class="menu-btn active-menu w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
+                    <button id="btn-menu-portal" onclick="mudarAba('portal', this)" class="menu-btn active-menu w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
                         <i class="fa-solid fa-clipboard-list w-4 text-center"></i> Mapa Força
                     </button>
                     <button onclick="mudarAba('efetivo', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
@@ -133,7 +146,7 @@
         <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
         <main class="flex-1 p-8 overflow-y-auto bg-slate-50">
 
-            <!-- ABA PORTAL / MAPA FORÇA -->
+            <!-- ABA PORTAL / MAPA FORÇA (TELA INICIAL PADRÃO) -->
             <section id="aba-portal" class="aba-conteudo">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -516,9 +529,11 @@
                     return;
                 }
 
-                if (usuario.primeiro_acesso === true || usuario.primeiro_acesso === null) {
-                    usuarioLogado = usuario;
-                    document.getElementById('modal-troca-senha').classList.remove('hidden');
+                usuarioLogado = usuario;
+
+                // SE FOR O PRIMEIRO ACESSO (OU COM A SENHA PADRÃO PMSP@2026), FORÇA A TROCA DE SENHA
+                if (usuario.primeiro_acesso === true || usuario.primeiro_acesso === null || senha === "PMSP@2026") {
+                    abrirModalTrocaSenhaPrimeiroAcesso();
                     return;
                 }
 
@@ -530,11 +545,33 @@
             }
         }
 
+        function abrirModalTrocaSenhaPrimeiroAcesso() {
+            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-lock text-red-700"></i> Primeiro Acesso - Cadastrar Nova Senha';
+            document.getElementById('subtitulo-modal-senha').innerText = 'Identificamos que este é o seu primeiro acesso. Por segurança, crie uma nova senha pessoal.';
+            document.getElementById('btn-fechar-modal-senha').classList.add('hidden');
+            document.getElementById('modal-troca-senha').classList.remove('hidden');
+        }
+
+        function abrirModalTrocaSenhaManual() {
+            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-key text-red-700"></i> Alterar Senha Pessoal';
+            document.getElementById('subtitulo-modal-senha').innerText = 'Digite a nova senha que deseja utilizar nos seus próximos acessos ao portal.';
+            document.getElementById('btn-fechar-modal-senha').classList.remove('hidden');
+            document.getElementById('nova-senha-1').value = '';
+            document.getElementById('nova-senha-2').value = '';
+            document.getElementById('msg-erro-troca').classList.add('hidden');
+            document.getElementById('modal-troca-senha').classList.remove('hidden');
+        }
+
+        function fecharModalTrocaSenha() {
+            document.getElementById('modal-troca-senha').classList.add('hidden');
+        }
+
         async function confirmarTrocaSenha(e) {
             e.preventDefault();
             const s1 = document.getElementById('nova-senha-1').value;
             const s2 = document.getElementById('nova-senha-2').value;
             const msgErro = document.getElementById('msg-erro-troca');
+            msgErro.classList.add('hidden');
 
             if (s1.length < 6) {
                 msgErro.innerText = "A senha deve conter no mínimo 6 caracteres.";
@@ -550,16 +587,25 @@
 
             if (_supabase && usuarioLogado) {
                 try {
-                    await _supabase
+                    const { error } = await _supabase
                         .from('alunos')
                         .update({ senha: s1, primeiro_acesso: false })
                         .eq('id', usuarioLogado.id);
 
+                    if (error) throw error;
+
                     usuarioLogado.senha = s1;
                     usuarioLogado.primeiro_acesso = false;
 
-                    document.getElementById('modal-troca-senha').classList.add('hidden');
-                    definirUsuario(usuarioLogado);
+                    fecharModalTrocaSenha();
+
+                    // Se a tela de login ainda estiver visível, conclui o acesso
+                    if (document.getElementById('tela-login').style.display !== 'none') {
+                        definirUsuario(usuarioLogado);
+                    } else {
+                        alert("Sua senha foi alterada com sucesso!");
+                    }
+
                 } catch(err) {
                     msgErro.innerText = "Falha ao salvar nova senha no banco de dados.";
                     msgErro.classList.remove('hidden');
@@ -567,6 +613,7 @@
             }
         }
 
+        // DEFINE O USUÁRIO E REDIRECIONA SEMPRE PARA A TELA 'MAPA FORÇA'
         function definirUsuario(user) {
             usuarioLogado = user;
             document.getElementById('tela-login').style.display = 'none';
@@ -583,7 +630,9 @@
             }
 
             aplicarPermissoesUI();
-            mudarAba('efetivo');
+            
+            // REDIRECIONA DIRETAMENTE PARA O MAPA FORÇA (PORTAL) AO LOGAR
+            mudarAba('portal', document.getElementById('btn-menu-portal'));
         }
 
         function aplicarPermissoesUI() {
@@ -962,7 +1011,7 @@
                 numero_pelotao: parseInt(document.getElementById('efetivo-numero').value) || 1,
                 nivel_acesso: document.getElementById('efetivo-acesso').value,
                 status: document.getElementById('efetivo-status').value,
-                primeiro_acesso: id ? false : true
+                primeiro_acesso: id ? false : true // NOVO CADASTRO NASCE COM PRIMEIRO ACESSO = TRUE
             };
 
             if (id) {
