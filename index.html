@@ -412,7 +412,7 @@
                 </div>
             </section>
 
-            <!-- ABA ESCALA DE LEC -->
+            <!-- ABA ESCALA DE LEC (AUTOMÁTICA COM EXPORTAÇÃO PDF E EXCEL) -->
             <section id="aba-lec" class="aba-conteudo hidden">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
@@ -786,17 +786,17 @@
         </div>
     </div>
 
-    <!-- MODAL MAPA FORÇA -->
+    <!-- MODAL MAPA FORÇA COMPLETO (PEL A AO F) -->
     <div id="modal-mapa-forca" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-slate-200">
-            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-                <h3 class="font-bold text-sm">Atualizar Quadro do Mapa Força</h3>
-                <button onclick="fecharModalMapaForca()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-slate-200 flex flex-col">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h3 class="font-bold text-sm">Atualizar Quadro do Mapa Força (Pelotões A a F)</h3>
+                <button type="button" onclick="fecharModalMapaForca()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <form onsubmit="salvarMapaForca(event)" class="p-6 space-y-4 text-xs">
+            <form id="form-mapa-forca" onsubmit="salvarMapaForca(event)" class="p-6 overflow-y-auto space-y-4 text-xs flex-1">
                 <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1">Autoridades e Serviço do Dia</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                     <div>
                         <label class="block font-semibold mb-1">Aluno de Dia *</label>
                         <input type="text" id="mf-in-aluno-dia" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Al Sd PM Nicole Oliveira">
@@ -811,27 +811,31 @@
                     </div>
                 </div>
 
-                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Efetivo do 1º Pelotão "A"</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block font-semibold mb-1">Efetivo Fixado</label>
-                        <input type="number" id="mf-p1-fix" value="35" class="w-full border p-2 rounded focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1">Efetivo Existente</label>
-                        <input type="number" id="mf-p1-exi" value="35" class="w-full border p-2 rounded focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1">Novidades / Observações</label>
-                        <input type="text" id="mf-p1-nov" class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Sem novidades">
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-2 pt-4 border-t">
-                    <button type="button" onclick="fecharModalMapaForca()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800">Atualizar Quadro</button>
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Efetivo por Pelotão</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Gerando Pelotões 1 a 6 dinamicamente no formulário -->
+                    <script>
+                        const nomesPelotoesForm = ['1º PEL "A"', '2º PEL "B"', '3º PEL "C"', '4º PEL "D"', '5º PEL "E"', '6º PEL "F"'];
+                        for (let i = 1; i <= 6; i++) {
+                            document.write(`
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded flex flex-col gap-2">
+                                    <div class="font-bold text-slate-700 uppercase border-b border-slate-200 pb-1">${nomesPelotoesForm[i-1]}</div>
+                                    <div class="flex gap-2">
+                                        <div class="w-1/3"><label class="block text-[10px] mb-0.5 text-slate-500">Fixado</label><input type="number" id="mf-p${i}-fix" value="35" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                        <div class="w-1/3"><label class="block text-[10px] mb-0.5 text-slate-500">Existente</label><input type="number" id="mf-p${i}-exi" value="35" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                        <div class="w-full"><label class="block text-[10px] mb-0.5 text-slate-500">Novidades</label><input type="text" id="mf-p${i}-nov" placeholder="Sem novidades" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                    </div>
+                                </div>
+                            `);
+                        }
+                    </script>
                 </div>
             </form>
+
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-2 shrink-0">
+                <button type="button" onclick="fecharModalMapaForca()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-200 transition">Cancelar</button>
+                <button type="submit" form="form-mapa-forca" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 transition">Atualizar Quadro Completo</button>
+            </div>
         </div>
     </div>
 
@@ -1075,16 +1079,12 @@
             } catch(err) { console.error(err); }
         }
 
-        // MAPA FORÇA
+        // MAPA FORÇA (DINÂMICO PELOTÕES 1 A 6)
         async function carregarMapaForca() {
             conectarSupabase();
             if (!_supabase) return;
 
-            const { data } = await _supabase
-                .from('mapa_forca')
-                .select('*')
-                .eq('id', 1)
-                .maybeSingle();
+            const { data } = await _supabase.from('mapa_forca').select('*').eq('id', 1).maybeSingle();
 
             if (data) {
                 document.getElementById('mf-aluno-dia').innerText = data.aluno_dia || '---';
@@ -1094,9 +1094,15 @@
                 document.getElementById('mf-in-aluno-dia').value = data.aluno_dia || '';
                 document.getElementById('mf-in-chefe-gt').value = data.chefe_gt || '';
                 document.getElementById('mf-in-sgt-semana').value = data.sgt_semana || '';
-                document.getElementById('mf-p1-fix').value = data.p1_fix ?? 35;
-                document.getElementById('mf-p1-exi').value = data.p1_exi ?? 35;
-                document.getElementById('mf-p1-nov').value = data.p1_nov || '';
+
+                for(let i = 1; i <= 6; i++) {
+                    const elFix = document.getElementById(`mf-p${i}-fix`);
+                    const elExi = document.getElementById(`mf-p${i}-exi`);
+                    const elNov = document.getElementById(`mf-p${i}-nov`);
+                    if(elFix) elFix.value = data[`p${i}_fix`] ?? 35;
+                    if(elExi) elExi.value = data[`p${i}_exi`] ?? 35;
+                    if(elNov) elNov.value = data[`p${i}_nov`] || '';
+                }
 
                 renderizarPelotoes(data);
             }
@@ -1111,11 +1117,14 @@
                 aluno_dia: document.getElementById('mf-in-aluno-dia').value,
                 chefe_gt: document.getElementById('mf-in-chefe-gt').value,
                 sgt_semana: document.getElementById('mf-in-sgt-semana').value,
-                p1_fix: parseInt(document.getElementById('mf-p1-fix').value) || 0,
-                p1_exi: parseInt(document.getElementById('mf-p1-exi').value) || 0,
-                p1_nov: document.getElementById('mf-p1-nov').value,
                 atualizado_em: new Date().toISOString()
             };
+
+            for(let i = 1; i <= 6; i++) {
+                dadosAtualizados[`p${i}_fix`] = parseInt(document.getElementById(`mf-p${i}-fix`).value) || 0;
+                dadosAtualizados[`p${i}_exi`] = parseInt(document.getElementById(`mf-p${i}-exi`).value) || 0;
+                dadosAtualizados[`p${i}_nov`] = document.getElementById(`mf-p${i}-nov`).value;
+            }
 
             if (_supabase) {
                 const { error } = await _supabase.from('mapa_forca').upsert(dadosAtualizados);
@@ -1135,22 +1144,22 @@
 
             const pelotoes = [
                 { nome: '1º PELOTÃO "A"', fix: dados?.p1_fix ?? 35, exi: dados?.p1_exi ?? 35, nov: dados?.p1_nov || 'Sem novidades' },
-                { nome: '2º PELOTÃO "B"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '3º PELOTÃO "C"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '4º PELOTÃO "D"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '5º PELOTÃO "E"', fix: '-', exi: '-', nov: 'Sem novidades' },
-                { nome: '6º PELOTÃO "F"', fix: '-', exi: '-', nov: 'Sem novidades' },
+                { nome: '2º PELOTÃO "B"', fix: dados?.p2_fix ?? 35, exi: dados?.p2_exi ?? 35, nov: dados?.p2_nov || 'Sem novidades' },
+                { nome: '3º PELOTÃO "C"', fix: dados?.p3_fix ?? 35, exi: dados?.p3_exi ?? 35, nov: dados?.p3_nov || 'Sem novidades' },
+                { nome: '4º PELOTÃO "D"', fix: dados?.p4_fix ?? 35, exi: dados?.p4_exi ?? 35, nov: dados?.p4_nov || 'Sem novidades' },
+                { nome: '5º PELOTÃO "E"', fix: dados?.p5_fix ?? 35, exi: dados?.p5_exi ?? 35, nov: dados?.p5_nov || 'Sem novidades' },
+                { nome: '6º PELOTÃO "F"', fix: dados?.p6_fix ?? 35, exi: dados?.p6_exi ?? 35, nov: dados?.p6_nov || 'Sem novidades' },
             ];
 
             pelotoes.forEach(p => {
                 grid.innerHTML += `
-                    <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                    <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4 hover:shadow-md transition">
                         <div class="border-b pb-2 mb-3 flex justify-between items-center">
                             <h3 class="font-bold text-xs text-slate-800">${p.nome}</h3>
                             <span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Fix: ${p.fix} | Exist: ${p.exi}</span>
                         </div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">NOVIDADES</p>
-                        <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-dashed">${p.nov}</p>
+                        <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-dashed min-h-[36px]" title="${p.nov}">${p.nov || 'Sem novidades'}</p>
                     </div>
                 `;
             });
