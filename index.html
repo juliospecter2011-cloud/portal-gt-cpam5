@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Biblioteca docx.js para gerar o arquivo Word perfeitamente formatado -->
+    <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .active-menu { background-color: #fef2f2; color: #dc2626; border-right: 4px solid #dc2626; font-weight: 600; }
@@ -412,12 +415,12 @@
                 </div>
             </section>
 
-            <!-- ABA ESCALA DE LEC (AUTOMÁTICA COM EXPORTAÇÃO PDF E EXCEL) -->
+            <!-- ABA ESCALA DE LEC (COM GERADOR DE WORD OFICIAL) -->
             <section id="aba-lec" class="aba-conteudo hidden">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
-                        <p class="text-xs text-slate-500">Cálculo Automático por Reincidência de Código Disciplinar (Parcial, Intermediário e Total)</p>
+                        <p class="text-xs text-slate-500">Cálculo Automático e Exportação no Padrão Oficial do Word</p>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -425,13 +428,11 @@
                             <i class="fa-solid fa-calculator"></i> Gerar Prévia Próximo FDS
                         </button>
                         <button onclick="publicarEscalaDefinitiva()" id="btn-publicar-escala" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition flex items-center gap-2 admin-only">
-                            <i class="fa-solid fa-bullhorn"></i> Publicar Escala Definitiva
+                            <i class="fa-solid fa-bullhorn"></i> Publicar Definitiva
                         </button>
-                        <button onclick="exportarEscalaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-lg shadow text-xs transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-file-excel"></i> Excel
-                        </button>
-                        <button onclick="imprimirEscalaPDF()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-3 py-2 rounded-lg shadow text-xs transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-file-pdf"></i> PDF / Imprimir
+                        <!-- BOTÃO DE EXPORTAÇÃO EM WORD (.DOCX) COM LAYOUT OFICIAL -->
+                        <button onclick="exportarEscalaWordOficial()" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-word"></i> Baixar Word Oficial
                         </button>
                     </div>
                 </div>
@@ -476,12 +477,12 @@
                     </div>
                 </div>
 
-                <!-- ÁREA DE EXIBIÇÃO DA ESCALA / DOCUMENTO OFICIAL -->
+                <!-- ÁREA DE VISUALIZAÇÃO NA TELA -->
                 <div id="area-impressao-lec" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <div class="text-center border-b pb-4 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 uppercase">POLÍCIA MILITAR DO ESTADO DE SÃO PAULO</h3>
-                        <h4 class="text-xs font-bold text-red-700 uppercase">COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO — CPA M-5</h4>
-                        <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">GABINETE DE TREINAMENTO — ESCALA DE CUMPRIMENTO DE LICENCIAMENTO CASSADO (LEC)</p>
+                        <h4 class="text-xs font-bold text-red-700 uppercase">ESCOLA SUPERIOR DE SOLDADOS "CEL PM EDUARDO ASSUMPÇÃO" — 2ª Cia Es – 1º Cens/2026</h4>
+                        <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">LICENCIAMENTO ESCOLAR CASSADO</p>
                         <p class="text-[10px] text-slate-500 mt-0.5" id="lec-subtitulo-oficial">Escala Vigente para o Próximo Final de Semana</p>
                     </div>
 
@@ -637,7 +638,7 @@
         </div>
     </div>
 
-    <!-- MODAL NOVA ANOTAÇÃO DISCIPLINAR (COM ORIGEM E ANOTANTE FLEXÍVEL) -->
+    <!-- MODAL NOVA ANOTAÇÃO DISCIPLINAR -->
     <div id="modal-anotacao" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200">
             <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
@@ -813,7 +814,6 @@
 
                 <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Efetivo por Pelotão</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Gerando Pelotões 1 a 6 dinamicamente no formulário -->
                     <script>
                         const nomesPelotoesForm = ['1º PEL "A"', '2º PEL "B"', '3º PEL "C"', '4º PEL "D"', '5º PEL "E"', '6º PEL "F"'];
                         for (let i = 1; i <= 6; i++) {
@@ -839,7 +839,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL COMPLETO E ÍNTEGRO -->
+    <!-- SCRIPT PRINCIPAL COMPLETO E ÍNTEGRO COM GERADOR DE WORD OFICIAL -->
     <script>
         const SUPABASE_URL = "https://rvywrmiafdcxirjnkgnf.supabase.co";
         const SUPABASE_KEY = "sb_publishable_9HPz3qa-w4oUFjDMZheghQ_1pCxT-J9";
@@ -1782,6 +1782,7 @@
                         posto_grad: aluno.posto_grad || 'Al Sd PM',
                         nome_guerra: aluno.nome_guerra,
                         pelotao: aluno.pelotao || 'GT',
+                        numero_aluno: aluno.numero_aluno || '1',
                         codigo: codigoMotivo,
                         pontos: maiorPontuacao,
                         modalidade: modalidade,
@@ -1929,15 +1930,17 @@
                 return;
             }
 
-            if (!confirm("Confirmar a publicação definitiva da Escala de LEC no Portal? Todos os integrantes conseguirão visualizar.")) return;
+            if (!confirm("Confirmar a publicação definitiva da Escala de LEC no Portal?")) return;
 
             escalaPublicadaOficial = JSON.parse(JSON.stringify(escalaLECCalculada));
             renderizarEscalaLEC(escalaPublicadaOficial, null, "ESCALA OFICIAL PUBLICADA PELO GT");
             alert("Escala Definitiva de LEC Publicada no Portal com Sucesso!");
         }
 
-        // EXPORTAÇÃO EXCEL (.XLSX) E IMPRESSÃO PDF NATIVA
-        function exportarEscalaExcel() {
+        // ==========================================
+        // GERADOR DO WORD OFICIAL (.DOCX) PADRÃO PMESP
+        // ==========================================
+        function exportarEscalaWordOficial() {
             const listaParaExportar = (escalaPublicadaOficial || escalaLECCalculada).filter(i => !i.desescalado);
 
             if (listaParaExportar.length === 0) {
@@ -1945,27 +1948,143 @@
                 return;
             }
 
-            const dadosPlanilha = listaParaExportar.map(item => ({
-                "RE": item.re,
-                "Posto / Graduação": item.posto_grad,
-                "Nome de Guerra": item.nome_guerra,
-                "Pelotão": item.pelotao,
-                "Código Reincidente": item.codigo,
-                "Pontuação": item.pontos,
-                "Modalidade LEC": item.modalidade,
-                "Horário de Apresentação / Término": item.horario
-            }));
+            // Separar por grupos de LEC (24H, 48H, 60H)
+            const grupos = {
+                '24H': listaParaExportar.filter(i => i.modalidade.includes('24H')),
+                '48H': listaParaExportar.filter(i => i.modalidade.includes('48H')),
+                '60H': listaParaExportar.filter(i => i.modalidade.includes('60H'))
+            };
 
-            const ws = XLSX.utils.json_to_sheet(dadosPlanilha);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Escala_LEC");
+            const periodosTexto = {
+                '24H': 'Inicia-se às 13h00 de sexta-feira e termina às 13h00 de sábado, sendo aplicado ao aluno quando tiver: 02 (duas) anotações por falta escolar no mesmo código ou através de despacho em documento;',
+                '48H': 'Inicia-se às 13h00 de sexta-feira e termina às 13h00 de domingo, sendo aplicado ao aluno quando tiver: 03 (três) anotações por falta escolar no mesmo código ou através de despacho em documento;',
+                '60H': 'Inicia-se às 13h00 de sexta-feira à 01h00 de segunda-feira, sendo aplicado ao aluno quando tiver: 04 (quatro) ou mais anotações por falta escolar no mesmo código;'
+            };
 
-            const dataSexta = calcularProximaSexta().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `ESCALA_LEC_CPA_M5_${dataSexta}.xlsx`);
-        }
+            const dataSexta = calcularProximaSexta();
+            const dataStr = dataSexta.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '');
+            const dataFimStr = new Date(dataSexta.getTime() + 86400000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '');
 
-        function imprimirEscalaPDF() {
-            window.print();
+            const docChildren = [
+                // CABEÇALHO OFICIAL PMESP
+                new docx.Paragraph({
+                    text: "SECRETARIA DA SEGURANÇA PÚBLICA",
+                    alignment: docx.AlignmentType.CENTER,
+                    heading: docx.HeadingLevel.HEADING_3,
+                    spacing: { after: 100 }
+                }),
+                new docx.Paragraph({
+                    text: "POLÍCIA MILITAR DO ESTADO DE SÃO PAULO\nDIRETORIA DE ENSINO E CULTURA\nESCOLA SUPERIOR DE SOLDADOS “CEL PM EDUARDO ASSUMPÇÃO“\n2ª Cia Es – 1º Cens/2026",
+                    alignment: docx.AlignmentType.CENTER,
+                    spacing: { after: 200 }
+                }),
+                new docx.Paragraph({
+                    text: "LICENCIAMENTO ESCOLAR CASSADO",
+                    alignment: docx.AlignmentType.CENTER,
+                    heading: docx.HeadingLevel.HEADING_1,
+                    spacing: { after: 150 }
+                }),
+                new docx.Paragraph({
+                    text: "Relação dos Al Sd PM que estarão com o Licenciamento Escolar Cassado no período de atividades, conforme o que preconiza na Diretriz Geral de Ensino (D-5-PM):",
+                    alignment: docx.AlignmentType.JUSTIFIED,
+                    spacing: { after: 150 }
+                }),
+                new docx.Paragraph({
+                    text: "Art. 124: A cassação de licenciamento escolar é a sanção que consiste na revogação da licença de saída do discente do OAES, apenas depois de encerrada a semana letiva ou naquela em que o licenciamento do internato for concedido aos demais. O licenciamento escolar do aluno poderá ser cassado parcialmente, de forma intermediária, ou totalmente, de acordo com as anotações de caderno de conduta, na seguinte conformidade;",
+                    alignment: docx.AlignmentType.JUSTIFIED,
+                    spacing: { after: 200 }
+                })
+            ];
+
+            // Montar tabelas por modalidade
+            Object.keys(grupos).forEach(modKey => {
+                const itensMod = grupos[modKey];
+                if (itensMod.length === 0) return;
+
+                docChildren.push(
+                    new docx.Paragraph({
+                        text: `LEC PARCIAL ${modKey}: ${periodosTexto[modKey]}`,
+                        alignment: docx.AlignmentType.JUSTIFIED,
+                        spacing: { before: 200, after: 100 }
+                    }),
+                    new docx.Paragraph({
+                        text: `${dataStr} À ${dataFimStr}`,
+                        alignment: docx.AlignmentType.CENTER,
+                        spacing: { after: 100 }
+                    })
+                );
+
+                // Criar Tabela com o Layout Exato do seu Word
+                const tableRows = [
+                    new docx.TableRow({
+                        children: [
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "3ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "4ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })] }),
+                        ]
+                    })
+                ];
+
+                itensMod.forEach((item, idx) => {
+                    tableRows.push(
+                        new docx.TableRow({
+                            children: [
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(idx + 1).padStart(2, '0'), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.pelotao || '1'), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.numero_aluno || '1'), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.re), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.nome_guerra), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.codigo), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "06JAN26", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "25FEV26", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "", alignment: docx.AlignmentType.CENTER })] }),
+                            ]
+                        })
+                    );
+                });
+
+                docChildren.push(new docx.Table({ rows: tableRows, width: { size: 100, type: docx.WidthType.PERCENTAGE } }));
+            });
+
+            // Rodapé com Observação e Assinatura
+            const dataHojeExtenso = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+            docChildren.push(
+                new docx.Paragraph({
+                    text: "OBS: Os alunos deverão apresentar-se no Serviço de Dia após a revista de liberação na Cia.",
+                    spacing: { before: 300, after: 150 }
+                }),
+                new docx.Paragraph({
+                    text: `São Paulo, ${dataHojeExtenso}.`,
+                    alignment: docx.AlignmentType.CENTER,
+                    spacing: { before: 200, after: 300 }
+                }),
+                new docx.Paragraph({
+                    text: "EDUARDO CASAGRANDI MANSOLDO FILHO\nCap PM Comandante",
+                    alignment: docx.AlignmentType.CENTER,
+                    spacing: { before: 200 }
+                })
+            );
+
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {},
+                    children: docChildren
+                }]
+            });
+
+            docx.Packer.toBlob(doc).then(blob => {
+                saveAs(blob, `Escala_LEC_${dataStr}.docx`);
+            });
         }
 
         // OUTROS MÓDULOS (EFETIVO, FILTROS E AUXILIARES)
