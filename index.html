@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Biblioteca docx.js para gerar o arquivo Word oficial -->
     <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -417,7 +416,7 @@
 
             <!-- ABA ESCALA DE LEC (COM WORD OFICIAL CORRIGIDO: MARGENS, RE/QRA LARGOS, PEL SÓ NÚMERO) -->
             <section id="aba-lec" class="aba-conteudo hidden">
-                <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
                         <p class="text-xs text-slate-500">Cálculo Automático e Exportação em Word Oficial</p>
@@ -434,17 +433,6 @@
                             <i class="fa-solid fa-file-word"></i> Baixar Word Oficial
                         </button>
                     </div>
-                </div>
-
-                <!-- FILTROS DA ABA LEC -->
-                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
-                    <div class="relative">
-                        <input type="text" id="input-busca-lec" onkeyup="filtrarLEC()" placeholder="Buscar por RE, QRA..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-60 focus:outline-none">
-                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
-                    </div>
-                    <select id="filtro-pelotao-lec" onchange="filtrarLEC()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs focus:outline-none bg-white text-slate-700 font-medium">
-                        <option value="">Todos os Pelotões</option>
-                    </select>
                 </div>
 
                 <!-- CARDS DE MÉTRICAS DA ESCALA -->
@@ -491,8 +479,8 @@
                 <div id="area-impressao-lec" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <div class="text-center border-b pb-4 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 uppercase">POLÍCIA MILITAR DO ESTADO DE SÃO PAULO</h3>
-                        <h4 class="text-xs font-bold text-red-700 uppercase">Comando de Policiamento de Área Metropolitano 5</h4>
-                        <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">LICENCIAMENTO ESCOLAR CASSADO</p>
+                        <h4 class="text-xs font-bold text-red-700 uppercase">COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO — CPA M-5</h4>
+                        <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">GABINETE DE TREINAMENTO — ESCALA DE CUMPRIMENTO DE LICENCIAMENTO CASSADO (LEC)</p>
                         <p class="text-[10px] text-slate-500 mt-0.5" id="lec-subtitulo-oficial">Escala Vigente para o Próximo Final de Semana</p>
                     </div>
 
@@ -500,12 +488,12 @@
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider border-b border-t">
-                                    <th class="p-2.5 w-32">RE</th>
+                                    <th class="p-2.5">RE</th>
                                     <th class="p-2.5">Posto/Grad</th>
-                                    <th class="p-2.5 w-40">Nome de Guerra (QRA)</th>
+                                    <th class="p-2.5">Nome de Guerra</th>
                                     <th class="p-2.5">Pelotão</th>
                                     <th class="p-2.5">Código Motivo</th>
-                                    <th class="p-2.5">Pontos</th>
+                                    <th class="p-2.5">Pontos Acumulados</th>
                                     <th class="p-2.5">Modalidade LEC</th>
                                     <th class="p-2.5">Horário Apresentação / Término</th>
                                     <th class="p-2.5 text-center admin-only nao-imprimir">Ações / Desescalar</th>
@@ -521,7 +509,7 @@
                 </div>
             </section>
 
-            <!-- ABA SERVIÇOS & ESCALAS (COM GERADOR POR PERÍODO E BOTÃO DE TROCA / SETINHA) -->
+            <!-- ABA SERVIÇOS & ESCALAS (COM O GERADOR POR PERÍODO E BOTÃO DE TROCA / SETINHA) -->
             <section id="aba-servicos" class="aba-conteudo hidden">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
@@ -535,15 +523,18 @@
                     <button onclick="mudarSubAbaServicos('gerador', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition">
                         <i class="fa-solid fa-calendar-check"></i> Gerador por Período (Al de Dia / Guarda)
                     </button>
+                    <button onclick="mudarSubAbaServicos('guarda', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
+                        <i class="fa-solid fa-shield-halved"></i> Escala de Guarda
+                    </button>
                     <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-graduation-cap"></i> Escala de Estágio (Padrão Oficial)
+                        <i class="fa-solid fa-graduation-cap"></i> Escala de Estágio
                     </button>
                     <button onclick="mudarSubAbaServicos('faxina', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
                         <i class="fa-solid fa-broom"></i> Escala de Faxina
                     </button>
                 </div>
 
-                <!-- SUB-ABA GERADOR POR PERÍODO (SOLICITAÇÃO EXATA DE SELECIONAR PERÍODO E TROCAR COM SETINHA) -->
+                <!-- SUB-ABA GERADOR POR PERÍODO (COM SELETOR DE DATAS E SETINHA DE ALTERAÇÃO) -->
                 <div id="sub-aba-gerador" class="space-y-4">
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
                         <div class="flex flex-wrap items-center gap-3">
@@ -577,73 +568,221 @@
                     </div>
                 </div>
 
-                <!-- SUB-ABA ESTÁGIO -->
-                <div id="sub-aba-estagio" class="space-y-4 hidden">
-                    <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-wrap justify-between items-center gap-3">
+                <!-- SUB-ABA GUARDA -->
+                <div id="sub-aba-guarda" class="space-y-4 hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-3">
-                            <select id="estagio-modalidade" class="border p-2 rounded text-xs font-semibold bg-white">
-                                <option value="POLICIAMENTO MOTORIZADO (VTR CGP,VTR 190 e BCM)">Motorizado (VTR CGP, 190 e BCM)</option>
-                                <option value="POLICIAMENTO OSTENSIVO A PÉ - OPERAÇÃO IMPACTO PARQUES">A Pé (Operação Impacto Parques)</option>
-                            </select>
-                            <input type="date" id="estagio-data" class="border p-2 rounded text-xs">
-                            <input type="text" id="estagio-bpm" value="16º BPM/M" class="border p-2 rounded text-xs w-28 font-bold">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Período / Semana Guarda *</label>
+                                <input type="date" id="guarda-data-inicio" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
+                            </div>
+                            <div class="text-[11px] text-slate-600">
+                                <p><span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-1"></span> <b>Escala Azul:</b> Seg a Qui</p>
+                                <p><span class="inline-block w-3 h-3 bg-slate-900 rounded-full mr-1"></span> <b>Escala Preta:</b> Sexta-feira</p>
+                                <p><span class="inline-block w-3 h-3 bg-red-600 rounded-full mr-1"></span> <b>Escala Vermelha:</b> Sáb, Dom e Feriados</p>
+                            </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="gerarEscalaEstagioOficial()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Oficial</button>
-                            <button onclick="exportarEstagioWordOficial()" class="bg-blue-700 text-white font-semibold px-3.5 py-2 rounded text-xs"><i class="fa-solid fa-file-word"></i> Baixar Word Oficial</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="gerarEscalaGuarda()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-calculator"></i> Gerar Escala de Guarda (7 Dias)
+                            </button>
+                            <button onclick="exportarGuardaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel"></i> Exportar Excel
+                            </button>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border p-6 space-y-4">
-                        <div class="text-center border-b pb-3">
-                            <h3 class="text-xs font-bold uppercase">COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO</h3>
-                            <h4 class="text-[11px] font-bold text-slate-700 uppercase">GABINETE DE TREINAMENTO</h4>
-                            <p class="text-[11px] font-bold text-red-700 uppercase mt-1" id="est-titulo-modalidade">ATIVIDADE DE TREINAMENTO EM CAMPO</p>
-                            <p class="text-[10px] font-bold text-slate-600 uppercase mt-0.5" id="est-sub-bpm">16º BPM/M</p>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Escala de Guarda do Quartel (Semanal / Diária)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                        <th class="p-2.5">Data / Dia</th>
+                                        <th class="p-2.5">Classificação (Cor)</th>
+                                        <th class="p-2.5">RE</th>
+                                        <th class="p-2.5">Posto/Grad</th>
+                                        <th class="p-2.5">Nome de Guerra (QRA)</th>
+                                        <th class="p-2.5">Pelotão</th>
+                                        <th class="p-2.5 text-center">Posto de Guarda / Turno</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-escala-guarda" class="divide-y divide-slate-200">
+                                    <tr><td colspan="7" class="p-6 text-center text-slate-400">Clique em "Gerar Escala de Guarda" para carregar a escala de 7 dias.</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b">
-                                    <th class="p-2 text-center w-12">QTD</th><th class="p-2 w-48">PRECEPTOR</th><th class="p-2 w-24">GRAD</th><th class="p-2 w-40">RE</th><th class="p-2">NOME</th><th class="p-2 w-40">QRA</th><th class="p-2 text-center w-12">PEL</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-escala-estagio-oficial" class="divide-y divide-slate-200 text-xs"></tbody>
-                        </table>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA ESTÁGIO -->
+                <div id="sub-aba-estagio" class="space-y-4 hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tipo de Estágio *</label>
+                                <select id="estagio-tipo" class="border border-slate-300 p-2 rounded text-xs font-semibold bg-white focus:outline-none">
+                                    <option value="Estágio Embarcado">Estágio Embarcado</option>
+                                    <option value="Estágio de POP">Estágio de POP (Procedimento Operacional Padrão)</option>
+                                    <option value="Serviço Aluno de Dia">Serviço de Aluno de Dia</option>
+                                    <option value="Serviço Chefe de Turma">Serviço de Chefe de Turma</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data Prevista *</label>
+                                <input type="date" id="estagio-data" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="gerarEscalaEstagio()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-calculator"></i> Gerar Escala (Cronológica RE)
+                            </button>
+                            <button onclick="exportarEstagioExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel"></i> Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Relação Ordenada por Antiguidade (RE)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                        <th class="p-2.5">Ordem</th>
+                                        <th class="p-2.5">RE</th>
+                                        <th class="p-2.5">Posto/Grad</th>
+                                        <th class="p-2.5">Nome de Guerra (QRA)</th>
+                                        <th class="p-2.5">Pelotão</th>
+                                        <th class="p-2.5">Função / Serviço</th>
+                                        <th class="p-2.5 text-center admin-only">Ações / Dispensar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-escala-estagio" class="divide-y divide-slate-200">
+                                    <tr><td colspan="7" class="p-6 text-center text-slate-400">Clique em "Gerar Escala" para organizar por ordem cronológica de RE.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- SUB-ABA FAXINA -->
                 <div id="sub-aba-faxina" class="space-y-4 hidden">
-                    <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center">
-                        <input type="date" id="faxina-data" class="border p-2 rounded text-xs">
-                        <button onclick="gerarEscalaFaxina()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Faxina Dias Úteis</button>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data da Faxina *</label>
+                                <input type="date" id="faxina-data" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-600 font-medium">Dias úteis apenas. Vestiário Masc e Academia (Efetivo Masculino) | Vestiário Fem (Efetivo Feminino).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="gerarEscalaFaxina()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-broom"></i> Distribuir Faxinas por Gênero
+                            </button>
+                            <button onclick="exportarFaxinaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel"></i> Exportar Excel
+                            </button>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Vestiário Masculino (4)</h3><div id="lista-faxina-masc" class="space-y-2 text-xs"></div></div>
-                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Academia (2)</h3><div id="lista-faxina-acad" class="space-y-2 text-xs"></div></div>
-                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Vestiário Feminino (2)</h3><div id="lista-faxina-fem" class="space-y-2 text-xs"></div></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-faxinas">
+                        <!-- Vestiário Masculino -->
+                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                            <div class="flex justify-between items-center border-b pb-2 mb-3">
+                                <h3 class="font-bold text-xs text-slate-800"><i class="fa-solid fa-restroom text-blue-600"></i> Vestiário Masculino</h3>
+                                <span class="text-[10px] font-semibold bg-blue-50 text-blue-700 px-2 py-0.5 rounded">Masc (4 padrão)</span>
+                            </div>
+                            <div id="lista-faxina-masc" class="space-y-2 text-xs"></div>
+                            <div class="mt-3 pt-2 border-t">
+                                <button onclick="adicionarVagaFaxina('masc')" class="text-[11px] font-bold text-red-700 hover:underline"><i class="fa-solid fa-plus"></i> Adicionar Aluno Manualmente</button>
+                            </div>
+                        </div>
+
+                        <!-- Academia -->
+                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                            <div class="flex justify-between items-center border-b pb-2 mb-3">
+                                <h3 class="font-bold text-xs text-slate-800"><i class="fa-solid fa-dumbbell text-slate-700"></i> Academia / Fisicultura</h3>
+                                <span class="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded">Masc (2 padrão)</span>
+                            </div>
+                            <div id="lista-faxina-acad" class="space-y-2 text-xs"></div>
+                            <div class="mt-3 pt-2 border-t">
+                                <button onclick="adicionarVagaFaxina('acad')" class="text-[11px] font-bold text-red-700 hover:underline"><i class="fa-solid fa-plus"></i> Adicionar Aluno Manualmente</button>
+                            </div>
+                        </div>
+
+                        <!-- Vestiário Feminino -->
+                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+                            <div class="flex justify-between items-center border-b pb-2 mb-3">
+                                <h3 class="font-bold text-xs text-slate-800"><i class="fa-solid fa-restroom text-pink-600"></i> Vestiário Feminino</h3>
+                                <span class="text-[10px] font-semibold bg-pink-50 text-pink-700 px-2 py-0.5 rounded">Fem (2 padrão)</span>
+                            </div>
+                            <div id="lista-faxina-fem" class="space-y-2 text-xs"></div>
+                            <div class="mt-3 pt-2 border-t">
+                                <button onclick="adicionarVagaFaxina('fem')" class="text-[11px] font-bold text-red-700 hover:underline"><i class="fa-solid fa-plus"></i> Adicionar Aluna Manualmente</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- RELATÓRIOS -->
+            <!-- ABA RELATÓRIOS -->
             <section id="aba-relatorios" class="aba-conteudo hidden">
-                <h2 class="text-xl font-bold text-slate-900 tracking-tight mb-4">RELATÓRIOS CONSOLIDADOS</h2>
-                <div class="bg-white rounded-lg shadow-sm border p-4">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
-                                <th class="p-3">RE</th><th class="p-3">Posto/Grad</th><th class="p-3">QRA</th><th class="p-3">Pel</th><th class="p-3 text-center">Anotações</th><th class="p-3 text-center">Guarda (Az/Pr/Vm)</th><th class="p-3 text-center">Estágios</th><th class="p-3 text-center">Faxinas</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-relatorios" class="divide-y divide-slate-200"></tbody>
-                    </table>
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 tracking-tight">RELATÓRIOS & CONSOLIDAÇÃO DE SERVIÇOS</h2>
+                        <p class="text-xs text-slate-500">Contabilização Individual de Anotações, Guarda (Azul/Preta/Vermelha), Estágios, Faxinas e Funções</p>
+                    </div>
+                    <button onclick="carregarRelatoriosGerais()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Atualizar Dados
+                    </button>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input type="text" id="input-busca-relatorio" onkeyup="filtrarRelatorios()" placeholder="Buscar por Nome ou RE..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-60 focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="filtro-pelotao-relatorio" onchange="filtrarRelatorios()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs focus:outline-none bg-white text-slate-700 font-medium">
+                        <option value="">Todos os Pelotões</option>
+                    </select>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-3">
+                        <span class="text-xs font-semibold text-slate-500" id="total-relatorio-registros">Integrantes Analisados: 0</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                    <th class="p-3">RE</th>
+                                    <th class="p-3">Posto/Grad</th>
+                                    <th class="p-3">Nome de Guerra (QRA)</th>
+                                    <th class="p-3">Pelotão</th>
+                                    <th class="p-3 text-center">Anotações</th>
+                                    <th class="p-3 text-center" title="Escala de Guarda Total (Azul / Preta / Vermelha)">Guarda (Az/Pr/Vm)</th>
+                                    <th class="p-3 text-center">Estágios</th>
+                                    <th class="p-3 text-center">Faxinas</th>
+                                    <th class="p-3 text-center">Aluno de Dia</th>
+                                    <th class="p-3 text-center">Chefe de Turma</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-relatorios" class="divide-y divide-slate-200">
+                                <tr><td colspan="10" class="p-6 text-center text-slate-400">Carregando dados consolidados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- MODAL DE SELEÇÃO DE ALUNO (SUBSTITUIÇÃO NA ESCALA) -->
+    <!-- MODAL DE SELEÇÃO DE ALUNO (SUBSTITUIÇÃO NA ESCALA POR PERÍODO) -->
     <div id="modal-troca-aluno" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 space-y-3 text-xs">
             <h3 class="font-bold text-sm text-slate-900">Selecionar Substituto</h3>
@@ -656,218 +795,771 @@
         </div>
     </div>
 
-    <!-- MODAIS EFETIVO E ANOTAÇÃO -->
-    <div id="modal-efetivo" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-3 text-xs">
-            <h3 class="font-bold text-sm">Cadastrar Aluno</h3>
-            <form onsubmit="salvarEfetivo(event)" class="space-y-3">
-                <input type="text" id="efetivo-re" required placeholder="RE (Ex: 253887-3)" class="w-full border p-2 rounded">
-                <input type="text" id="efetivo-guerra" required placeholder="QRA (Ex: FONSECA)" class="w-full border p-2 rounded">
-                <input type="text" id="efetivo-nome" required placeholder="Nome Completo" class="w-full border p-2 rounded">
-                <input type="text" id="efetivo-pelotao" required placeholder="Pelotão (Ex: 1)" class="w-full border p-2 rounded">
-                <select id="efetivo-genero" class="w-full border p-2 rounded bg-white"><option value="M">Masculino (M)</option><option value="F">Feminino (F)</option></select>
-                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalEfetivo()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button></div>
+    <!-- MODAL MOTIVO DE DESESCALAR ALUNO DO LEC -->
+    <div id="modal-desescalar-lec" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 text-xs">
+            <div class="bg-slate-900 text-white px-5 py-3 flex justify-between items-center">
+                <h3 class="font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-minus text-amber-500"></i> Desescalar / Dispensar Aluno
+                </h3>
+                <button onclick="fecharModalDesescalar()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="confirmarDesescalarAluno(event)" class="p-5 space-y-3">
+                <input type="hidden" id="desescalar-aluno-id">
+                <div>
+                    <p class="font-bold text-slate-800 mb-1" id="desescalar-aluno-nome">Aluno: ---</p>
+                    <p class="text-slate-500 text-[11px]">Informe o motivo da não escalação:</p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Motivo / Situação Especial *</label>
+                    <select id="desescalar-motivo-select" required class="w-full border border-slate-300 p-2 rounded focus:outline-none bg-white font-semibold">
+                        <option value="Convalescença Médica">Convalescença Médica / Atestado</option>
+                        <option value="Restrição Física / TAF">Restrição Física / TAF</option>
+                        <option value="Dispensa do Serviço (DS)">Dispensa do Serviço (DS)</option>
+                        <option value="Escala de Serviço Operacional">Escala Operacional Externa</option>
+                        <option value="Outros Motivos de Força Maior">Outros Motivos de Força Maior</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Detalhamento / Observação *</label>
+                    <textarea id="desescalar-detalhe" rows="3" required placeholder="Digite o número do boletim, parecer médico ou justificativa..." class="w-full border border-slate-300 p-2 rounded focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="fecharModalDesescalar()" class="px-3 py-1.5 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded font-semibold hover:bg-red-800">Confirmar Remoção</button>
+                </div>
             </form>
         </div>
     </div>
 
+    <!-- MODAL PROTOCOLAR NOVO RECURSO (ALUNO) -->
+    <div id="modal-novo-recurso" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature text-red-500"></i> Protocolar Recurso Disciplinar
+                </h3>
+                <button onclick="fecharModalNovoRecurso()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="salvarNovoRecurso(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Selecione a Anotação Disciplinar *</label>
+                    <select id="rec-selecao-anotacao" required class="w-full border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 bg-white font-semibold"></select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Razões do Recurso / Justificativa *</label>
+                    <textarea id="rec-justificativa" rows="5" required placeholder="Apresente detalhadamente os fatos e argumentos que justificam a revisão ou cancelamento desta anotação..." class="w-full border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="fecharModalNovoRecurso()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane"></i> Protocolar Recurso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL JULGAR RECURSO (ADMIN / SECRETARIA) -->
+    <div id="modal-analisar-recurso" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-gavel text-amber-500"></i> Julgamento de Recurso Disciplinar
+                </h3>
+                <button onclick="fecharModalAnalisarRecurso()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="salvarJulgamentoRecurso(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="julgar-recurso-id">
+                <input type="hidden" id="julgar-anotacao-id">
+
+                <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 space-y-1">
+                    <p class="font-bold text-slate-800" id="julgar-aluno-nome">Aluno: ---</p>
+                    <p class="text-slate-600" id="julgar-recurso-justificativa">Justificativa: ---</p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Decisão / Resultado *</label>
+                    <select id="julgar-status" required class="w-full border border-slate-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 bg-white font-semibold">
+                        <option value="Deferido">DEFERIDO (Aceitar recurso e anular anotação)</option>
+                        <option value="Indeferido">INDEFERIDO (Rejeitar recurso e manter anotação)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Parecer / Resposta Oficial *</label>
+                    <textarea id="julgar-resposta" rows="4" required placeholder="Digite a fundamentação da decisão da Secretaria ou Comando..." class="w-full border border-slate-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="fecharModalAnalisarRecurso()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check-double"></i> Registrar Decisão
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NOVA ANOTAÇÃO DISCIPLINAR -->
     <div id="modal-anotacao" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-3 text-xs">
-            <h3 class="font-bold text-sm">Nova Anotação Disciplinar</h3>
-            <form onsubmit="salvarAnotacao(event)" class="space-y-3">
-                <select id="anotacao-aluno-id" required class="w-full border p-2 rounded bg-white"><option value="">Selecione o Aluno...</option></select>
-                <input type="date" id="anotacao-data" required class="w-full border p-2 rounded">
-                <input type="text" id="anotacao-codigo" required placeholder="Código (Ex: D-1)" class="w-full border p-2 rounded uppercase">
-                <select id="anotacao-origem" class="w-full border p-2 rounded bg-white"><option value="Efetivo GT">Efetivo GT</option><option value="Fora do GT">Fora do GT</option></select>
-                <input type="text" id="anotacao-anotado-por" required placeholder="Anotado por (Ex: 1º Sgt Fonseca)" class="w-full border p-2 rounded">
-                <textarea id="anotacao-sintese" rows="3" required placeholder="Síntese do fato..." class="w-full border p-2 rounded"></textarea>
-                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalAnotacao()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Registrar</button></div>
+        <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm">Lançar Anotação Disciplinar</h3>
+                <button onclick="fecharModalAnotacao()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="form-anotacao" onsubmit="salvarAnotacao(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">Selecione o Aluno / Integrante *</label>
+                    <select id="anotacao-aluno-id" required class="w-full border p-2 rounded focus:outline-none bg-white">
+                        <option value="">Selecione o Aluno...</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Data do Fato *</label>
+                        <input type="date" id="anotacao-data" required class="w-full border p-2 rounded focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Código / Enquadramento *</label>
+                        <input type="text" id="anotacao-codigo" required placeholder="Ex: D-1, G-1, F-6" class="w-full border p-2 rounded focus:outline-none uppercase">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Origem da Anotação *</label>
+                        <select id="anotacao-origem" onchange="alternarCamposAnotante()" required class="w-full border p-2 rounded focus:outline-none bg-white font-semibold">
+                            <option value="Efetivo GT">Efetivo do GT</option>
+                            <option value="Fora do GT">Fora do GT (Instrutor / Supervisor / Prof)</option>
+                        </select>
+                        <p class="text-[10px] text-amber-600 font-semibold mt-1">Anotações de FORA do GT dobram a pontuação para a Escala de LEC.</p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Anotado Por (Identificação) *</label>
+                        <input type="text" id="anotacao-anotado-por" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: 1º Sgt PM Fonseca">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1">Síntese do Fato / Ocorrência *</label>
+                    <textarea id="anotacao-sintese" rows="3" required placeholder="Descreva sucintamente o fato ocorrido..." class="w-full border p-2 rounded focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="fecharModalAnotacao()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800">Registrar Anotação</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT DE LOGIN E FUNCIONALIDADES COMPLETO -->
+    <!-- MODAL DE CADASTRO / EDIÇÃO DE EFETIVO -->
+    <div id="modal-efetivo" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm" id="modal-titulo">Cadastrar Integrante do Efetivo</h3>
+                <button onclick="fecharModalEfetivo()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="form-efetivo" onsubmit="salvarEfetivo(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="efetivo-id">
+                
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1">Identificação Pessoal</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">RE *</label>
+                        <input type="text" id="efetivo-re" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: 253887-3">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Posto / Graduação *</label>
+                        <input type="text" id="efetivo-posto" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Al Sd PM, 1º Sgt PM">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Nome de Guerra *</label>
+                        <input type="text" id="efetivo-guerra" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: FONSECA">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Nome Completo *</label>
+                        <input type="text" id="efetivo-nome" required class="w-full border p-2 rounded focus:outline-none" placeholder="Nome completo">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">CPF (Chave de Login) *</label>
+                        <input type="text" id="efetivo-cpf" required class="w-full border p-2 rounded focus:outline-none" placeholder="000.000.000-00">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Gênero *</label>
+                        <select id="efetivo-genero" required class="w-full border p-2 rounded focus:outline-none bg-white font-semibold">
+                            <option value="M">Masculino (M)</option>
+                            <option value="F">Feminino (F)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">E-mail Particular *</label>
+                        <input type="email" id="efetivo-email" required class="w-full border p-2 rounded focus:outline-none" placeholder="seuemail@exemplo.com">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Pelotão (Apenas Número) *</label>
+                        <input type="text" id="efetivo-pelotao" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: 9, 10, 11">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Turma / Edital *</label>
+                        <input type="text" id="efetivo-turma" value="Edital 02/2026" required class="w-full border p-2 rounded focus:outline-none">
+                    </div>
+                </div>
+
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Autenticação & Senha de Acesso</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Senha Inicial do Aluno *</label>
+                        <input type="text" id="efetivo-senha" value="PMSP@2026" required class="w-full border p-2 rounded focus:outline-none font-mono bg-amber-50 border-amber-300" placeholder="Ex: PMSP@2026">
+                        <p class="text-[10px] text-slate-500 mt-1">O aluno usará esta senha no 1º acesso e será obrigado a cadastrar uma nova.</p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Nº Pelotão / Antiguidade *</label>
+                        <input type="number" id="efetivo-numero" value="1" required class="w-full border p-2 rounded focus:outline-none">
+                    </div>
+                </div>
+
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Permissões & Status</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Nível de Permissão *</label>
+                        <select id="efetivo-acesso" class="w-full border p-2 rounded focus:outline-none">
+                            <option value="Admin">Administrador (Acesso Total)</option>
+                            <option value="Secretaria">Secretaria / Graduado</option>
+                            <option value="Aluno" selected>Aluno / Instruendo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Status no Sistema *</label>
+                        <select id="efetivo-status" class="w-full border p-2 rounded focus:outline-none">
+                            <option value="Ativo">Ativo</option>
+                            <option value="Baixado">Baixado</option>
+                            <option value="LEC">LEC (Licenciamento Cassado)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="fecharModalEfetivo()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800">Salvar Registros</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL MAPA FORÇA COMPLETO (PEL A AO F) -->
+    <div id="modal-mapa-forca" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-slate-200 flex flex-col">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <h3 class="font-bold text-sm">Atualizar Quadro do Mapa Força (Pelotões A a F)</h3>
+                <button type="button" onclick="fecharModalMapaForca()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="form-mapa-forca" onsubmit="salvarMapaForca(event)" class="p-6 overflow-y-auto space-y-4 text-xs flex-1">
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1">Autoridades e Serviço do Dia</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <div>
+                        <label class="block font-semibold mb-1">Aluno de Dia *</label>
+                        <input type="text" id="mf-in-aluno-dia" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: Al Sd PM Nicole Oliveira">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Chefe GT *</label>
+                        <input type="text" id="mf-in-chefe-gt" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: CAP PM GURDOS">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">SGT DA SEMANA *</label>
+                        <input type="text" id="mf-in-sgt-semana" required class="w-full border p-2 rounded focus:outline-none" placeholder="Ex: 1º SGT PM Fonseca">
+                    </div>
+                </div>
+
+                <p class="font-bold text-slate-400 uppercase text-[10px] tracking-wider border-b pb-1 pt-2">Efetivo por Pelotão</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <script>
+                        const nomesPelotoesForm = ['1º PEL "A"', '2º PEL "B"', '3º PEL "C"', '4º PEL "D"', '5º PEL "E"', '6º PEL "F"'];
+                        for (let i = 1; i <= 6; i++) {
+                            document.write(`
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded flex flex-col gap-2">
+                                    <div class="font-bold text-slate-700 uppercase border-b border-slate-200 pb-1">${nomesPelotoesForm[i-1]}</div>
+                                    <div class="flex gap-2">
+                                        <div class="w-1/3"><label class="block text-[10px] mb-0.5 text-slate-500">Fixado</label><input type="number" id="mf-p${i}-fix" value="35" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                        <div class="w-1/3"><label class="block text-[10px] mb-0.5 text-slate-500">Existente</label><input type="number" id="mf-p${i}-exi" value="35" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                        <div class="w-full"><label class="block text-[10px] mb-0.5 text-slate-500">Novidades</label><input type="text" id="mf-p${i}-nov" placeholder="Sem novidades" class="w-full border p-1.5 rounded focus:outline-none"></div>
+                                    </div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+            </form>
+
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-2 shrink-0">
+                <button type="button" onclick="fecharModalMapaForca()" class="px-4 py-2 border rounded font-semibold hover:bg-slate-200 transition">Cancelar</button>
+                <button type="submit" form="form-mapa-forca" class="px-4 py-2 bg-red-700 text-white rounded font-semibold hover:bg-red-800 transition">Atualizar Quadro Completo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL COMPLETO E ÍNTEGRO (MAIS DE 2000 LINHAS DE LÓGICA E ESTRUTURA) -->
     <script>
         const SUPABASE_URL = "https://rvywrmiafdcxirjnkgnf.supabase.co";
         const SUPABASE_KEY = "sb_publishable_9HPz3qa-w4oUFjDMZheghQ_1pCxT-J9";
         var _supabase = null;
-        let listaAlunos = [];
-        let listaAnotacoes = [];
-        let listaRecursos = [];
-        var escalaEstagioGeradaOficial = [];
+
+        let usuarioLogado = null;
+        var listaAlunos = [];
+        var listaAnotacoes = [];
+        var listaRecursos = [];
+        var escalaLECCalculada = [];
+        var escalaPublicadaOficial = null;
+
+        var escalaGuardaGerada = [];
+        var escalaEstagioGerada = [];
         var escalaPeriodoGerada = [];
         var escalaFaxinaGerada = { masc: [], acad: [], fem: [] };
-        var escalaLECCalculada = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){}
+            conectarSupabase();
+            carregarMapaForca();
+            escutarMudancasAoVivo();
             carregarAlunosDoBanco();
             carregarAnotacoesDoBanco();
             carregarRecursosDoBanco();
-            carregarMapaForca();
-            const hoje = new Date().toISOString().split('T')[0];
-            if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hoje;
-            if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hoje;
-            if(document.getElementById('gen-data-inicio')) document.getElementById('gen-data-inicio').value = hoje;
-            if(document.getElementById('gen-data-fim')) document.getElementById('gen-data-fim').value = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
-            if(document.getElementById('anotacao-data')) document.getElementById('anotacao-data').value = hoje;
+            
+            const hojeIso = new Date().toISOString().split('T')[0];
+            if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hojeIso;
+            if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hojeIso;
+            if(document.getElementById('guarda-data-inicio')) document.getElementById('guarda-data-inicio').value = hojeIso;
+            if(document.getElementById('gen-data-inicio')) document.getElementById('gen-data-inicio').value = hojeIso;
+            if(document.getElementById('gen-data-fim')) document.getElementById('gen-data-fim').value = new Date(Date.now() + 30*86400000).toISOString().split('T')[0];
         });
+
+        function conectarSupabase() {
+            try {
+                if (window.supabase && !_supabase) {
+                    _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                }
+            } catch(e) {}
+        }
+
+        function eMesmoAluno(itemAlunoId, itemAlunoRe, user) {
+            if (!user) return false;
+            if (itemAlunoId && user.id && String(itemAlunoId).trim() === String(user.id).trim()) return true;
+
+            const reItem = (itemAlunoRe || '').toString().replace(/[^0-9]/g, '');
+            const reUser = (user.re || '').toString().replace(/[^0-9]/g, '');
+
+            if (reItem && reUser && reItem === reUser) return true;
+            if (user.email && itemAlunoRe && user.email.toLowerCase() === itemAlunoRe.toLowerCase()) return true;
+
+            return false;
+        }
 
         async function executarLogin(e) {
             e.preventDefault();
+            conectarSupabase();
+
             const termo = document.getElementById('login-identificador').value.trim();
+            const termoLimpo = termo.replace(/[^0-9]/g, '');
             const senha = document.getElementById('login-senha').value.trim();
             const msgErro = document.getElementById('msg-erro-login');
             msgErro.classList.add('hidden');
 
-            if(!_supabase) { msgErro.innerText = "Erro de conexão com o banco."; msgErro.classList.remove('hidden'); return; }
+            if (!_supabase) {
+                msgErro.innerText = "Erro: Conexão com o banco de dados não inicializada.";
+                msgErro.classList.remove('hidden');
+                return;
+            }
 
             try {
-                const { data, error } = await _supabase.from('alunos').select('*');
-                if(error || !data) { msgErro.innerText = "Erro ao buscar integrantes."; msgErro.classList.remove('hidden'); return; }
+                const { data: usuarios, error } = await _supabase.from('alunos').select('*');
+
+                if (error) {
+                    msgErro.innerText = "Erro no Banco de Dados: " + (error.message || "Acesso negado.");
+                    msgErro.classList.remove('hidden');
+                    return;
+                }
+
+                if (!usuarios || usuarios.length === 0) {
+                    msgErro.innerText = "Nenhum integrante cadastrado na base do GT.";
+                    msgErro.classList.remove('hidden');
+                    return;
+                }
 
                 const termoLower = termo.toLowerCase();
-                const termoLimpo = termo.replace(/[^0-9]/g, '');
-
-                const user = data.find(u => {
+                const usuario = usuarios.find(u => {
                     const emailOk = u.email && u.email.toLowerCase() === termoLower;
                     const reOk = u.re && (u.re === termo || u.re.replace(/[^0-9]/g, '') === termoLimpo);
-                    const cpfOk = u.cpf && (u.cpf === termo || u.cpf.replace(/[^0-9]/g, '') === termoLimpo);
+                    const cpfOk = (u.cpf && u.cpf === termo) || (u.cpf_limpo && u.cpf_limpo === termoLimpo) || (u.cpf && u.cpf.replace(/[^0-9]/g, '') === termoLimpo);
                     return emailOk || reOk || cpfOk;
                 });
 
-                const senhaCadastrada = user?.senha || "PMSP@2026";
-
-                if(user && senha === senhaCadastrada) {
-                    document.getElementById('tela-login').style.display = 'none';
-                    document.getElementById('user-display-nome').innerText = `${user.posto_grad || ''} ${user.nome_guerra}`.trim();
-                    document.getElementById('user-display-permissao').innerText = user.nivel_acesso || 'Aluno';
-                    mudarAba('portal', document.getElementById('btn-menu-portal'));
-                } else {
-                    msgErro.innerText = "Credenciais inválidas. Verifique seu RE, E-mail ou Senha.";
+                if (!usuario) {
+                    msgErro.innerText = "Usuário não encontrado. Verifique seu E-mail, RE ou CPF.";
                     msgErro.classList.remove('hidden');
+                    return;
                 }
-            } catch(err) {
-                msgErro.innerText = "Erro de conexão."; msgErro.classList.remove('hidden');
+
+                const senhaCorreta = usuario.senha || "PMSP@2026";
+
+                if (senha !== senhaCorreta) {
+                    msgErro.innerText = "Senha incorreta. Verifique os dados digitados.";
+                    msgErro.classList.remove('hidden');
+                    return;
+                }
+
+                usuarioLogado = usuario;
+
+                if (usuario.primeiro_acesso === true || usuario.primeiro_acesso === null || senha === "PMSP@2026") {
+                    abrirModalTrocaSenhaPrimeiroAcesso();
+                    return;
+                }
+
+                definirUsuario(usuario);
+
+            } catch (err) {
+                msgErro.innerText = "Erro de conexão ao efetuar login.";
+                msgErro.classList.remove('hidden');
             }
         }
 
-        function executarLogout() { document.getElementById('tela-login').style.display = 'flex'; }
-
-        function mudarAba(idAba, el) {
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-menu'));
-            if(el) el.classList.add('active-menu');
-            document.querySelectorAll('.aba-conteudo').forEach(a => a.classList.add('hidden'));
-            document.getElementById(`aba-${idAba}`).classList.remove('hidden');
-            if(idAba === 'relatorios') carregarRelatoriosGerais();
-            if(idAba === 'dashboard-conduta') carregarDashboardConduta();
+        function abrirModalTrocaSenhaPrimeiroAcesso() {
+            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-lock text-red-700"></i> Primeiro Acesso - Cadastrar Nova Senha';
+            document.getElementById('subtitulo-modal-senha').innerText = 'Identificamos que este é o seu primeiro acesso. Por segurança, crie uma nova senha pessoal.';
+            document.getElementById('btn-fechar-modal-senha').classList.add('hidden');
+            document.getElementById('modal-troca-senha').classList.remove('hidden');
         }
 
-        function mudarSubAbaServicos(sub, el) {
-            document.querySelectorAll('.sub-aba-btn').forEach(b => { b.classList.remove('border-red-600', 'text-red-600'); b.classList.add('border-transparent', 'text-slate-500'); });
-            if(el) { el.classList.remove('border-transparent', 'text-slate-500'); el.classList.add('border-red-600', 'text-red-600'); }
+        function abrirModalTrocaSenhaManual() {
+            document.getElementById('titulo-modal-senha').innerHTML = '<i class="fa-solid fa-key text-red-700"></i> Alterar Senha Pessoal';
+            document.getElementById('subtitulo-modal-senha').innerText = 'Digite a nova senha que deseja utilizar nos seus próximos acessos ao portal.';
+            document.getElementById('btn-fechar-modal-senha').classList.remove('hidden');
+            document.getElementById('nova-senha-1').value = '';
+            document.getElementById('nova-senha-2').value = '';
+            document.getElementById('msg-erro-troca').classList.add('hidden');
+            document.getElementById('modal-troca-senha').classList.remove('hidden');
+        }
+
+        function fecharModalTrocaSenha() {
+            document.getElementById('modal-troca-senha').classList.add('hidden');
+        }
+
+        async function confirmarTrocaSenha(e) {
+            e.preventDefault();
+            const s1 = document.getElementById('nova-senha-1').value;
+            const s2 = document.getElementById('nova-senha-2').value;
+            const msgErro = document.getElementById('msg-erro-troca');
+            msgErro.classList.add('hidden');
+
+            if (s1.length < 6) {
+                msgErro.innerText = "A senha deve conter no mínimo 6 caracteres.";
+                msgErro.classList.remove('hidden');
+                return;
+            }
+
+            if (s1 !== s2) {
+                msgErro.innerText = "As senhas digitadas não coincidem.";
+                msgErro.classList.remove('hidden');
+                return;
+            }
+
+            if (_supabase && usuarioLogado) {
+                try {
+                    const { error } = await _supabase
+                        .from('alunos')
+                        .update({ senha: s1, primeiro_acesso: false })
+                        .eq('id', usuarioLogado.id);
+
+                    if (error) throw error;
+
+                    usuarioLogado.senha = s1;
+                    usuarioLogado.primeiro_acesso = false;
+
+                    fecharModalTrocaSenha();
+
+                    if (document.getElementById('tela-login').style.display !== 'none') {
+                        definirUsuario(usuarioLogado);
+                    } else {
+                        alert("Sua senha foi alterada com sucesso!");
+                    }
+
+                } catch(err) {
+                    msgErro.innerText = "Falha ao salvar nova senha no banco de dados.";
+                    msgErro.classList.remove('hidden');
+                }
+            }
+        }
+
+        function definirUsuario(user) {
+            usuarioLogado = user;
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('msg-erro-login').classList.add('hidden');
+
+            document.getElementById('user-display-nome').innerText = `${usuarioLogado.posto_grad || ''} ${usuarioLogado.nome_guerra}`.trim();
+            document.getElementById('user-display-permissao').innerText = usuarioLogado.nivel_acesso || 'Aluno';
+
+            const icon = document.getElementById('user-display-icon');
+            if (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria') {
+                icon.className = "fa-solid fa-user-shield text-sm";
+            } else {
+                icon.className = "fa-solid fa-user-graduate text-sm";
+            }
+
+            aplicarPermissoesUI();
+            mudarAba('portal', document.getElementById('btn-menu-portal'));
+        }
+
+        function aplicarPermissoesUI() {
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+            
+            document.querySelectorAll('.admin-only').forEach(el => {
+                if (ehAdmin) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        function mudarAba(idAba, elemento) {
+            try {
+                document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active-menu'));
+                if(elemento) elemento.classList.add('active-menu');
+                document.querySelectorAll('.aba-conteudo').forEach(aba => aba.classList.add('hidden'));
+
+                if (idAba === 'efetivo') {
+                    document.getElementById('aba-efetivo').classList.remove('hidden');
+                    renderizarTabela(listaAlunos);
+                } else if (idAba === 'anotacoes') {
+                    document.getElementById('aba-anotacoes').classList.remove('hidden');
+                    carregarAnotacoesDoBanco();
+                } else if (idAba === 'recursos') {
+                    document.getElementById('aba-recursos').classList.remove('hidden');
+                    carregarRecursosDoBanco();
+                } else if (idAba === 'dashboard-conduta') {
+                    document.getElementById('aba-dashboard-conduta').classList.remove('hidden');
+                    carregarDashboardConduta();
+                } else if (idAba === 'lec') {
+                    document.getElementById('aba-lec').classList.remove('hidden');
+                    carregarOuProcessarEscalaLEC();
+                } else if (idAba === 'servicos') {
+                    document.getElementById('aba-servicos').classList.remove('hidden');
+                } else if (idAba === 'relatorios') {
+                    document.getElementById('aba-relatorios').classList.remove('hidden');
+                    carregarRelatoriosGerais();
+                } else if (idAba === 'portal') {
+                    document.getElementById('aba-portal').classList.remove('hidden');
+                    carregarMapaForca();
+                } else {
+                    document.getElementById('titulo-aba-generica').innerHTML = `<span class="w-2 h-2 rounded-full bg-red-600"></span> ${idAba.toUpperCase()}`;
+                    document.getElementById('aba-generica').classList.remove('hidden');
+                }
+            } catch(err) { console.error(err); }
+        }
+
+        function mudarSubAbaServicos(subAba, elemento) {
+            document.querySelectorAll('.sub-aba-btn').forEach(b => {
+                b.classList.remove('border-red-600', 'text-red-600');
+                b.classList.add('border-transparent', 'text-slate-500');
+            });
+            if(elemento) {
+                elemento.classList.remove('border-transparent', 'text-slate-500');
+                elemento.classList.add('border-red-600', 'text-red-600');
+            }
+
             document.getElementById('sub-aba-gerador').classList.add('hidden');
+            document.getElementById('sub-aba-guarda').classList.add('hidden');
             document.getElementById('sub-aba-estagio').classList.add('hidden');
             document.getElementById('sub-aba-faxina').classList.add('hidden');
-            document.getElementById(`sub-aba-${sub}`).classList.remove('hidden');
+
+            if(subAba === 'gerador') document.getElementById('sub-aba-gerador').classList.remove('hidden');
+            if(subAba === 'guarda') document.getElementById('sub-aba-guarda').classList.remove('hidden');
+            if(subAba === 'estagio') document.getElementById('sub-aba-estagio').classList.remove('hidden');
+            if(subAba === 'faxina') document.getElementById('sub-aba-faxina').classList.remove('hidden');
         }
 
-        async function carregarAlunosDoBanco() {
-            if(!_supabase) return;
-            const { data } = await _supabase.from('alunos').select('*').order('re', { ascending: true });
-            if(data) { listaAlunos = data; renderizarTabelaAlunos(); atualizarFiltrosGlobais(); }
-        }
-
-        async function carregarAnotacoesDoBanco() {
-            if(!_supabase) return;
-            const { data } = await _supabase.from('anotacoes').select('*');
-            if(data) { listaAnotacoes = data; renderizarAnotacoes(); }
-        }
-
-        async function carregarRecursosDoBanco() {
-            if(!_supabase) return;
-            const { data } = await _supabase.from('recursos').select('*');
-            if(data) { listaRecursos = data; renderizarRecursos(); }
-        }
-
+        // MAPA FORÇA (DINÂMICO PELOTÕES 1 A 6)
         async function carregarMapaForca() {
-            if(!_supabase) return;
+            conectarSupabase();
+            if (!_supabase) return;
+
             const { data } = await _supabase.from('mapa_forca').select('*').eq('id', 1).maybeSingle();
-            if(data) {
+
+            if (data) {
                 document.getElementById('mf-aluno-dia').innerText = data.aluno_dia || '---';
                 document.getElementById('mf-chefe-gt').innerText = data.chefe_gt || '---';
                 document.getElementById('mf-sgt-semana').innerText = data.sgt_semana || '---';
+
+                document.getElementById('mf-in-aluno-dia').value = data.aluno_dia || '';
+                document.getElementById('mf-in-chefe-gt').value = data.chefe_gt || '';
+                document.getElementById('mf-in-sgt-semana').value = data.sgt_semana || '';
+
+                for(let i = 1; i <= 6; i++) {
+                    const elFix = document.getElementById(`mf-p${i}-fix`);
+                    const elExi = document.getElementById(`mf-p${i}-exi`);
+                    const elNov = document.getElementById(`mf-p${i}-nov`);
+                    if(elFix) elFix.value = data[`p${i}_fix`] ?? 35;
+                    if(elExi) elExi.value = data[`p${i}_exi`] ?? 35;
+                    if(elNov) elNov.value = data[`p${i}_nov`] || '';
+                }
+
+                renderizarPelotoes(data);
             }
         }
 
-        function atualizarFiltrosGlobais() {
-            const pelotoes = [...new Set(listaAlunos.map(a => a.pelotao).filter(Boolean))].sort();
-            const sel = document.getElementById('filtro-pelotao');
-            if(sel) {
-                sel.innerHTML = '<option value="">Todos os Pelotões</option>';
-                pelotoes.forEach(p => sel.innerHTML += `<option value="${p}">Pelotão ${p}</option>`);
+        async function salvarMapaForca(event) {
+            event.preventDefault();
+            conectarSupabase();
+
+            const dadosAtualizados = {
+                id: 1,
+                aluno_dia: document.getElementById('mf-in-aluno-dia').value,
+                chefe_gt: document.getElementById('mf-in-chefe-gt').value,
+                sgt_semana: document.getElementById('mf-in-sgt-semana').value,
+                atualizado_em: new Date().toISOString()
+            };
+
+            for(let i = 1; i <= 6; i++) {
+                dadosAtualizados[`p${i}_fix`] = parseInt(document.getElementById(`mf-p${i}-fix`).value) || 0;
+                dadosAtualizados[`p${i}_exi`] = parseInt(document.getElementById(`mf-p${i}-exi`).value) || 0;
+                dadosAtualizados[`p${i}_nov`] = document.getElementById(`mf-p${i}-nov`).value;
             }
-            const turmas = [...new Set(listaAlunos.map(a => a.turma).filter(Boolean))].sort();
-            const selTurma = document.getElementById('filtro-turma');
-            if(selTurma) {
-                selTurma.innerHTML = '<option value="">Todas as Turmas</option>';
-                turmas.forEach(t => selTurma.innerHTML += `<option value="${t}">${t}</option>`);
+
+            if (_supabase) {
+                const { error } = await _supabase.from('mapa_forca').upsert(dadosAtualizados);
+                if (!error) {
+                    fecharModalMapaForca();
+                    await carregarMapaForca();
+                } else {
+                    alert("Erro do Banco de Dados: " + (error.message || error.details));
+                }
             }
         }
 
-        function filtrarTabela() {
-            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
-            const pel = document.getElementById('filtro-pelotao').value;
-            const turma = document.getElementById('filtro-turma').value;
-            const filtrados = listaAlunos.filter(a => {
-                const txt = !termo || a.nome_completo?.toLowerCase().includes(termo) || a.re?.includes(termo) || a.nome_guerra?.toLowerCase().includes(termo);
-                const bPel = !pel || a.pelotao === pel;
-                const bTurma = !turma || a.turma === turma;
-                return txt && bPel && bTurma;
-            });
-            renderizarTabelaAlunos(filtrados);
-        }
+        function renderizarPelotoes(dados) {
+            const grid = document.getElementById('grid-pelotoes');
+            if (!grid) return;
+            grid.innerHTML = '';
 
-        function renderizarTabelaAlunos(dados = listaAlunos) {
-            const tbody = document.getElementById('tabela-alunos');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            dados.forEach(a => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad || 'AL SD PM'}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.nome_completo}</td><td class="p-3">${a.pelotao || '---'}</td><td class="p-3">${a.genero || 'M'}</td><td class="p-3"><span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">${a.status || 'Ativo'}</span></td></tr>`;
-            });
-        }
+            const pelotoes = [
+                { nome: '1º PELOTÃO "A"', fix: dados?.p1_fix ?? 35, exi: dados?.p1_exi ?? 35, nov: dados?.p1_nov || 'Sem novidades' },
+                { nome: '2º PELOTÃO "B"', fix: dados?.p2_fix ?? 35, exi: dados?.p2_exi ?? 35, nov: dados?.p2_nov || 'Sem novidades' },
+                { nome: '3º PELOTÃO "C"', fix: dados?.p3_fix ?? 35, exi: dados?.p3_exi ?? 35, nov: dados?.p3_nov || 'Sem novidades' },
+                { nome: '4º PELOTÃO "D"', fix: dados?.p4_fix ?? 35, exi: dados?.p4_exi ?? 35, nov: dados?.p4_nov || 'Sem novidades' },
+                { nome: '5º PELOTÃO "E"', fix: dados?.p5_fix ?? 35, exi: dados?.p5_exi ?? 35, nov: dados?.p5_nov || 'Sem novidades' },
+                { nome: '6º PELOTÃO "F"', fix: dados?.p6_fix ?? 35, exi: dados?.p6_exi ?? 35, nov: dados?.p6_nov || 'Sem novidades' },
+            ];
 
-        function renderizarAnotacoes() {
-            const tbody = document.getElementById('tabela-anotacoes');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            listaAnotacoes.forEach(i => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-semibold">${i.data_fato || '---'}</td><td class="p-3 font-mono">${i.aluno_re}</td><td class="p-3 font-bold">${i.aluno_nome}</td><td class="p-3"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${i.codigo}</span></td><td class="p-3">${i.origem}</td><td class="p-3">${i.anotado_por}</td><td class="p-3"><span class="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-semibold">${i.status_recurso || 'Sem Recurso'}</span></td></tr>`;
+            pelotoes.forEach(p => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4 hover:shadow-md transition">
+                        <div class="border-b pb-2 mb-3 flex justify-between items-center">
+                            <h3 class="font-bold text-xs text-slate-800">${p.nome}</h3>
+                            <span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Fix: ${p.fix} | Exist: ${p.exi}</span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">NOVIDADES</p>
+                        <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-dashed min-h-[36px]" title="${p.nov}">${p.nov || 'Sem novidades'}</p>
+                    </div>
+                `;
             });
         }
 
-        function renderizarRecursos() {
-            const tbody = document.getElementById('tabela-recursos');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            listaRecursos.forEach(i => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono">${i.aluno_re}</td><td class="p-3 font-bold">${i.aluno_nome}</td><td class="p-3">${i.justificativa}</td><td class="p-3"><span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">${i.status || 'Em Análise'}</span></td><td class="p-3">${i.parecer || '---'}</td></tr>`;
-            });
+        function escutarMudancasAoVivo() {
+            if (!_supabase) return;
+            _supabase
+                .channel('schema-db-changes')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'mapa_forca' }, () => {
+                    carregarMapaForca();
+                })
+                .subscribe();
         }
 
-        function carregarDashboardConduta() {
-            document.getElementById('dash-total-anotacoes').innerText = listaAnotacoes.length;
-            document.getElementById('dash-recursos-analise').innerText = listaRecursos.filter(r => r.status === 'Em Análise' || !r.status).length;
-            document.getElementById('dash-recursos-deferidos').innerText = listaRecursos.filter(r => r.status === 'Deferido').length;
-            document.getElementById('dash-recursos-indeferidos').innerText = listaRecursos.filter(r => r.status === 'Indeferido').length;
+        // CARREGAR E GERENCIAR EFETIVO
+        async function carregarAlunosDoBanco() {
+            conectarSupabase();
+            if (!_supabase) return;
+            try {
+                const { data, error } = await _supabase
+                    .from('alunos')
+                    .select('*')
+                    .order('re', { ascending: true });
+
+                if (!error && data) {
+                    listaAlunos = data;
+                    renderizarTabela(listaAlunos);
+                    atualizarOpcoesFiltrosGlobais();
+                }
+            } catch(e) {}
         }
 
-        // GERADOR POR PERÍODO COM SETINHA DE TROCA
+        async function salvarEfetivo(event) {
+            event.preventDefault();
+            conectarSupabase();
+
+            const id = document.getElementById('efetivo-id').value;
+            const cpfInformado = document.getElementById('efetivo-cpf').value.trim();
+
+            const dadosAluno = {
+                re: document.getElementById('efetivo-re').value.trim(),
+                posto_grad: document.getElementById('efetivo-posto').value.trim(),
+                nome_guerra: document.getElementById('efetivo-guerra').value.trim(),
+                nome_completo: document.getElementById('efetivo-nome').value.trim(),
+                cpf: cpfInformado,
+                cpf_limpo: cpfInformado.replace(/[^0-9]/g, ''),
+                genero: document.getElementById('efetivo-genero').value,
+                email: document.getElementById('efetivo-email').value.trim().toLowerCase(),
+                senha: document.getElementById('efetivo-senha').value.trim(),
+                pelotao: document.getElementById('efetivo-pelotao').value.trim(),
+                turma: document.getElementById('efetivo-turma').value.trim(),
+                nivel_acesso: document.getElementById('efetivo-acesso').value,
+                status: document.getElementById('efetivo-status').value,
+                primeiro_acesso: id ? false : true
+            };
+
+            if (!_supabase) return;
+
+            try {
+                let res;
+                if (id) {
+                    res = await _supabase.from('alunos').update(dadosAluno).eq('id', id);
+                } else {
+                    res = await _supabase.from('alunos').insert([dadosAluno]);
+                }
+
+                if (res.error) {
+                    alert("Erro ao salvar integrante: " + res.error.message);
+                    return;
+                }
+
+                fecharModalEfetivo();
+                await carregarAlunosDoBanco();
+
+            } catch(e) {}
+        }
+
+        // GERADOR POR PERÍODO COM BOTÃO DE TROCA (SETINHA)
         function executarGeradorPeriodo() {
             if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
             const dtIni = new Date(document.getElementById('gen-data-inicio').value + 'T00:00:00');
             const dtFim = new Date(document.getElementById('gen-data-fim').value + 'T00:00:00');
-            if(dtIni > dtFim) { alert("Data inicial posterior à final."); return; }
+            if(dtIni > dtFim) { alert("A data inicial não pode ser posterior à data final."); return; }
 
             const ativos = listaAlunos.filter(a => a.status === 'Ativo');
             escalaPeriodoGerada = [];
@@ -938,189 +1630,801 @@
             fecharModalTrocaAluno();
         }
 
-        // ESTÁGIO OFICIAL
-        function gerarEscalaEstagioOficial() {
-            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
-            const modalidade = document.getElementById('estagio-modalidade').value;
-            const bpm = document.getElementById('estagio-bpm').value;
-            document.getElementById('est-titulo-modalidade').innerText = `ATIVIDADE DE TREINAMENTO EM CAMPO - ${modalidade}`;
-            document.getElementById('est-sub-bpm').innerText = bpm;
+        // MÓDULO ANOTAÇÕES DISCIPLINARES
+        async function carregarAnotacoesDoBanco() {
+            conectarSupabase();
+            if (!_supabase) return;
 
-            const ativos = listaAlunos.filter(a => a.status === 'Ativo').sort((a,b) => (parseInt(a.re)||0) - (parseInt(b.re)||0));
-            const preceptores = modalidade.includes('MOTORIZADO') ? [
-                "Subten PM 970462-A Lourenço (11 94757-9455)",
-                "1ºSgt PM 118877-7 Neves (11 94723-4884)",
-                "2ºSgt PM 141639-1 Cavalcante (11 94722-5545)",
-                "1ºSgt PM 130340-6 Cristofer (11 94707-0461)"
-            ] : ["POP 01", "POP 02", "POP 03", "POP 04", "POP 05", "POP 06"];
+            try {
+                const { data, error } = await _supabase
+                    .from('anotacoes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            escalaEstagioGeradaOficial = ativos.map((aluno, idx) => ({
-                qtd: idx + 1,
-                preceptor: preceptores[Math.floor(idx / 4) % preceptores.length],
-                posto_grad: aluno.posto_grad || 'AL SD PM',
-                re: aluno.re,
-                nome: aluno.nome_completo,
-                qra: aluno.nome_guerra,
-                pelotao: `${aluno.pelotao || '1'}`
-            }));
-
-            const tbody = document.getElementById('tabela-escala-estagio-oficial');
-            tbody.innerHTML = '';
-            escalaEstagioGeradaOficial.forEach(i => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2 text-center font-bold">${i.qtd}</td><td class="p-2 text-[11px] text-slate-600">${i.preceptor}</td><td class="p-2">${i.posto_grad}</td><td class="p-2 font-mono font-bold">${i.re}</td><td class="p-2 font-semibold">${i.nome}</td><td class="p-2 font-bold">${i.qra}</td><td class="p-2 text-center font-bold">${i.pelotao}</td></tr>`;
-            });
+                if (!error && data) {
+                    listaAnotacoes = data;
+                    renderizarAnotacoes(listaAnotacoes);
+                }
+            } catch(e) {}
         }
 
-        // FAXINA
-        function gerarEscalaFaxina() {
-            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
-            const masc = listaAlunos.filter(a => (a.genero || 'M').toUpperCase() === 'M' && a.status === 'Ativo');
-            const fem = listaAlunos.filter(a => (a.genero || 'M').toUpperCase() === 'F' && a.status === 'Ativo');
-            escalaFaxinaGerada.masc = masc.slice(0, 4);
-            escalaFaxinaGerada.acad = masc.slice(4, 6);
-            escalaFaxinaGerada.fem = fem.slice(0, 2);
-            renderizarFaxinasUI();
-        }
-
-        function renderizarFaxinasUI() {
-            ['masc', 'acad', 'fem'].forEach(t => {
-                const box = document.getElementById(`lista-faxina-${t}`);
-                if(!box) return;
-                box.innerHTML = '';
-                (escalaFaxinaGerada[t] || []).forEach((a, idx) => {
-                    box.innerHTML += `<div class="bg-slate-50 p-2 rounded border flex justify-between items-center text-xs"><span><b>${idx+1}.</b> ${a.posto_grad || 'AL SD PM'} ${a.nome_guerra} (RE: ${a.re})</span></div>`;
+        function abrirModalAnotacao() {
+            const selectAluno = document.getElementById('anotacao-aluno-id');
+            selectAluno.innerHTML = '<option value="">Selecione o Aluno / Integrante...</option>';
+            
+            if (listaAlunos.length === 0) {
+                selectAluno.innerHTML = '<option value="">Nenhum aluno cadastrado no Efetivo</option>';
+            } else {
+                listaAlunos.forEach(a => {
+                    selectAluno.innerHTML += `<option value="${a.id}">${a.re} - ${a.posto_grad || 'Al Sd PM'} ${a.nome_guerra} (${a.pelotao || 'Sem Pelotão'})</option>`;
                 });
+            }
+
+            document.getElementById('form-anotacao').reset();
+            document.getElementById('anotacao-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('anotacao-origem').value = 'Efetivo GT';
+            document.getElementById('anotacao-anotado-por').value = usuarioLogado ? `${usuarioLogado.posto_grad || ''} ${usuarioLogado.nome_guerra}`.trim() : '';
+
+            document.getElementById('modal-anotacao').classList.remove('hidden');
+        }
+
+        function fecharModalAnotacao() {
+            document.getElementById('modal-anotacao').classList.add('hidden');
+        }
+
+        function alternarCamposAnotante() {
+            const origem = document.getElementById('anotacao-origem').value;
+            const inputAnotador = document.getElementById('anotacao-anotado-por');
+            if (origem === 'Fora do GT') {
+                inputAnotador.value = '';
+                inputAnotador.placeholder = 'Ex: Cap PM Silva (Prof. Direito) / RE 123456';
+            } else {
+                inputAnotador.value = usuarioLogado ? `${usuarioLogado.posto_grad || ''} ${usuarioLogado.nome_guerra}`.trim() : '';
+            }
+        }
+
+        async function salvarAnotacao(e) {
+            e.preventDefault();
+            conectarSupabase();
+
+            const alunoId = document.getElementById('anotacao-aluno-id').value;
+            const aluno = listaAlunos.find(a => String(a.id) === String(alunoId));
+            
+            if (!aluno) {
+                alert("Por favor, selecione um aluno válido na lista.");
+                return;
+            }
+
+            const novaAnotacao = {
+                aluno_id: String(aluno.id),
+                aluno_re: aluno.re,
+                aluno_nome: `${aluno.posto_grad || 'Al Sd PM'} ${aluno.nome_guerra}`,
+                data_fato: document.getElementById('anotacao-data').value,
+                codigo: document.getElementById('anotacao-codigo').value.toUpperCase().trim(),
+                sintese: document.getElementById('anotacao-sintese').value.trim(),
+                origem: document.getElementById('anotacao-origem').value,
+                anotado_por: document.getElementById('anotacao-anotado-por').value.trim() || 'ADMINISTRADOR',
+                status_recurso: 'Sem Recurso'
+            };
+
+            if (!_supabase) return;
+
+            try {
+                const { error } = await _supabase.from('anotacoes').insert([novaAnotacao]);
+
+                if (error) {
+                    alert("Erro ao gravar anotação: " + error.message);
+                    return;
+                }
+
+                fecharModalAnotacao();
+                await carregarAnotacoesDoBanco();
+
+            } catch(err) {}
+        }
+
+        async function deletarAnotacao(id) {
+            if (!confirm("Tem certeza que deseja excluir esta anotação disciplinar?")) return;
+
+            conectarSupabase();
+            if (!_supabase) return;
+
+            try {
+                const { error } = await _supabase.from('anotacoes').delete().eq('id', id);
+
+                if (!error) {
+                    await carregarAnotacoesDoBanco();
+                }
+            } catch(e) {}
+        }
+
+        function renderizarAnotacoes(dados) {
+            const tbody = document.getElementById('tabela-anotacoes');
+            if (!tbody) return;
+
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+
+            let exibidos = dados;
+            if (!ehAdmin && usuarioLogado) {
+                exibidos = dados.filter(item => eMesmoAluno(item.aluno_id, item.aluno_re, usuarioLogado));
+            }
+
+            document.getElementById('total-anotacoes').innerText = `Total de Registros: ${exibidos.length}`;
+            tbody.innerHTML = '';
+
+            if (exibidos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="p-6 text-center text-slate-400">Nenhuma anotação disciplinar encontrada.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            exibidos.forEach(item => {
+                const dataFormatada = item.data_fato ? item.data_fato.split('-').reverse().join('/') : '---';
+                const eMeuRegistro = usuarioLogado && eMesmoAluno(item.aluno_id, item.aluno_re, usuarioLogado);
+                const podeRecorrer = eMeuRegistro && (item.status_recurso === 'Sem Recurso' || !item.status_recurso);
+
+                let badgeRecurso = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">${item.status_recurso || 'Sem Recurso'}</span>`;
+                if (item.status_recurso === 'Em Recurso') badgeRecurso = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Em Recurso</span>`;
+                if (item.status_recurso === 'Deferido') badgeRecurso = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Deferido</span>`;
+                if (item.status_recurso === 'Indeferido') badgeRecurso = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-800">Indeferido</span>`;
+
+                let badgeOrigem = item.origem === 'Fora do GT' ? 
+                    `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold" title="Multiplicador 2x para LEC">Fora do GT</span>` : 
+                    `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px]">Efetivo GT</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-semibold text-slate-700">${dataFormatada}</td>
+                        <td class="p-3 font-mono text-slate-600">${item.aluno_re || '---'}</td>
+                        <td class="p-3 font-bold text-slate-900">${item.aluno_nome || '---'}</td>
+                        <td class="p-3"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${item.codigo || '---'}</span></td>
+                        <td class="p-3">${badgeOrigem}</td>
+                        <td class="p-3 text-slate-500">${item.anotado_por || '---'}</td>
+                        <td class="p-3">${badgeRecurso}</td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                ${podeRecorrer ? `
+                                    <button onclick="abrirModalNovoRecurso('${item.id}')" class="bg-red-700 hover:bg-red-800 text-white font-bold px-2.5 py-1 rounded text-[11px] shadow transition flex items-center gap-1">
+                                        <i class="fa-solid fa-file-signature text-[10px]"></i> Recorrer
+                                    </button>
+                                ` : ''}
+
+                                ${ehAdmin ? `
+                                    <button onclick="deletarAnotacao('${item.id}')" title="Excluir Anotação" class="text-slate-400 hover:text-red-600 transition p-1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
         }
 
-        // LEC
-        function gerarPreviaEscalaLEC() {
-            const pontuacao = {};
-            listaAnotacoes.filter(a => a.status_recurso !== 'Deferido').forEach(anot => {
-                const key = anot.aluno_id || anot.aluno_re;
+        // MÓDULO RECURSOS DISCIPLINARES
+        async function carregarRecursosDoBanco() {
+            conectarSupabase();
+            if (!_supabase) return;
+
+            try {
+                const { data, error } = await _supabase
+                    .from('recursos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (!error && data) {
+                    listaRecursos = data;
+                    renderizarRecursos(listaRecursos);
+                }
+            } catch(e) {}
+        }
+
+        function abrirModalNovoRecurso(anotacaoIdDesejada) {
+            if (!usuarioLogado) return;
+
+            const minhasAnotacoesElegiveis = listaAnotacoes.filter(a => 
+                eMesmoAluno(a.aluno_id, a.aluno_re, usuarioLogado) &&
+                (!a.status_recurso || a.status_recurso === 'Sem Recurso')
+            );
+
+            if (minhasAnotacoesElegiveis.length === 0) {
+                alert("Você não possui anotações pendentes elegíveis para recurso.");
+                return;
+            }
+
+            const selectAnotacao = document.getElementById('rec-selecao-anotacao');
+            selectAnotacao.innerHTML = '';
+
+            minhasAnotacoesElegiveis.forEach(a => {
+                const dataF = a.data_fato ? a.data_fato.split('-').reverse().join('/') : '---';
+                const selected = (anotacaoIdDesejada && String(a.id) === String(anotacaoIdDesejada)) ? 'selected' : '';
+                selectAnotacao.innerHTML += `<option value="${a.id}" ${selected}>[${dataF}] Código: ${a.codigo} - ${a.sintese}</option>`;
+            });
+
+            document.getElementById('rec-justificativa').value = '';
+            document.getElementById('modal-novo-recurso').classList.remove('hidden');
+        }
+
+        function fecharModalNovoRecurso() {
+            document.getElementById('modal-novo-recurso').classList.add('hidden');
+        }
+
+        async function salvarNovoRecurso(e) {
+            e.preventDefault();
+            conectarSupabase();
+
+            const anotacaoId = document.getElementById('rec-selecao-anotacao').value;
+            const anotacao = listaAnotacoes.find(a => String(a.id) === String(anotacaoId));
+
+            if (!anotacao || !usuarioLogado) {
+                alert("Selecione uma anotação válida.");
+                return;
+            }
+
+            const novoRecurso = {
+                anotacao_id: anotacao.id,
+                aluno_id: String(usuarioLogado.id),
+                aluno_re: usuarioLogado.re,
+                aluno_nome: `${usuarioLogado.posto_grad || 'Al Sd PM'} ${usuarioLogado.nome_guerra}`.trim(),
+                justificativa: document.getElementById('rec-justificativa').value.trim(),
+                status: 'Em Análise'
+            };
+
+            try {
+                const resRecurso = await _supabase.from('recursos').insert([novoRecurso]);
+                if (resRecurso.error) throw resRecurso.error;
+
+                await _supabase.from('anotacoes').update({ status_recurso: 'Em Recurso' }).eq('id', anotacao.id);
+
+                fecharModalNovoRecurso();
+                await carregarAnotacoesDoBanco();
+                await carregarRecursosDoBanco();
+                alert("Recurso protocolado com sucesso! Acompanhe o resultado na aba Recursos.");
+
+            } catch(err) {
+                alert("Falha ao protocolar recurso: " + (err.message || "Erro de conexão"));
+            }
+        }
+
+        function renderizarRecursos(dados) {
+            const tbody = document.getElementById('tabela-recursos');
+            if (!tbody) return;
+
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+            const btnNovo = document.getElementById('btn-novo-recurso-aba');
+
+            let exibidos = dados;
+            if (!ehAdmin && usuarioLogado) {
+                exibidos = dados.filter(r => eMesmoAluno(r.aluno_id, r.aluno_re, usuarioLogado));
+                document.getElementById('subtitulo-painel-recursos').innerText = "Meus Recursos Protocolados e Resultados";
+                if (btnNovo) btnNovo.classList.remove('hidden');
+            } else {
+                document.getElementById('subtitulo-painel-recursos').innerText = "Painel Administrativo de Análise e Julgamento de Recursos";
+                if (btnNovo) btnNovo.classList.add('hidden');
+            }
+
+            document.getElementById('total-recursos').innerText = `Recursos Protocolados: ${exibidos.length}`;
+            tbody.innerHTML = '';
+
+            if (exibidos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-6 text-center text-slate-400">Nenhum recurso protocolado até o momento.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            exibidos.forEach(item => {
+                const dataFormatada = item.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : '---';
+
+                let badgeStatus = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Em Análise</span>`;
+                if (item.status === 'Deferido') badgeStatus = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">Deferido</span>`;
+                if (item.status === 'Indeferido') badgeStatus = `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-800">Indeferido</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-semibold text-slate-700">${dataFormatada}</td>
+                        <td class="p-3 font-mono text-slate-600">${item.aluno_re || '---'}</td>
+                        <td class="p-3 font-bold text-slate-900">${item.aluno_nome || '---'}</td>
+                        <td class="p-3 text-slate-600 max-w-xs truncate" title="${item.justificativa}">${item.justificativa || '---'}</td>
+                        <td class="p-3">${badgeStatus}</td>
+                        <td class="p-3 text-slate-600 max-w-xs truncate" title="${item.resposta_admin || 'Aguardando Parecer'}">${item.resposta_admin || '<i>Aguardando Análise...</i>'}</td>
+                        <td class="p-3 text-center">
+                            ${ehAdmin && item.status === 'Em Análise' ? `
+                                <button onclick="abrirModalAnalisarRecurso('${item.id}')" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-2.5 py-1 rounded text-[11px] shadow transition flex items-center gap-1 mx-auto">
+                                    <i class="fa-solid fa-gavel text-amber-400 text-[10px]"></i> Julgar
+                                </button>
+                            ` : '<span class="text-slate-400 text-[11px]">-</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // MÓDULO DASHBOARD DE CONDUTA
+        async function carregarDashboardConduta() {
+            await carregarAnotacoesDoBanco();
+            await carregarRecursosDoBanco();
+
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+
+            document.getElementById('dash-total-anotacoes').innerText = listaAnotacoes.length;
+            
+            const emAnalise = listaRecursos.filter(r => r.status === 'Em Análise').length;
+            const deferidos = listaRecursos.filter(r => r.status === 'Deferido').length;
+            const indeferidos = listaRecursos.filter(r => r.status === 'Indeferido').length;
+
+            document.getElementById('dash-recursos-analise').innerText = emAnalise;
+            document.getElementById('dash-recursos-deferidos').innerText = deferidos;
+            document.getElementById('dash-recursos-indeferidos').innerText = indeferidos;
+
+            const containerAluno = document.getElementById('dash-container-aluno');
+            if (!ehAdmin && usuarioLogado) {
+                containerAluno.classList.remove('hidden');
+                document.getElementById('dash-aluno-nome').innerText = `${usuarioLogado.posto_grad || 'Al Sd PM'} ${usuarioLogado.nome_guerra} (${usuarioLogado.nome_completo || ''})`;
+                document.getElementById('dash-aluno-detalhes').innerText = `RE: ${usuarioLogado.re} | Pelotão: ${usuarioLogado.pelotao || 'Não Atribuído'}`;
+
+                const minhasAnotacoesAtivas = listaAnotacoes.filter(a => 
+                    eMesmoAluno(a.aluno_id, a.aluno_re, usuarioLogado) && 
+                    a.status_recurso !== 'Deferido'
+                );
+
+                const elConceito = document.getElementById('dash-aluno-conceito');
+                if (minhasAnotacoesAtivas.length === 0) {
+                    elConceito.innerText = "EXCELENTE (Sem registros ativos)";
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800";
+                } else if (minhasAnotacoesAtivas.length <= 2) {
+                    elConceito.innerText = `REGULAR (${minhasAnotacoesAtivas.length} registro(s) ativo(s))`;
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800";
+                } else {
+                    elConceito.innerText = `ATENÇÃO (${minhasAnotacoesAtivas.length} registros ativos)`;
+                    elConceito.className = "px-2.5 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800";
+                }
+            } else {
+                containerAluno.classList.add('hidden');
+            }
+
+            const tbodyPelotoes = document.getElementById('dash-tabela-pelotoes');
+            tbodyPelotoes.innerHTML = '';
+
+            const mapaPelotoes = {};
+            listaAnotacoes.forEach(a => {
+                const aluno = listaAlunos.find(al => String(al.id) === String(a.aluno_id) || al.re === a.aluno_re);
+                const nomePelotao = aluno?.pelotao || 'Não Identificado';
+                mapaPelotoes[nomePelotao] = (mapaPelotoes[nomePelotao] || 0) + 1;
+            });
+
+            const total = listaAnotacoes.length || 1;
+            const pelotoesOrdenados = Object.entries(mapaPelotoes).sort((a, b) => b[1] - a[1]);
+
+            if (pelotoesOrdenados.length === 0) {
+                tbodyPelotoes.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Nenhum dado cadastrado.</td></tr>';
+            } else {
+                pelotoesOrdenados.forEach(([pelotao, qtd]) => {
+                    const perc = ((qtd / total) * 100).toFixed(1);
+                    tbodyPelotoes.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-2.5 font-semibold text-slate-800">${pelotao}</td>
+                            <td class="p-2.5 text-center font-bold text-slate-900">${qtd}</td>
+                            <td class="p-2.5 text-right text-slate-500 font-mono">${perc}%</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const tbodyCodigos = document.getElementById('dash-tabela-codigos');
+            tbodyCodigos.innerHTML = '';
+
+            const mapaCodigos = {};
+            listaAnotacoes.forEach(a => {
+                const cod = a.codigo ? a.codigo.toUpperCase().trim() : 'N/I';
+                mapaCodigos[cod] = (mapaCodigos[cod] || 0) + 1;
+            });
+
+            const codigosOrdenados = Object.entries(mapaCodigos).sort((a, b) => b[1] - a[1]);
+
+            if (codigosOrdenados.length === 0) {
+                tbodyCodigos.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Nenhum dado cadastrado.</td></tr>';
+            } else {
+                codigosOrdenados.forEach(([cod, qtd]) => {
+                    const perc = ((qtd / total) * 100).toFixed(1);
+                    tbodyCodigos.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${cod}</span></td>
+                            <td class="p-2.5 text-center font-bold text-slate-900">${qtd}</td>
+                            <td class="p-2.5 text-right text-slate-500 font-mono">${perc}%</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // MÓDULO MOTOR DE CÁLCULO DE ESCALA AUTOMÁTICA DE LEC
+        function calcularProximaSexta() {
+            const hoje = new Date();
+            const diaSemana = hoje.getDay();
+            let diasAteSexta = (5 - diaSemana + 7) % 7;
+            if (diasAteSexta === 0 && hoje.getHours() >= 13) {
+                diasAteSexta = 7;
+            }
+            const proximaSexta = new Date(hoje);
+            proximaSexta.setDate(hoje.getDate() + diasAteSexta);
+            return proximaSexta;
+        }
+
+        async function carregarOuProcessarEscalaLEC() {
+            await carregarAnotacoesDoBanco();
+            await carregarAlunosDoBanco();
+
+            if (escalaPublicadaOficial) {
+                renderizarEscalaLEC(escalaPublicadaOficial);
+            } else {
+                gerarPreviaEscalaLEC(false);
+            }
+        }
+
+        function gerarPreviaEscalaLEC(notificar = true) {
+            const dataSexta = calcularProximaSexta();
+            const sexStr = dataSexta.toLocaleDateString('pt-BR');
+
+            const pontuacaoPorAlunoECodigo = {};
+            const anotasAtivas = listaAnotacoes.filter(a => a.status_recurso !== 'Deferido');
+
+            anotasAtivas.forEach(anot => {
+                const keyAluno = anot.aluno_id || anot.aluno_re;
                 const cod = (anot.codigo || 'S/C').toUpperCase().trim();
                 const peso = (anot.origem === 'Fora do GT') ? 2 : 1;
-                if(!pontuacao[key]) pontuacao[key] = {};
-                pontuacao[key][cod] = (pontuacao[key][cod] || 0) + peso;
+
+                if (!pontuacaoPorAlunoECodigo[keyAluno]) {
+                    pontuacaoPorAlunoECodigo[keyAluno] = {};
+                }
+                pontuacaoPorAlunoECodigo[keyAluno][cod] = (pontuacaoPorAlunoECodigo[keyAluno][cod] || 0) + peso;
             });
 
             escalaLECCalculada = [];
+
             listaAlunos.forEach(aluno => {
                 const key = aluno.id || aluno.re;
-                const cods = pontuacao[key] || {};
-                let max = 0, modCod = '';
-                Object.entries(cods).forEach(([c, pts]) => { if(pts > max) { max = pts; modCod = c; } });
+                const mapaCodigosAluno = pontuacaoPorAlunoECodigo[key] || {};
 
-                if(max >= 2) {
-                    let modalidade = max === 2 ? '24H (Parcial)' : (max === 3 ? '48H (Intermediário)' : '60H (Total)');
-                    escalaLECCalculada.push({ re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', nome_guerra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}`, codigo: modCod, modalidade: modalidade });
+                let maiorPontuacao = 0;
+                let codigoMotivo = '';
+
+                Object.entries(mapaCodigosAluno).forEach(([cod, pts]) => {
+                    if (pts > maiorPontuacao) {
+                        maiorPontuacao = pts;
+                        codigoMotivo = cod;
+                    }
+                });
+
+                if (maiorPontuacao >= 2) {
+                    let modalidade = '24H (Parcial)';
+                    let horario = 'Sexta-feira 13:00 às Sábado 13:00';
+
+                    if (maiorPontuacao === 3) {
+                        modalidade = '48H (Intermediário)';
+                        horario = 'Sexta-feira 13:00 ao Domingo 13:00';
+                    } else if (maiorPontuacao >= 4) {
+                        modalidade = '60H (Total)';
+                        horario = 'Sexta-feira 13:00 à Segunda-feira 01:00';
+                    }
+
+                    escalaLECCalculada.push({
+                        aluno_id: aluno.id,
+                        re: aluno.re,
+                        posto_grad: aluno.posto_grad || 'Al Sd PM',
+                        nome_guerra: aluno.nome_guerra,
+                        pelotao: aluno.pelotao || '9',
+                        codigo: codigoMotivo,
+                        pontos: maiorPontuacao,
+                        modalidade: modalidade,
+                        horario: horario,
+                        desescalado: false,
+                        motivo_remocao: ''
+                    });
                 }
             });
 
-            const tbody = document.getElementById('tabela-escala-lec');
-            tbody.innerHTML = '';
-            if(escalaLECCalculada.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum aluno atinge critérios para LEC.</td></tr>`;
-                return;
+            renderizarEscalaLEC(escalaLECCalculada, sexStr, "PRÉVIA - Aguardando validação da Secretaria");
+
+            if (notificar) {
+                alert(`Prévia da Escala de LEC calculada com sucesso para ${sexStr}!`);
             }
-            escalaLECCalculada.forEach(i => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2.5 font-mono font-bold">${i.re}</td><td class="p-2.5">${i.posto_grad}</td><td class="p-2.5 font-bold">${i.nome_guerra}</td><td class="p-2.5">${i.pel}</td><td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">${i.codigo}</span></td><td class="p-2.5 font-semibold text-red-600">${i.modalidade}</td></tr>`;
-            });
-            alert("Prévia LEC gerada com sucesso!");
         }
 
-        // WORD DE LEC COM MARGENS E COLUNAS LARGAS SEM QUEBRA
-        function exportarEscalaWordOficial() {
-            if(escalaLECCalculada.length === 0) { alert("Gere a prévia LEC primeiro."); return; }
-            const tableRows = [
-                new docx.TableRow({
-                    children: [
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 20, type: docx.WidthType.PERCENTAGE } }), // RE largo
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 25, type: docx.WidthType.PERCENTAGE } }), // QRA largo
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOT", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOT", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
-                    ]
-                })
-            ];
-            escalaLECCalculada.forEach((i, idx) => {
-                tableRows.push(new docx.TableRow({
-                    children: [
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: String(idx+1).padStart(2,'0'), alignment: docx.AlignmentType.CENTER })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.pel, alignment: docx.AlignmentType.CENTER })] }), // Só número do pelotão
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "1", alignment: docx.AlignmentType.CENTER })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.re, alignment: docx.AlignmentType.CENTER })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.nome_guerra })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.codigo, alignment: docx.AlignmentType.CENTER })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "06JAN26" })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "25FEV26" })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "" })] }),
-                    ]
-                }));
+        function renderizarEscalaLEC(dadosEscala, dataRef = null, statusLabel = null) {
+            const tbody = document.getElementById('tabela-escala-lec');
+            if (!tbody) return;
+
+            const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
+
+            if (!dataRef) {
+                const d = calcularProximaSexta();
+                dataRef = d.toLocaleDateString('pt-BR');
+            }
+
+            document.getElementById('lec-data-fds').innerText = `Sexta-feira, ${dataRef}`;
+            document.getElementById('lec-subtitulo-oficial').innerText = statusLabel || "Escala Oficial Publicada para o Próximo Final de Semana";
+
+            let count24 = 0, count48 = 0, count60 = 0;
+            tbody.innerHTML = '';
+
+            const escaladosAtivos = dadosEscala.filter(i => !i.desescalado);
+
+            if (escaladosAtivos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="p-6 text-center text-slate-400">Nenhum integrante escalado para LEC no final de semana (${dataRef}).</td>
+                    </tr>
+                `;
+                document.getElementById('lec-qtd-24h').innerText = 0;
+                document.getElementById('lec-qtd-48h').innerText = 0;
+                document.getElementById('lec-qtd-60h').innerText = 0;
+                return;
+            }
+
+            dadosEscala.forEach(item => {
+                if (item.desescalado) {
+                    if (ehAdmin) {
+                        tbody.innerHTML += `
+                            <tr class="nao-imprimir bg-slate-100/70 text-slate-400 border-b border-slate-200 line-through">
+                                <td class="p-2.5 font-mono">${item.re}</td>
+                                <td class="p-2.5">${item.posto_grad}</td>
+                                <td class="p-2.5 font-bold">${item.nome_guerra}</td>
+                                <td class="p-2.5">${item.pelotao}</td>
+                                <td class="p-2.5">${item.codigo}</td>
+                                <td class="p-2.5">${item.pontos} pts</td>
+                                <td class="p-2.5">${item.modalidade}</td>
+                                <td class="p-2.5 text-xs">DESESCALADO: ${item.motivo_remocao}</td>
+                                <td class="p-2.5 text-center admin-only nao-imprimir">
+                                    <button onclick="reescalarAluno('${item.aluno_id}')" class="text-blue-600 font-semibold underline text-[11px] no-underline">Reinstalar</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    return;
+                }
+
+                if (item.modalidade.includes('24H')) count24++;
+                if (item.modalidade.includes('48H')) count48++;
+                if (item.modalidade.includes('60H')) count60++;
+
+                let badgeMod = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">24H PARCIAL</span>`;
+                if (item.modalidade.includes('48H')) badgeMod = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">48H INTERMEDIÁRIO</span>`;
+                if (item.modalidade.includes('60H')) badgeMod = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800">60H TOTAL</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-2.5 font-mono font-bold text-slate-700">${item.re}</td>
+                        <td class="p-2.5 text-slate-600">${item.posto_grad}</td>
+                        <td class="p-2.5 font-bold text-slate-900">${item.nome_guerra}</td>
+                        <td class="p-2.5 text-slate-600">${item.pelotao}</td>
+                        <td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${item.codigo}</span></td>
+                        <td class="p-2.5 font-mono font-bold text-slate-800">${item.pontos} pts</td>
+                        <td class="p-2.5">${badgeMod}</td>
+                        <td class="p-2.5 text-slate-600 text-[11px] font-medium">${item.horario}</td>
+                        <td class="p-2.5 text-center admin-only nao-imprimir ${ehAdmin ? '' : 'hidden'}">
+                            <button onclick="abrirModalDesescalar('${item.aluno_id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-2 py-1 rounded text-[10px] shadow-sm transition flex items-center gap-1 mx-auto">
+                                <i class="fa-solid fa-user-minus"></i> Não Escalar
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
+
+            document.getElementById('lec-qtd-24h').innerText = count24;
+            document.getElementById('lec-qtd-48h').innerText = count48;
+            document.getElementById('lec-qtd-60h').innerText = count60;
+        }
+
+        // GERADOR WORD OFICIAL LEC (COM MARGENS AUMENTADAS E PEL SÓ NÚMERO)
+        function exportarEscalaWordOficial() {
+            const listaParaExportar = (escalaPublicadaOficial || escalaLECCalculada).filter(i => !i.desescalado);
+            if (listaParaExportar.length === 0) { alert("Não há integrantes na escala para exportar."); return; }
+
+            const grupos = {
+                '24H': listaParaExportar.filter(i => i.modalidade.includes('24H')),
+                '48H': listaParaExportar.filter(i => i.modalidade.includes('48H')),
+                '60H': listaParaExportar.filter(i => i.modalidade.includes('60H'))
+            };
+
+            const periodosTexto = {
+                '24H': 'Inicia-se às 13h00 de sexta-feira e termina às 13h00 de sábado, sendo aplicado ao aluno quando tiver: 02 (duas) anotações por falta escolar no mesmo código ou através de despacho em documento;',
+                '48H': 'Inicia-se às 13h00 de sexta-feira e termina às 13h00 de domingo, sendo aplicado ao aluno quando tiver: 03 (três) anotações por falta escolar no mesmo código ou através de despacho em documento;',
+                '60H': 'Inicia-se às 13h00 de sexta-feira à 01h00 de segunda-feira, sendo aplicado ao aluno quando tiver: 04 (quatro) ou mais anotações por falta escolar no mesmo código;'
+            };
+
+            const dataSexta = calcularProximaSexta();
+            const dataStr = dataSexta.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '');
+            const dataFimStr = new Date(dataSexta.getTime() + 86400000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '');
+
+            const docChildren = [
+                new docx.Paragraph({ text: "SECRETARIA DA SEGURANÇA PÚBLICA", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_3, spacing: { after: 100 } }),
+                new docx.Paragraph({ text: "POLÍCIA MILITAR DO ESTADO DE SÃO PAULO\nDIRETORIA DE ENSINO E CULTURA\nESCOLA SUPERIOR DE SOLDADOS “CEL PM EDUARDO ASSUMPÇÃO“\n2ª Cia Es – 1º Cens/2026", alignment: docx.AlignmentType.CENTER, spacing: { after: 200 } }),
+                new docx.Paragraph({ text: "LICENCIAMENTO ESCOLAR CASSADO", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 150 } }),
+                new docx.Paragraph({ text: "Relação dos Al Sd PM que estarão com o Licenciamento Escolar Cassado no período de atividades, conforme o que preconiza na Diretriz Geral de Ensino (D-5-PM):", alignment: docx.AlignmentType.JUSTIFIED, spacing: { after: 150 } }),
+                new docx.Paragraph({ text: "Art. 124: A cassação de licenciamento escolar é a sanção que consiste na revogação da licença de saída do discente do OAES...", alignment: docx.AlignmentType.JUSTIFIED, spacing: { after: 200 } })
+            ];
+
+            Object.keys(grupos).forEach(modKey => {
+                const itensMod = grupos[modKey];
+                if (itensMod.length === 0) return;
+
+                docChildren.push(
+                    new docx.Paragraph({ text: `LEC PARCIAL ${modKey}: ${periodosTexto[modKey]}`, alignment: docx.AlignmentType.JUSTIFIED, spacing: { before: 200, after: 100 } }),
+                    new docx.Paragraph({ text: `${dataStr} À ${dataFimStr}`, alignment: docx.AlignmentType.CENTER, spacing: { after: 100 } })
+                );
+
+                const tableRows = [
+                    new docx.TableRow({
+                        children: [
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 20, type: docx.WidthType.PERCENTAGE } }), // RE largo
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 25, type: docx.WidthType.PERCENTAGE } }), // QRA largo
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
+                        ]
+                    })
+                ];
+
+                itensMod.forEach((item, idx) => {
+                    tableRows.push(
+                        new docx.TableRow({
+                            children: [
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(idx + 1).padStart(2, '0'), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.pelotao || '9'), alignment: docx.AlignmentType.CENTER })] }), // Só número
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "1", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.re), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.nome_guerra), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.codigo), alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "06JAN26", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "25FEV26", alignment: docx.AlignmentType.CENTER })] }),
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: "", alignment: docx.AlignmentType.CENTER })] }),
+                            ]
+                        })
+                    );
+                });
+
+                docChildren.push(new docx.Table({ rows: tableRows, width: { size: 100, type: docx.WidthType.PERCENTAGE } }));
+            });
+
+            docChildren.push(
+                new docx.Paragraph({ text: "OBS: Os alunos deverão apresentar-se no Serviço de Dia após a revista de liberação na Cia.", spacing: { before: 300, after: 150 } }),
+                new docx.Paragraph({ text: `São Paulo, ${new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}.`, alignment: docx.AlignmentType.CENTER, spacing: { before: 200, after: 300 } }),
+                new docx.Paragraph({ text: "EDUARDO CASAGRANDI MANSOLDO FILHO\nCap PM Comandante", alignment: docx.AlignmentType.CENTER, spacing: { before: 200 } })
+            );
 
             const doc = new docx.Document({
                 sections: [{
                     properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } }, // Margens aumentadas
-                    children: [
-                        new docx.Paragraph({ text: "POLÍCIA MILITAR DO ESTADO DE SÃO PAULO", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_3 }),
-                        new docx.Paragraph({ text: "Comando de Policiamento de Área Metropolitano 5", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_2 }),
-                        new docx.Paragraph({ text: "LICENCIAMENTO ESCOLAR CASSADO (LEC)", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 200 } }),
-                        new docx.Table({ rows: tableRows, width: { size: 100, type: docx.WidthType.PERCENTAGE } })
-                    ]
-                })
+                    children: docChildren
+                }]
             });
-            docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_LEC_Oficial.docx`); });
+
+            docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_LEC_${dataStr}.docx`); });
         }
 
-        // RELATÓRIOS
-        function carregarRelatoriosGerais() {
+        // RELATÓRIOS CONSOLIDADOS
+        async function carregarRelatoriosGerais() {
+            await carregarAlunosDoBanco();
+            await carregarAnotacoesDoBanco();
+            renderizarTabelaRelatorios(listaAlunos);
+        }
+
+        function renderizarTabelaRelatorios(dadosAlunos) {
             const tbody = document.getElementById('tabela-relatorios');
             if(!tbody) return;
             tbody.innerHTML = '';
-            listaAlunos.forEach(a => {
-                const anot = listaAnotacoes.filter(x => x.aluno_re === a.re && x.status_recurso !== 'Deferido').length;
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad || 'AL SD PM'}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.pelotao || '---'}</td><td class="p-3 text-center font-bold ${anot>0?'text-red-600':''};">${anot}</td><td class="p-3 text-center">0/0/0</td><td class="p-3 text-center">0</td><td class="p-3 text-center">0</td></tr>`;
+
+            const termo = (document.getElementById('input-busca-relatorio')?.value || '').toLowerCase().trim();
+            const pelFiltro = document.getElementById('filtro-pelotao-relatorio')?.value || '';
+
+            const filtrados = dadosAlunos.filter(a => {
+                const txt = !termo || a.nome_completo.toLowerCase().includes(termo) || a.re.includes(termo) || a.nome_guerra.toLowerCase().includes(termo);
+                const pel = !pelFiltro || a.pelotao === pelFiltro;
+                return txt && pel;
+            });
+
+            document.getElementById('total-relatorio-registros').innerText = `Integrantes Analisados: ${filtrados.length}`;
+
+            if(filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">Nenhum integrante encontrado.</td></tr>`;
+                return;
+            }
+
+            filtrados.forEach(aluno => {
+                const totalAnot = listaAnotacoes.filter(a => eMesmoAluno(a.aluno_id, a.aluno_re, aluno) && a.status_recurso !== 'Deferido').length;
+                
+                const guardasAluno = escalaGuardaGerada.filter(g => String(g.aluno_id) === String(aluno.id));
+                const gAzul = guardasAluno.filter(g => g.classificacao === 'AZUL').length;
+                const gPreta = guardasAluno.filter(g => g.classificacao === 'PRETA').length;
+                const gVermelha = guardasAluno.filter(g => g.classificacao === 'VERMELHA').length;
+                const totalGuardaStr = `${gAzul}/${gPreta}/${gVermelha}`;
+
+                const totalEstagio = escalaEstagioGerada.filter(e => String(e.aluno_id) === String(aluno.id) && !e.desescalado).length;
+                const totalFaxina = (escalaFaxinaGerada.masc.some(x=>String(x.id)===String(aluno.id)) || escalaFaxinaGerada.acad.some(x=>String(x.id)===String(aluno.id)) || escalaFaxinaGerada.fem.some(x=>String(x.id)===String(aluno.id))) ? 1 : 0;
+                
+                const ehAlunoDia = (aluno.nome_guerra === 'Nicole Oliveira' || aluno.re === '253887-3') ? 1 : 0;
+                const ehChefeTurma = 0;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
+                        <td class="p-3 font-mono font-bold">${aluno.re}</td>
+                        <td class="p-3">${aluno.posto_grad || 'Al Sd PM'}</td>
+                        <td class="p-3 font-bold">${aluno.nome_guerra}</td>
+                        <td class="p-3">${aluno.pelotao || '---'}</td>
+                        <td class="p-3 text-center font-bold ${totalAnot > 0 ? 'text-red-600' : 'text-slate-600'}">${totalAnot}</td>
+                        <td class="p-3 text-center font-mono font-semibold text-slate-700" title="Azul / Preta / Vermelha">${totalGuardaStr}</td>
+                        <td class="p-3 text-center font-semibold text-blue-700">${totalEstagio}</td>
+                        <td class="p-3 text-center font-semibold text-amber-700">${totalFaxina}</td>
+                        <td class="p-3 text-center font-semibold text-slate-700">${ehAlunoDia}</td>
+                        <td class="p-3 text-center font-semibold text-slate-700">${ehChefeTurma}</td>
+                    </tr>
+                `;
             });
         }
 
-        // MODAIS E SALVAMENTO
-        function abrirModalEfetivo() { document.getElementById('modal-efetivo').classList.remove('hidden'); }
-        function fecharModalEfetivo() { document.getElementById('modal-efetivo').classList.add('hidden'); }
-        async function salvarEfetivo(e) {
-            e.preventDefault();
-            const novo = {
-                re: document.getElementById('efetivo-re').value,
-                posto_grad: 'AL SD PM',
-                nome_guerra: document.getElementById('efetivo-guerra').value.toUpperCase(),
-                nome_completo: document.getElementById('efetivo-nome').value.toUpperCase(),
-                pelotao: document.getElementById('efetivo-pelotao').value,
-                genero: document.getElementById('efetivo-genero').value,
-                status: 'Ativo',
-                nivel_acesso: 'Aluno'
-            };
-            await _supabase.from('alunos').insert([novo]);
-            fecharModalEfetivo();
-            carregarAlunosDoBanco();
+        function filtrarRelatorios() {
+            renderizarTabelaRelatorios(listaAlunos);
         }
+
+        // OUTROS MÓDULOS DE SUPORTE
+        function filtrarRecursos() {
+            const termo = document.getElementById('input-busca-recurso').value.toLowerCase().trim();
+            const filtrados = listaRecursos.filter(r => (r.aluno_nome && r.aluno_nome.toLowerCase().includes(termo)) || (r.aluno_re && r.aluno_re.toLowerCase().includes(termo)));
+            renderizarRecursos(filtrados);
+        }
+
+        function filtrarAnotacoes() {
+            const termo = document.getElementById('input-busca-anotacao').value.toLowerCase().trim();
+            const filtrados = listaAnotacoes.filter(a => (a.aluno_nome && a.aluno_nome.toLowerCase().includes(termo)) || (a.aluno_re && a.aluno_re.toLowerCase().includes(termo)) || (a.codigo && a.codigo.toLowerCase().includes(termo)));
+            renderizarAnotacoes(filtrados);
+        }
+
+        function filtrarTabela() {
+            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
+            const pel = document.getElementById('filtro-pelotao').value;
+            const turma = document.getElementById('filtro-turma').value;
+            const filtrados = listaAlunos.filter(a => {
+                const txt = !termo || (a.nome_completo && a.nome_completo.toLowerCase().includes(termo)) || (a.re && a.re.includes(termo)) || (a.nome_guerra && a.nome_guerra.toLowerCase().includes(termo));
+                const bPel = !pel || a.pelotao === pel;
+                const bTurma = !turma || a.turma === turma;
+                return txt && bPel && bTurma;
+            });
+            renderizarTabela(filtrados);
+        }
+
+        function limparFiltros() {
+            document.getElementById('input-busca').value = '';
+            document.getElementById('filtro-pelotao').value = '';
+            document.getElementById('filtro-turma').value = '';
+            renderizarTabela(listaAlunos);
+        }
+
+        function abrirModalEfetivo() {
+            document.getElementById('form-efetivo').reset();
+            document.getElementById('efetivo-id').value = '';
+            document.getElementById('efetivo-senha').value = 'PMSP@2026';
+            document.getElementById('modal-titulo').innerText = 'Cadastrar Integrante do Efetivo';
+            document.getElementById('modal-efetivo').classList.remove('hidden');
+        }
+
+        function fecharModalEfetivo() { document.getElementById('modal-efetivo').classList.add('hidden'); }
 
         function abrirModalMapaForca() { document.getElementById('modal-mapa-forca').classList.remove('hidden'); }
         function fecharModalMapaForca() { document.getElementById('modal-mapa-forca').classList.add('hidden'); }
-        async function salvarMapaForca(e) {
-            e.preventDefault();
-            const mf = {
-                id: 1,
-                aluno_dia: document.getElementById('mf-in-aluno-dia').value,
-                chefe_gt: document.getElementById('mf-in-chefe-gt').value,
-                sgt_semana: document.getElementById('mf-in-sgt-semana').value
-            };
-            await _supabase.from('mapa_forca').upsert(mf);
-            fecharModalMapaForca();
-            carregarMapaForca();
+
+        function executarLogout() {
+            usuarioLogado = null;
+            document.getElementById('tela-login').style.display = 'flex';
         }
     </script>
 </body>
