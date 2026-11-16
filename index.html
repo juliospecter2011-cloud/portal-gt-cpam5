@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- docx.js para exportação de documentos oficiais em Word -->
     <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +22,7 @@
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 flex flex-col h-screen overflow-hidden">
 
-    <!-- LOGIN -->
+    <!-- TELA DE LOGIN -->
     <div id="tela-login" class="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border border-slate-200 text-center relative">
             <div class="mb-6">
@@ -85,7 +84,7 @@
         <!-- ÁREA DE CONTEÚDO -->
         <main class="flex-1 p-8 overflow-y-auto bg-slate-50">
 
-            <!-- PORTAL -->
+            <!-- PORTAL / MAPA FORÇA -->
             <section id="aba-portal" class="aba-conteudo">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -178,7 +177,7 @@
                 </div>
             </section>
 
-            <!-- LEC (COLUNAS RE E QRA AMPLIADAS E CABEÇALHO CORRIGIDO) -->
+            <!-- LEC (COM RE E QRA LARGOS, PEL SÓ NÚMERO E CABEÇALHO CORRIGIDO) -->
             <section id="aba-lec" class="aba-conteudo hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
@@ -203,36 +202,49 @@
                 </div>
             </section>
 
-            <!-- SERVIÇOS & ESCALAS -->
+            <!-- SERVIÇOS & ESCALAS ( COM SELETOR DE PERÍODO E BOTÃO DE TROCA INTERATIVA) -->
             <section id="aba-servicos" class="aba-conteudo hidden">
                 <div class="flex gap-2 border-b border-slate-200 mb-6">
-                    <button onclick="mudarSubAbaServicos('guarda', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition"><i class="fa-solid fa-shield-halved"></i> Escala de Guarda</button>
+                    <button onclick="mudarSubAbaServicos('gerador', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition"><i class="fa-solid fa-calendar-check"></i> Gerador por Período (Al de Dia / Guarda)</button>
                     <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition"><i class="fa-solid fa-graduation-cap"></i> Escala de Estágio (Padrão Oficial)</button>
                     <button onclick="mudarSubAbaServicos('faxina', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition"><i class="fa-solid fa-broom"></i> Escala de Faxina</button>
                 </div>
 
-                <!-- SUB-ABA GUARDA -->
-                <div id="sub-aba-guarda" class="space-y-4">
-                    <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <input type="date" id="guarda-data-inicio" class="border p-2 rounded text-xs">
-                            <span class="text-[11px] text-slate-600"><b>Cores:</b> Azul (Seg-Qui), Preta (Sex), Vermelha (Sáb/Dom)</span>
+                <!-- SUB-ABA GERADOR POR PERÍODO (SOLICITAÇÃO EXATA DE SELECIONAR PERÍODO E TROCAR COM SETINHA) -->
+                <div id="sub-aba-gerador" class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tipo de Escala *</label>
+                                <select id="gen-tipo" class="border p-2 rounded text-xs font-semibold bg-white">
+                                    <option value="ALUNO DE DIA">Escala de Aluno de Dia</option>
+                                    <option value="GUARDA DO QUARTEL">Escala de Guarda do Quartel</option>
+                                    <option value="CHEFE DE TURMA">Escala de Chefe de Turma</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data Início *</label>
+                                <input type="date" id="gen-data-inicio" class="border p-2 rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data Fim *</label>
+                                <input type="date" id="gen-data-fim" class="border p-2 rounded text-xs">
+                            </div>
                         </div>
-                        <button onclick="gerarEscalaGuarda()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Guarda (7 Dias)</button>
+                        <button onclick="executarGeradorPeriodo()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-5 py-2.5 rounded shadow text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> GERAR ESCALA POR PERÍODO
+                        </button>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border p-4">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
-                                    <th class="p-2.5">Data</th><th class="p-2.5">Cor</th><th class="p-2.5">RE</th><th class="p-2.5">Posto/Grad</th><th class="p-2.5">QRA</th><th class="p-2.5">Pel</th><th class="p-2.5 text-center">Posto de Guarda</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-escala-guarda" class="divide-y divide-slate-200"></tbody>
-                        </table>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-6">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Lista Gerada — Clique na setinha para alterar o aluno escalado</h3>
+                        <div id="container-lista-periodo" class="space-y-2">
+                            <p class="text-xs text-slate-400 italic">Selecione o período e clique em GERAR.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SUB-ABA ESTÁGIO (EXATO ÀS FOTOS DAS ORDENS DE SERVIÇO) -->
+                <!-- SUB-ABA ESTÁGIO -->
                 <div id="sub-aba-estagio" class="space-y-4 hidden">
                     <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-3">
@@ -298,7 +310,20 @@
         </main>
     </div>
 
-    <!-- MODAIS -->
+    <!-- MODAL DE SELEÇÃO DE ALUNO (PARA A SETINHA DE TROCA) -->
+    <div id="modal-troca-aluno" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 space-y-3 text-xs">
+            <h3 class="font-bold text-sm text-slate-900">Selecionar Substituto</h3>
+            <input type="hidden" id="troca-index-alvo">
+            <select id="select-novo-aluno" class="w-full border p-2 rounded bg-white font-semibold text-xs"></select>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="fecharModalTrocaAluno()" class="px-3 py-1.5 border rounded">Cancelar</button>
+                <button type="button" onclick="confirmarTrocaAluno()" class="px-3 py-1.5 bg-red-700 text-white rounded font-semibold">Substituir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAIS EFETIVO E ANOTAÇÃO -->
     <div id="modal-efetivo" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-3 text-xs">
             <h3 class="font-bold text-sm">Cadastrar Aluno</h3>
@@ -328,19 +353,7 @@
         </div>
     </div>
 
-    <div id="modal-mapa-forca" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-3 text-xs">
-            <h3 class="font-bold text-sm">Atualizar Mapa Força</h3>
-            <form onsubmit="salvarMapaForca(event)" class="space-y-3">
-                <input type="text" id="mf-in-aluno-dia" required placeholder="Aluno de Dia" class="w-full border p-2 rounded">
-                <input type="text" id="mf-in-chefe-gt" required placeholder="Chefe GT" class="w-full border p-2 rounded">
-                <input type="text" id="mf-in-sgt-semana" required placeholder="Sgt da Semana" class="w-full border p-2 rounded">
-                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalMapaForca()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button></div>
-            </form>
-        </div>
-    </div>
-
-    <!-- SCRIPT DE LOGIN ROBUSTO -->
+    <!-- SCRIPT COMPLETO E BLINDADO -->
     <script>
         const SUPABASE_URL = "https://rvywrmiafdcxirjnkgnf.supabase.co";
         const SUPABASE_KEY = "sb_publishable_9HPz3qa-w4oUFjDMZheghQ_1pCxT-J9";
@@ -349,7 +362,7 @@
         let listaAnotacoes = [];
         let listaRecursos = [];
         var escalaEstagioGeradaOficial = [];
-        var escalaGuardaGerada = [];
+        var escalaPeriodoGerada = [];
         var escalaFaxinaGerada = { masc: [], acad: [], fem: [] };
         var escalaLECCalculada = [];
 
@@ -363,6 +376,8 @@
             if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hoje;
             if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hoje;
             if(document.getElementById('guarda-data-inicio')) document.getElementById('guarda-data-inicio').value = hoje;
+            if(document.getElementById('gen-data-inicio')) document.getElementById('gen-data-inicio').value = hoje;
+            if(document.getElementById('gen-data-fim')) document.getElementById('gen-data-fim').value = new Date(Date.now() + 7*86400000).toISOString().split('T')[0];
             if(document.getElementById('anotacao-data')) document.getElementById('anotacao-data').value = hoje;
         });
 
@@ -373,30 +388,13 @@
             const msgErro = document.getElementById('msg-erro-login');
             msgErro.classList.add('hidden');
 
-            if(!_supabase) {
-                msgErro.innerText = "Erro de conexão com o banco.";
-                msgErro.classList.remove('hidden');
-                return;
-            }
+            if(!_supabase) { msgErro.innerText = "Erro de conexão com o banco."; msgErro.classList.remove('hidden'); return; }
 
             try {
                 const { data, error } = await _supabase.from('alunos').select('*');
-                if(error || !data) {
-                    msgErro.innerText = "Erro ao buscar integrantes no banco.";
-                    msgErro.classList.remove('hidden');
-                    return;
-                }
+                if(error || !data) { msgErro.innerText = "Erro ao buscar integrantes."; msgErro.classList.remove('hidden'); return; }
 
-                const termoLower = termo.toLowerCase();
-                const termoLimpo = termo.replace(/[^0-9]/g, '');
-
-                const user = data.find(u => {
-                    const emailOk = u.email && u.email.toLowerCase() === termoLower;
-                    const reOk = u.re && (u.re === termo || u.re.replace(/[^0-9]/g, '') === termoLimpo);
-                    const cpfOk = u.cpf && (u.cpf === termo || u.cpf.replace(/[^0-9]/g, '') === termoLimpo);
-                    return emailOk || reOk || cpfOk;
-                });
-
+                const user = data.find(u => (u.email && u.email.toLowerCase() === termo.toLowerCase()) || u.re === termo || u.cpf === termo);
                 const senhaCadastrada = user?.senha || "PMSP@2026";
 
                 if(user && senha === senhaCadastrada) {
@@ -409,8 +407,7 @@
                     msgErro.classList.remove('hidden');
                 }
             } catch(err) {
-                msgErro.innerText = "Erro interno ao efetuar login.";
-                msgErro.classList.remove('hidden');
+                msgErro.innerText = "Erro de conexão."; msgErro.classList.remove('hidden');
             }
         }
 
@@ -428,7 +425,7 @@
         function mudarSubAbaServicos(sub, el) {
             document.querySelectorAll('.sub-aba-btn').forEach(b => { b.classList.remove('border-red-600', 'text-red-600'); b.classList.add('border-transparent', 'text-slate-500'); });
             if(el) { el.classList.remove('border-transparent', 'text-slate-500'); el.classList.add('border-red-600', 'text-red-600'); }
-            document.getElementById('sub-aba-guarda').classList.add('hidden');
+            document.getElementById('sub-aba-gerador').classList.add('hidden');
             document.getElementById('sub-aba-estagio').classList.add('hidden');
             document.getElementById('sub-aba-faxina').classList.add('hidden');
             document.getElementById(`sub-aba-${sub}`).classList.remove('hidden');
@@ -524,37 +521,90 @@
             document.getElementById('dash-recursos-indeferidos').innerText = listaRecursos.filter(r => r.status === 'Indeferido').length;
         }
 
-        // GUARDA
-        function gerarEscalaGuarda() {
+        // GERADOR POR PERÍODO COM BOTÃO DE TROCA (SETINHA)
+        function executarGeradorPeriodo() {
             if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
+            const dtIni = new Date(document.getElementById('gen-data-inicio').value + 'T00:00:00');
+            const dtFim = new Date(document.getElementById('gen-data-fim').value + 'T00:00:00');
+            if(dtIni > dtFim) { alert("A data inicial não pode ser posterior à data final."); return; }
+
             const ativos = listaAlunos.filter(a => a.status === 'Ativo');
-            const dataBase = new Date(document.getElementById('guarda-data-inicio').value + 'T00:00:00');
-            escalaGuardaGerada = [];
-            const postos = ["Comandante da Guarda", "Sentinela Principal", "Ronda do Quartel", "Permanência da Cia", "Auxiliar de Guarda 1", "Auxiliar de Guarda 2"];
+            escalaPeriodoGerada = [];
+            let curr = new Date(dtIni);
+            let idxAluno = 0;
 
-            for(let d = 0; d < 7; d++) {
-                let dt = new Date(dataBase); dt.setDate(dataBase.getDate() + d);
-                let sem = dt.getDay();
-                let cor = "AZUL"; if(sem === 5) cor = "PRETA"; if(sem === 0 || sem === 6) cor = "VERMELHA";
-                let dtFmt = dt.toLocaleDateString('pt-BR');
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-                postos.forEach((p, idx) => {
-                    let aluno = ativos[(d * 6 + idx) % ativos.length];
-                    escalaGuardaGerada.push({ data: dtFmt, cor: cor, re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', qra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}º`, posto: p });
+            while(curr <= dtFim) {
+                let dStr = curr.toLocaleDateString('pt-BR');
+                let dSem = diasSemana[curr.getDay()];
+                let aluno = ativos[idxAluno % ativos.length];
+
+                escalaPeriodoGerada.push({
+                    data: dStr,
+                    diaSemana: dSem,
+                    alunoId: aluno.id,
+                    re: aluno.re,
+                    posto_grad: aluno.posto_grad || 'AL SD PM',
+                    qra: aluno.nome_guerra
                 });
+
+                idxAluno++;
+                curr.setDate(curr.getDate() + 1);
             }
 
-            const tbody = document.getElementById('tabela-escala-guarda');
-            tbody.innerHTML = '';
-            escalaGuardaGerada.forEach(i => {
-                let badge = `<span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-[10px]">AZUL</span>`;
-                if(i.cor === 'PRETA') badge = `<span class="bg-slate-900 text-white font-bold px-2 py-0.5 rounded text-[10px]">PRETA</span>`;
-                if(i.cor === 'VERMELHA') badge = `<span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded text-[10px]">VERMELHA</span>`;
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2.5 font-semibold">${i.data}</td><td class="p-2.5">${badge}</td><td class="p-2.5 font-mono font-bold">${i.re}</td><td class="p-2.5">${i.posto_grad}</td><td class="p-2.5 font-bold">${i.qra}</td><td class="p-2.5">${i.pel}</td><td class="p-2.5 text-center font-semibold">${i.posto}</td></tr>`;
+            renderizarEscalaPeriodoUI();
+        }
+
+        function renderizarEscalaPeriodoUI() {
+            const container = document.getElementById('container-lista-periodo');
+            if(!container) return;
+            container.innerHTML = '';
+
+            escalaPeriodoGerada.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-2.5 rounded text-xs">
+                        <div class="font-semibold text-slate-700">
+                            ${item.data} (${item.diaSemana}) — <span class="font-bold text-slate-900">${item.posto_grad} ${item.qra}</span> (${item.re})
+                        </div>
+                        <button onclick="abrirModalTroca(${index})" class="bg-red-700 hover:bg-red-800 text-white px-2.5 py-1 rounded shadow text-[11px] font-bold flex items-center gap-1 transition">
+                            <span>Alterar</span> <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                `;
             });
         }
 
-        // ESTÁGIO
+        function abrirModalTroca(index) {
+            document.getElementById('troca-index-alvo').value = index;
+            const sel = document.getElementById('select-novo-aluno');
+            sel.innerHTML = '';
+            listaAlunos.filter(a => a.status === 'Ativo').forEach(a => {
+                sel.innerHTML += `<option value="${a.id}">${a.posto_grad || 'AL SD PM'} ${a.nome_guerra} (RE: ${a.re})</option>`;
+            });
+            document.getElementById('modal-troca-aluno').classList.remove('hidden');
+        }
+
+        function fecharModalTrocaAluno() {
+            document.getElementById('modal-troca-aluno').classList.add('hidden');
+        }
+
+        function confirmarTrocaAluno() {
+            const index = parseInt(document.getElementById('troca-index-alvo').value);
+            const novoId = document.getElementById('select-novo-aluno').value;
+            const novoAluno = listaAlunos.find(a => String(a.id) === String(novoId));
+
+            if(novoAluno && !isNaN(index)) {
+                escalaPeriodoGerada[index].alunoId = novoAluno.id;
+                escalaPeriodoGerada[index].re = novoAluno.re;
+                escalaPeriodoGerada[index].posto_grad = novoAluno.posto_grad || 'AL SD PM';
+                escalaPeriodoGerada[index].qra = novoAluno.nome_guerra;
+                renderizarEscalaPeriodoUI();
+            }
+            fecharModalTrocaAluno();
+        }
+
+        // ESTÁGIO OFICIAL
         function gerarEscalaEstagioOficial() {
             if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
             const modalidade = document.getElementById('estagio-modalidade').value;
@@ -681,7 +731,7 @@
 
                 if(max >= 2) {
                     let modalidade = max === 2 ? '24H (Parcial)' : (max === 3 ? '48H (Intermediário)' : '60H (Total)');
-                    escalaLECCalculada.push({ re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', nome_guerra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}º`, codigo: modCod, modalidade: modalidade });
+                    escalaLECCalculada.push({ re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', nome_guerra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}`, codigo: modCod, modalidade: modalidade });
                 }
             });
 
@@ -702,20 +752,30 @@
             const tableRows = [
                 new docx.TableRow({
                     children: [
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 30, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 40, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓDIGO", alignment: docx.AlignmentType.CENTER })], width: { size: 15, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "MODALIDADE", alignment: docx.AlignmentType.CENTER })], width: { size: 15, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 20, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 25, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOT", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOT", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })], width: { size: 9, type: docx.WidthType.PERCENTAGE } }),
                     ]
                 })
             ];
-            escalaLECCalculada.forEach(i => {
+            escalaLECCalculada.forEach((i, idx) => {
                 tableRows.push(new docx.TableRow({
                     children: [
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: String(idx+1).padStart(2,'0'), alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.pel, alignment: docx.AlignmentType.CENTER })] }), // Apenas número
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "1", alignment: docx.AlignmentType.CENTER })] }),
                         new docx.TableCell({ children: [new docx.Paragraph({ text: i.re, alignment: docx.AlignmentType.CENTER })] }),
                         new docx.TableCell({ children: [new docx.Paragraph({ text: i.nome_guerra })] }),
                         new docx.TableCell({ children: [new docx.Paragraph({ text: i.codigo, alignment: docx.AlignmentType.CENTER })] }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.modalidade, alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "06JAN26" })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "25FEV26" })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "" })] }),
                     ]
                 }));
             });
@@ -745,7 +805,7 @@
             });
         }
 
-        // MODAIS
+        // MODAIS E SALVAMENTO
         function abrirModalEfetivo() { document.getElementById('modal-efetivo').classList.remove('hidden'); }
         function fecharModalEfetivo() { document.getElementById('modal-efetivo').classList.add('hidden'); }
         async function salvarEfetivo(e) {
