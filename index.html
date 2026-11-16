@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Biblioteca docx.js para gerar o arquivo Word oficial idêntico às ordens de serviço -->
     <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +22,7 @@
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 flex flex-col h-screen overflow-hidden">
 
-    <!-- OVERLAY DE LOGIN -->
+    <!-- LOGIN -->
     <div id="tela-login" class="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border border-slate-200 text-center relative">
             <div class="mb-6">
@@ -33,8 +32,7 @@
                 <h2 class="text-xl font-bold text-slate-900">GABINETE DE TREINAMENTO</h2>
                 <p class="text-xs text-red-700 font-bold uppercase tracking-wider">CPA M-5 — Polícia Militar SP</p>
             </div>
-
-            <form id="form-login" onsubmit="executarLogin(event)" class="space-y-4 text-left">
+            <form onsubmit="executarLogin(event)" class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">E-mail, RE ou CPF *</label>
                     <input type="text" id="login-identificador" placeholder="Digite seu E-mail, RE ou CPF" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-600" required>
@@ -44,111 +42,56 @@
                     <input type="password" id="login-senha" placeholder="••••••••" class="w-full border border-slate-300 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-600" required>
                 </div>
                 <p id="msg-erro-login" class="text-xs text-red-600 font-semibold hidden text-center bg-red-50 p-2 rounded border border-red-200"></p>
-                <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded-lg shadow text-sm transition">
-                    Entrar no Portal
-                </button>
+                <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded-lg shadow text-sm transition">Entrar no Portal</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL DE TROCA DE SENHA -->
-    <div id="modal-troca-senha" class="hidden fixed inset-0 bg-slate-900/95 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 border border-slate-200 text-left relative">
-            <div class="mb-4 border-b pb-3 flex justify-between items-start">
-                <div>
-                    <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2" id="titulo-modal-senha">
-                        <i class="fa-solid fa-lock text-red-700"></i> Cadastrar Nova Senha
-                    </h3>
-                    <p class="text-[11px] text-slate-500 mt-1" id="subtitulo-modal-senha">Por segurança, crie uma nova senha pessoal.</p>
-                </div>
-            </div>
-            <form onsubmit="confirmarTrocaSenha(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nova Senha *</label>
-                    <input type="password" id="nova-senha-1" required placeholder="Digite a nova senha" class="w-full border border-slate-300 p-2.5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-600">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Confirme a Nova Senha *</label>
-                    <input type="password" id="nova-senha-2" required placeholder="Repita a nova senha" class="w-full border border-slate-300 p-2.5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-red-600">
-                </div>
-                <p id="msg-erro-troca" class="text-xs text-red-600 font-semibold hidden"></p>
-                <button type="submit" class="w-full bg-red-700 text-white py-2.5 rounded-lg font-bold hover:bg-red-800 transition">
-                    Salvar e Atualizar Senha
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- HEADER SUPERIOR -->
+    <!-- HEADER -->
     <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center z-10">
         <div>
             <h1 class="text-base font-bold tracking-tight text-slate-900">GABINETE DE TREINAMENTO <span class="text-xs font-semibold text-red-700">CPA M-5</span></h1>
             <p class="text-[10px] text-slate-500 uppercase">Comando de Policiamento de Área Metropolitano 5</p>
         </div>
-        
         <div class="flex items-center gap-3">
             <div class="text-right">
                 <p class="text-xs font-bold text-slate-800" id="user-display-nome">---</p>
                 <p class="text-[10px] font-semibold text-red-600 tracking-wider uppercase" id="user-display-permissao">---</p>
             </div>
-            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600">
-                <i class="fa-solid fa-user-shield text-sm" id="user-display-icon"></i>
-            </div>
-            <button onclick="executarLogout()" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-3 py-1.5 rounded transition">
-                Sair
-            </button>
+            <button onclick="executarLogout()" class="border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-semibold px-3 py-1.5 rounded transition">Sair</button>
         </div>
     </header>
 
-    <!-- CONTAINER PRINCIPAL -->
+    <!-- MAIN CONTAINER -->
     <div class="flex flex-1 overflow-hidden">
-
-        <!-- MENU LATERAL -->
+        <!-- MENU -->
         <aside class="w-60 bg-white border-r border-slate-200 flex flex-col justify-between overflow-y-auto">
             <div class="py-4">
                 <p class="px-6 text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-2">Navegação</p>
-                <nav class="space-y-0.5" id="nav-menu">
-                    <button id="btn-menu-portal" onclick="mudarAba('portal', this)" class="menu-btn active-menu w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-clipboard-list w-4 text-center"></i> Mapa Força
-                    </button>
-                    <button onclick="mudarAba('efetivo', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-users w-4 text-center"></i> Efetivo
-                    </button>
-                    <button onclick="mudarAba('anotacoes', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i> Anotações
-                    </button>
-                    <button onclick="mudarAba('recursos', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-file-signature w-4 text-center"></i> Recursos
-                    </button>
-                    <button onclick="mudarAba('dashboard-conduta', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-chart-column w-4 text-center"></i> Dashboard Conduta
-                    </button>
-                    <button onclick="mudarAba('lec', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-clipboard-check w-4 text-center"></i> Escala de LEC
-                    </button>
-                    <button onclick="mudarAba('servicos', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-calendar-days w-4 text-center"></i> Serviços & Escalas
-                    </button>
-                    <button onclick="mudarAba('relatorios', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition">
-                        <i class="fa-solid fa-file-lines w-4 text-center"></i> Relatórios
-                    </button>
+                <nav class="space-y-0.5">
+                    <button id="btn-menu-portal" onclick="mudarAba('portal', this)" class="menu-btn active-menu w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-clipboard-list w-4"></i> Mapa Força</button>
+                    <button onclick="mudarAba('efetivo', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-users w-4"></i> Efetivo</button>
+                    <button onclick="mudarAba('anotacoes', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-triangle-exclamation w-4"></i> Anotações</button>
+                    <button onclick="mudarAba('recursos', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-file-signature w-4"></i> Recursos</button>
+                    <button onclick="mudarAba('dashboard-conduta', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-chart-column w-4"></i> Dashboard Conduta</button>
+                    <button onclick="mudarAba('lec', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-clipboard-check w-4"></i> Escala de LEC</button>
+                    <button onclick="mudarAba('servicos', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-calendar-days w-4"></i> Serviços & Escalas</button>
+                    <button onclick="mudarAba('relatorios', this)" class="menu-btn w-full px-6 py-2.5 text-left text-xs text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition"><i class="fa-solid fa-file-lines w-4"></i> Relatórios</button>
                 </nav>
             </div>
         </aside>
 
-        <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+        <!-- CONTENT -->
         <main class="flex-1 p-8 overflow-y-auto bg-slate-50">
 
-            <!-- ABA PORTAL / MAPA FORÇA -->
+            <!-- PORTAL -->
             <section id="aba-portal" class="aba-conteudo">
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">MAPA FORÇA — GABINETE DE TREINAMENTO</h2>
                         <p class="text-xs text-slate-500">Comando de Policiamento de Área Metropolitano 5</p>
                     </div>
-                    <button onclick="abrirModalMapaForca()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded-lg shadow text-xs transition flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square"></i> Preencher / Atualizar Mapa Força
-                    </button>
+                    <button onclick="abrirModalMapaForca()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded-lg shadow text-xs transition"><i class="fa-solid fa-pen-to-square"></i> Atualizar Mapa Força</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm border-l-4 border-l-slate-800">
@@ -167,34 +110,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-pelotoes"></div>
             </section>
 
-            <!-- ABA EFETIVO -->
+            <!-- EFETIVO -->
             <section id="aba-efetivo" class="aba-conteudo hidden">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-red-600"></span> GESTÃO DE EFETIVO
-                    </h2>
-                    <button onclick="abrirModalEfetivo()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-3 py-1.5 rounded shadow text-xs transition flex items-center gap-2 admin-only">
-                        <i class="fa-solid fa-user-plus"></i> Cadastrar Integrante
-                    </button>
+                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">GESTÃO DE EFETIVO</h2>
+                    <button onclick="abrirModalEfetivo()" class="bg-red-700 text-white px-3 py-1.5 rounded shadow text-xs font-semibold">Cadastrar Integrante</button>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap justify-between items-center gap-3">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <input type="text" id="input-busca" onkeyup="filtrarTabela()" placeholder="Buscar por Nome, RE, CPF..." class="border border-slate-300 px-3 py-1.5 rounded text-xs w-60 focus:outline-none">
-                            <select id="filtro-pelotao" onchange="filtrarTabela()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs bg-white text-slate-700 font-medium">
-                                <option value="">Todos os Pelotões / Seções</option>
-                            </select>
-                            <select id="filtro-turma" onchange="filtrarTabela()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs bg-white text-slate-700 font-medium">
-                                <option value="">Todas as Turmas / Edital</option>
-                            </select>
-                            <button onclick="limparFiltros()" class="text-[11px] text-slate-500 hover:text-red-600 font-semibold underline px-1">Limpar</button>
-                        </div>
-                        <span id="total-alunos" class="text-xs font-semibold text-slate-500">Integrantes: 0</span>
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
+                    <div class="flex gap-3 mb-4">
+                        <input type="text" id="input-busca" onkeyup="filtrarTabela()" placeholder="Buscar por Nome, RE..." class="border p-2 rounded text-xs w-60">
+                        <select id="filtro-pelotao" onchange="filtrarTabela()" class="border p-2 rounded text-xs bg-white"><option value="">Todos os Pelotões</option></select>
                     </div>
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
-                                <th class="p-3">RE</th><th class="p-3">Posto/Grad</th><th class="p-3">Nome de Guerra</th><th class="p-3">Nome Completo</th><th class="p-3">Pelotão</th><th class="p-3">Gênero</th><th class="p-3">Turma</th><th class="p-3">Perfil</th><th class="p-3">Status</th><th class="p-3 text-center admin-only">Ações</th>
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
+                                <th class="p-3">RE</th><th class="p-3">Posto/Grad</th><th class="p-3">QRA</th><th class="p-3">Nome Completo</th><th class="p-3">Pelotão</th><th class="p-3">Gênero</th><th class="p-3">Status</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-alunos" class="divide-y divide-slate-200"></tbody>
@@ -202,25 +132,17 @@
                 </div>
             </section>
 
-            <!-- ABA ANOTAÇÕES DISCIPLINARES -->
+            <!-- ANOTAÇÕES -->
             <section id="aba-anotacoes" class="aba-conteudo hidden">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-red-600"></span> REGISTRO DE ANOTAÇÕES DISCIPLINARES
-                    </h2>
-                    <button onclick="abrirModalAnotacao()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-3 py-1.5 rounded shadow text-xs transition flex items-center gap-2 admin-only">
-                        <i class="fa-solid fa-plus-circle"></i> Nova Anotação
-                    </button>
+                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">REGISTRO DE ANOTAÇÕES DISCIPLINARES</h2>
+                    <button onclick="abrirModalAnotacao()" class="bg-red-700 text-white px-3 py-1.5 rounded shadow text-xs font-semibold">Nova Anotação</button>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-3">
-                        <input type="text" id="input-busca-anotacao" onkeyup="filtrarAnotacoes()" placeholder="Buscar por Nome, RE ou Enquadramento..." class="border border-slate-300 px-3 py-1.5 rounded text-xs w-72 focus:outline-none">
-                        <span id="total-anotacoes" class="text-xs font-semibold text-slate-500">Total: 0</span>
-                    </div>
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
-                                <th class="p-3">Data</th><th class="p-3">RE</th><th class="p-3">Aluno</th><th class="p-3">Enquadramento</th><th class="p-3">Origem</th><th class="p-3">Anotado Por</th><th class="p-3">Status</th><th class="p-3 text-center">Ações</th>
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
+                                <th class="p-3">Data</th><th class="p-3">RE</th><th class="p-3">Aluno</th><th class="p-3">Código</th><th class="p-3">Origem</th><th class="p-3">Anotado Por</th><th class="p-3">Status</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-anotacoes" class="divide-y divide-slate-200"></tbody>
@@ -228,22 +150,14 @@
                 </div>
             </section>
 
-            <!-- ABA RECURSOS -->
+            <!-- RECURSOS -->
             <section id="aba-recursos" class="aba-conteudo hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-red-600"></span> PAINEL DE RECURSOS DISCIPLINARES
-                    </h2>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-3">
-                        <input type="text" id="input-busca-recurso" onkeyup="filtrarRecursos()" placeholder="Buscar..." class="border border-slate-300 px-3 py-1.5 rounded text-xs w-72 focus:outline-none">
-                        <span id="total-recursos" class="text-xs font-semibold text-slate-500">Recursos: 0</span>
-                    </div>
+                <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">PAINEL DE RECURSOS DISCIPLINARES</h2>
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
-                                <th class="p-3">Data</th><th class="p-3">RE</th><th class="p-3">Aluno</th><th class="p-3">Justificativa</th><th class="p-3">Status</th><th class="p-3">Parecer</th><th class="p-3 text-center">Ações</th>
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
+                                <th class="p-3">RE</th><th class="p-3">Aluno</th><th class="p-3">Justificativa</th><th class="p-3">Status</th><th class="p-3">Parecer</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-recursos" class="divide-y divide-slate-200"></tbody>
@@ -251,46 +165,31 @@
                 </div>
             </section>
 
-            <!-- ABA DASHBOARD CONDUTA -->
+            <!-- DASHBOARD CONDUTA -->
             <section id="aba-dashboard-conduta" class="aba-conteudo hidden">
                 <h2 class="text-xl font-bold text-slate-900 tracking-tight mb-4">DASHBOARD DE CONDUTA & DISCIPLINA</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl border shadow-sm"><p class="text-[10px] text-slate-400 font-bold uppercase">Total Anotações</p><h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="dash-total-anotacoes">0</h3></div>
+                    <div class="bg-white p-4 rounded-xl border shadow-sm"><p class="text-[10px] text-slate-400 font-bold uppercase">Recursos Em Análise</p><h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="dash-recursos-analise">0</h3></div>
+                    <div class="bg-white p-4 rounded-xl border shadow-sm"><p class="text-[10px] text-slate-400 font-bold uppercase">Deferidos (Anuladas)</p><h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="dash-recursos-deferidos">0</h3></div>
+                    <div class="bg-white p-4 rounded-xl border shadow-sm"><p class="text-[10px] text-slate-400 font-bold uppercase">Indeferidos (Mantidas)</p><h3 class="text-2xl font-extrabold text-slate-700 mt-1" id="dash-recursos-indeferidos">0</h3></div>
+                </div>
             </section>
 
-            <!-- ABA ESCALA DE LEC -->
+            <!-- LEC -->
             <section id="aba-lec" class="aba-conteudo hidden">
-                <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
-                        <p class="text-xs text-slate-500">Cálculo Automático e Exportação em Word Oficial (CPA M-5)</p>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
+                    <div class="flex gap-2">
+                        <button onclick="gerarPreviaEscalaLEC()" class="bg-amber-600 text-white px-3.5 py-2 rounded shadow text-xs font-semibold">Gerar Prévia FDS</button>
+                        <button onclick="exportarEscalaWordOficial()" class="bg-blue-700 text-white px-3.5 py-2 rounded shadow text-xs font-semibold"><i class="fa-solid fa-file-word"></i> Baixar Word Oficial</button>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="gerarPreviaEscalaLEC()" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition admin-only">
-                            <i class="fa-solid fa-calculator"></i> Gerar Prévia Próximo FDS
-                        </button>
-                        <button onclick="publicarEscalaDefinitiva()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition admin-only">
-                            <i class="fa-solid fa-bullhorn"></i> Publicar Definitiva
-                        </button>
-                        <button onclick="exportarEscalaWordOficial()" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition">
-                            <i class="fa-solid fa-file-word"></i> Baixar Word Oficial
-                        </button>
-                    </div>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
-                    <input type="text" id="input-busca-lec" onkeyup="filtrarLEC()" placeholder="Buscar RE, QRA..." class="border border-slate-300 px-3 py-1.5 rounded text-xs w-60 focus:outline-none">
-                    <select id="filtro-pelotao-lec" onchange="filtrarLEC()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs bg-white text-slate-700 font-medium">
-                        <option value="">Todos os Pelotões</option>
-                    </select>
                 </div>
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-                    <div class="text-center border-b pb-4 mb-4">
-                        <h3 class="text-sm font-bold text-slate-900 uppercase">POLÍCIA MILITAR DO ESTADO DE SÃO PAULO</h3>
-                        <h4 class="text-xs font-bold text-red-700 uppercase">Comando de Policiamento de Área Metropolitano 5</h4>
-                        <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">LICENCIAMENTO ESCOLAR CASSADO</p>
-                    </div>
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider border-b">
-                                <th class="p-2.5 w-32">RE</th><th class="p-2.5">Posto/Grad</th><th class="p-2.5 w-40">QRA</th><th class="p-2.5">Pel</th><th class="p-2.5">Cód</th><th class="p-2.5">Pontos</th><th class="p-2.5">Modalidade</th><th class="p-2.5">Horário</th><th class="p-2.5 text-center admin-only">Ações</th>
+                            <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b">
+                                <th class="p-2.5 w-40">RE</th><th class="p-2.5">Posto/Grad</th><th class="p-2.5 w-48">QRA</th><th class="p-2.5">Pel</th><th class="p-2.5">Código</th><th class="p-2.5">Modalidade</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-escala-lec" class="divide-y divide-slate-200"></tbody>
@@ -298,57 +197,27 @@
                 </div>
             </section>
 
-            <!-- ABA SERVIÇOS & ESCALAS (GUARDA, ESTÁGIO E FAXINA) -->
+            <!-- SERVIÇOS & ESCALAS -->
             <section id="aba-servicos" class="aba-conteudo hidden">
-                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900 tracking-tight">GESTÃO DE SERVIÇOS & ESCALAS</h2>
-                        <p class="text-xs text-slate-500">Escala de Guarda, Estágio (Embarcado / A Pé - Parques) e Faxina</p>
-                    </div>
-                </div>
-
-                <!-- SUB-ABAS -->
                 <div class="flex gap-2 border-b border-slate-200 mb-6">
-                    <button onclick="mudarSubAbaServicos('guarda', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition">
-                        <i class="fa-solid fa-shield-halved"></i> Escala de Guarda
-                    </button>
-                    <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-graduation-cap"></i> Escala de Estágio (Oficial CPA M-5)
-                    </button>
-                    <button onclick="mudarSubAbaServicos('faxina', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
-                        <i class="fa-solid fa-broom"></i> Escala de Faxina
-                    </button>
-                </div>
-
-                <!-- FILTROS GLOBAIS -->
-                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
-                    <input type="text" id="input-busca-servicos" onkeyup="filtrarServicos()" placeholder="Buscar RE, QRA..." class="border border-slate-300 px-3 py-1.5 rounded text-xs w-60 focus:outline-none">
-                    <select id="filtro-pelotao-servicos" onchange="filtrarServicos()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs bg-white text-slate-700 font-medium">
-                        <option value="">Todos os Pelotões</option>
-                    </select>
+                    <button onclick="mudarSubAbaServicos('guarda', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition"><i class="fa-solid fa-shield-halved"></i> Escala de Guarda</button>
+                    <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition"><i class="fa-solid fa-graduation-cap"></i> Escala de Estágio (Padrão Oficial)</button>
+                    <button onclick="mudarSubAbaServicos('faxina', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition"><i class="fa-solid fa-broom"></i> Escala de Faxina</button>
                 </div>
 
                 <!-- SUB-ABA GUARDA -->
                 <div id="sub-aba-guarda" class="space-y-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                    <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data Início Guarda *</label>
-                                <input type="date" id="guarda-data-inicio" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
-                            </div>
-                            <div class="text-[11px] text-slate-600">
-                                <p><span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-1"></span> <b>Azul:</b> Seg-Qui | <span class="inline-block w-3 h-3 bg-slate-900 rounded-full mr-1"></span> <b>Preta:</b> Sex | <span class="inline-block w-3 h-3 bg-red-600 rounded-full mr-1"></span> <b>Vermelha:</b> Sáb/Dom</p>
-                            </div>
+                            <input type="date" id="guarda-data-inicio" class="border p-2 rounded text-xs">
+                            <span class="text-[11px] text-slate-600"><b>Cores:</b> Azul (Seg-Qui), Preta (Sex), Vermelha (Sáb/Dom)</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="gerarEscalaGuarda()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition">Gerar Guarda (7 Dias)</button>
-                            <button onclick="exportarGuardaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                        </div>
+                        <button onclick="gerarEscalaGuarda()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Guarda (7 Dias)</button>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
+                    <div class="bg-white rounded-lg shadow-sm border p-4">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
-                                <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
                                     <th class="p-2.5">Data</th><th class="p-2.5">Cor</th><th class="p-2.5">RE</th><th class="p-2.5">Posto/Grad</th><th class="p-2.5">QRA</th><th class="p-2.5">Pel</th><th class="p-2.5 text-center">Posto de Guarda</th>
                                 </tr>
                             </thead>
@@ -357,112 +226,61 @@
                     </div>
                 </div>
 
-                <!-- SUB-ABA ESTÁGIO (COM FORMATO EXATO DAS SUAS FOTOS) -->
+                <!-- SUB-ABA ESTÁGIO -->
                 <div id="sub-aba-estagio" class="space-y-4 hidden">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Modalidade do Estágio *</label>
-                                <select id="estagio-modalidade" class="border border-slate-300 p-2 rounded text-xs font-semibold bg-white focus:outline-none">
-                                    <option value="MOTORIZADO">Motorizado (VTR CGP, VTR 190 e BCM)</option>
-                                    <option value="A PÉ - PARQUES">A Pé (Operação Impacto Parques)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Data da Atividade *</label>
-                                <input type="date" id="estagio-data" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">BPM/M Vinculado *</label>
-                                <input type="text" id="estagio-bpm" value="16º BPM/M" class="border border-slate-300 p-2 rounded text-xs w-28 focus:outline-none font-bold">
-                            </div>
+                    <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex items-center gap-3">
+                            <select id="estagio-modalidade" class="border p-2 rounded text-xs font-semibold bg-white">
+                                <option value="POLICIAMENTO MOTORIZADO (VTR CGP,VTR 190 e BCM)">Motorizado (VTR CGP, 190 e BCM)</option>
+                                <option value="POLICIAMENTO OSTENSIVO A PÉ - OPERAÇÃO IMPACTO PARQUES">A Pé (Operação Impacto Parques)</option>
+                            </select>
+                            <input type="date" id="estagio-data" class="border p-2 rounded text-xs">
+                            <input type="text" id="estagio-bpm" value="16º BPM/M" class="border p-2 rounded text-xs w-28 font-bold">
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="gerarEscalaEstagioOficial()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition">
-                                <i class="fa-solid fa-calculator"></i> Gerar Escala Oficial
-                            </button>
-                            <button onclick="exportarEstagioWordOficial()" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-3.5 py-2 rounded shadow text-xs transition">
-                                <i class="fa-solid fa-file-word"></i> Baixar Word Oficial (Idêntico Foto)
-                            </button>
+                        <div class="flex gap-2">
+                            <button onclick="gerarEscalaEstagioOficial()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Oficial</button>
+                            <button onclick="exportarEstagioWordOficial()" class="bg-blue-700 text-white font-semibold px-3.5 py-2 rounded text-xs"><i class="fa-solid fa-file-word"></i> Baixar Word Oficial</button>
                         </div>
                     </div>
-
-                    <!-- PREVIAS DO MODELO OFICIAL -->
-                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm border p-6 space-y-4">
                         <div class="text-center border-b pb-3">
-                            <h3 class="text-xs font-bold text-slate-900 uppercase">COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO</h3>
+                            <h3 class="text-xs font-bold uppercase">COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO</h3>
                             <h4 class="text-[11px] font-bold text-slate-700 uppercase">GABINETE DE TREINAMENTO</h4>
-                            <p class="text-[11px] font-bold text-red-700 uppercase mt-1" id="est-titulo-modalidade">ATIVIDADE DE TREINAMENTO EM CAMPO - POLICIAMENTO OSTENSIVO MOTORIZADO</p>
+                            <p class="text-[11px] font-bold text-red-700 uppercase mt-1" id="est-titulo-modalidade">ATIVIDADE DE TREINAMENTO EM CAMPO</p>
+                            <p class="text-[10px] font-bold text-slate-600 uppercase mt-0.5" id="est-sub-bpm">16º BPM/M</p>
                         </div>
-
-                        <div class="grid grid-cols-4 gap-2 bg-slate-50 p-3 rounded border text-center text-xs font-semibold">
-                            <div>DATA: <span id="prev-est-data" class="font-normal">14NOV26</span></div>
-                            <div>APRESENTAÇÃO: <span class="font-normal">sede da CIA PM</span></div>
-                            <div>UNIFORME: <span class="font-normal">B-1 (EPI completo)</span></div>
-                            <div>TRANSPORTE: <span id="prev-est-transporte" class="font-normal">Próprio</span></div>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider border-b">
-                                        <th class="p-2 text-center w-12">QTD</th>
-                                        <th class="p-2 w-36">PRECEPTOR</th>
-                                        <th class="p-2 w-24">GRAD</th>
-                                        <th class="p-2 w-32">RE</th>
-                                        <th class="p-2">NOME COMPLETO</th>
-                                        <th class="p-2 w-32">QRA</th>
-                                        <th class="p-2 text-center w-12">PEL</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabela-escala-estagio-oficial" class="divide-y divide-slate-200 text-xs">
-                                    <tr><td colspan="7" class="p-6 text-center text-slate-400">Clique em "Gerar Escala Oficial".</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b">
+                                    <th class="p-2 text-center w-12">QTD</th><th class="p-2 w-48">PRECEPTOR</th><th class="p-2 w-24">GRAD</th><th class="p-2 w-32">RE</th><th class="p-2">NOME</th><th class="p-2 w-32">QRA</th><th class="p-2 text-center w-12">PEL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-escala-estagio-oficial" class="divide-y divide-slate-200 text-xs"></tbody>
+                        </table>
                     </div>
                 </div>
 
                 <!-- SUB-ABA FAXINA -->
                 <div id="sub-aba-faxina" class="space-y-4 hidden">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
-                        <div class="flex items-center gap-3">
-                            <input type="date" id="faxina-data" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="gerarEscalaFaxina()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition">Distribuir Faxinas</button>
-                            <button onclick="exportarFaxinaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                        </div>
+                    <div class="bg-white p-4 rounded-xl border shadow-sm flex justify-between items-center">
+                        <input type="date" id="faxina-data" class="border p-2 rounded text-xs">
+                        <button onclick="gerarEscalaFaxina()" class="bg-red-700 text-white font-semibold px-4 py-2 rounded text-xs">Gerar Faxina Dias Úteis</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-faxinas">
-                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-                            <h3 class="font-bold text-xs text-slate-800 mb-3"><i class="fa-solid fa-restroom text-blue-600"></i> Vestiário Masculino (4)</h3>
-                            <div id="lista-faxina-masc" class="space-y-2 text-xs"></div>
-                            <button onclick="adicionarVagaFaxina('masc')" class="mt-3 text-[11px] font-bold text-red-700"><i class="fa-solid fa-plus"></i> Adicionar Aluno</button>
-                        </div>
-                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-                            <h3 class="font-bold text-xs text-slate-800 mb-3"><i class="fa-solid fa-dumbbell text-slate-700"></i> Academia (2)</h3>
-                            <div id="lista-faxina-acad" class="space-y-2 text-xs"></div>
-                            <button onclick="adicionarVagaFaxina('acad')" class="mt-3 text-[11px] font-bold text-red-700"><i class="fa-solid fa-plus"></i> Adicionar Aluno</button>
-                        </div>
-                        <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-                            <h3 class="font-bold text-xs text-slate-800 mb-3"><i class="fa-solid fa-restroom text-pink-600"></i> Vestiário Feminino (2)</h3>
-                            <div id="lista-faxina-fem" class="space-y-2 text-xs"></div>
-                            <button onclick="adicionarVagaFaxina('fem')" class="mt-3 text-[11px] font-bold text-red-700"><i class="fa-solid fa-plus"></i> Adicionar Aluna</button>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Vestiário Masculino (4)</h3><div id="lista-faxina-masc" class="space-y-2 text-xs"></div></div>
+                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Academia (2)</h3><div id="lista-faxina-acad" class="space-y-2 text-xs"></div></div>
+                        <div class="bg-white rounded-lg border p-4"><h3 class="font-bold text-xs mb-3">Vestiário Feminino (2)</h3><div id="lista-faxina-fem" class="space-y-2 text-xs"></div></div>
                     </div>
                 </div>
             </section>
 
-            <!-- ABA RELATÓRIOS -->
+            <!-- RELATÓRIOS -->
             <section id="aba-relatorios" class="aba-conteudo hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">RELATÓRIOS & CONSOLIDAÇÃO DE SERVIÇOS</h2>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight mb-4">RELATÓRIOS CONSOLIDADOS</h2>
+                <div class="bg-white rounded-lg shadow-sm border p-4">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] border-b">
                                 <th class="p-3">RE</th><th class="p-3">Posto/Grad</th><th class="p-3">QRA</th><th class="p-3">Pel</th><th class="p-3 text-center">Anotações</th><th class="p-3 text-center">Guarda (Az/Pr/Vm)</th><th class="p-3 text-center">Estágios</th><th class="p-3 text-center">Faxinas</th>
                             </tr>
                         </thead>
@@ -474,248 +292,288 @@
         </main>
     </div>
 
-    <!-- MODAL EFETIVO -->
+    <!-- MODAIS -->
     <div id="modal-efetivo" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 space-y-4 text-xs">
-            <h3 class="font-bold text-sm" id="modal-titulo">Cadastrar Integrante</h3>
-            <form id="form-efetivo" onsubmit="salvarEfetivo(event)" class="space-y-3">
-                <input type="hidden" id="efetivo-id">
-                <div class="grid grid-cols-3 gap-3">
-                    <input type="text" id="efetivo-re" required placeholder="RE (Ex: 253887-3)" class="border p-2 rounded">
-                    <input type="text" id="efetivo-posto" required placeholder="Posto/Grad (Al Sd PM)" class="border p-2 rounded">
-                    <input type="text" id="efetivo-guerra" required placeholder="Nome de Guerra (QRA)" class="border p-2 rounded">
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <input type="text" id="efetivo-nome" required placeholder="Nome Completo" class="border p-2 rounded col-span-2">
-                    <select id="efetivo-genero" class="border p-2 rounded bg-white font-semibold">
-                        <option value="M">Masculino (M)</option>
-                        <option value="F">Feminino (F)</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <input type="email" id="efetivo-email" required placeholder="E-mail" class="border p-2 rounded">
-                    <input type="text" id="efetivo-pelotao" required placeholder="Pelotão (Ex: 1)" class="border p-2 rounded">
-                    <input type="text" id="efetivo-turma" value="Edital 02/2026" required class="border p-2 rounded">
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="fecharModalEfetivo()" class="px-3 py-1.5 border rounded">Cancelar</button>
-                    <button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button>
-                </div>
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-3 text-xs">
+            <h3 class="font-bold text-sm">Cadastrar Aluno</h3>
+            <form onsubmit="salvarEfetivo(event)" class="space-y-3">
+                <input type="text" id="efetivo-re" required placeholder="RE (Ex: 253887-3)" class="w-full border p-2 rounded">
+                <input type="text" id="efetivo-guerra" required placeholder="QRA (Ex: FONSECA)" class="w-full border p-2 rounded">
+                <input type="text" id="efetivo-nome" required placeholder="Nome Completo" class="w-full border p-2 rounded">
+                <input type="text" id="efetivo-pelotao" required placeholder="Pelotão (Ex: 1)" class="w-full border p-2 rounded">
+                <select id="efetivo-genero" class="w-full border p-2 rounded bg-white"><option value="M">Masculino (M)</option><option value="F">Feminino (F)</option></select>
+                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalEfetivo()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button></div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL MAPA FORÇA -->
+    <div id="modal-anotacao" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-3 text-xs">
+            <h3 class="font-bold text-sm">Nova Anotação Disciplinar</h3>
+            <form onsubmit="salvarAnotacao(event)" class="space-y-3">
+                <select id="anotacao-aluno-id" required class="w-full border p-2 rounded bg-white"><option value="">Selecione o Aluno...</option></select>
+                <input type="date" id="anotacao-data" required class="w-full border p-2 rounded">
+                <input type="text" id="anotacao-codigo" required placeholder="Código (Ex: D-1)" class="w-full border p-2 rounded uppercase">
+                <select id="anotacao-origem" class="w-full border p-2 rounded bg-white"><option value="Efetivo GT">Efetivo GT</option><option value="Fora do GT">Fora do GT</option></select>
+                <input type="text" id="anotacao-anotado-por" required placeholder="Anotado por (Ex: 1º Sgt Fonseca)" class="w-full border p-2 rounded">
+                <textarea id="anotacao-sintese" rows="3" required placeholder="Síntese do fato..." class="w-full border p-2 rounded"></textarea>
+                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalAnotacao()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Registrar</button></div>
+            </form>
+        </div>
+    </div>
+
     <div id="modal-mapa-forca" class="hidden fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-4 text-xs">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-3 text-xs">
             <h3 class="font-bold text-sm">Atualizar Mapa Força</h3>
-            <form id="form-mapa-forca" onsubmit="salvarMapaForca(event)" class="space-y-3">
+            <form onsubmit="salvarMapaForca(event)" class="space-y-3">
                 <input type="text" id="mf-in-aluno-dia" required placeholder="Aluno de Dia" class="w-full border p-2 rounded">
                 <input type="text" id="mf-in-chefe-gt" required placeholder="Chefe GT" class="w-full border p-2 rounded">
                 <input type="text" id="mf-in-sgt-semana" required placeholder="Sgt da Semana" class="w-full border p-2 rounded">
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="fecharModalMapaForca()" class="px-3 py-1.5 border rounded">Cancelar</button>
-                    <button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button>
-                </div>
+                <div class="flex justify-end gap-2"><button type="button" onclick="fecharModalMapaForca()" class="px-3 py-1.5 border rounded">Cancelar</button><button type="submit" class="px-3 py-1.5 bg-red-700 text-white rounded">Salvar</button></div>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPT -->
     <script>
         const SUPABASE_URL = "https://rvywrmiafdcxirjnkgnf.supabase.co";
         const SUPABASE_KEY = "sb_publishable_9HPz3qa-w4oUFjDMZheghQ_1pCxT-J9";
         var _supabase = null;
-        let usuarioLogado = null;
-        var listaAlunos = [];
-        var listaAnotacoes = [];
+        let listaAlunos = [];
+        let listaAnotacoes = [];
+        let listaRecursos = [];
         var escalaEstagioGeradaOficial = [];
         var escalaGuardaGerada = [];
         var escalaFaxinaGerada = { masc: [], acad: [], fem: [] };
         var escalaLECCalculada = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            conectarSupabase();
-            carregarMapaForca();
+            try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){}
             carregarAlunosDoBanco();
             carregarAnotacoesDoBanco();
-            const hojeIso = new Date().toISOString().split('T')[0];
-            if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hojeIso;
-            if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hojeIso;
-            if(document.getElementById('guarda-data-inicio')) document.getElementById('guarda-data-inicio').value = hojeIso;
+            carregarRecursosDoBanco();
+            carregarMapaForca();
+            const hoje = new Date().toISOString().split('T')[0];
+            if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hoje;
+            if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hoje;
+            if(document.getElementById('guarda-data-inicio')) document.getElementById('guarda-data-inicio').value = hoje;
+            if(document.getElementById('anotacao-data')) document.getElementById('anotacao-data').value = hoje;
         });
-
-        function conectarSupabase() {
-            try { if (window.supabase && !_supabase) _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){}
-        }
 
         async function executarLogin(e) {
             e.preventDefault();
-            conectarSupabase();
             const termo = document.getElementById('login-identificador').value.trim();
             const senha = document.getElementById('login-senha').value.trim();
-            const msgErro = document.getElementById('msg-erro-login');
-            msgErro.classList.add('hidden');
-            try {
-                const { data: usuarios } = await _supabase.from('alunos').select('*');
-                const usuario = usuarios.find(u => u.email?.toLowerCase() === termo.toLowerCase() || u.re === termo || u.cpf === termo);
-                if (!usuario || (usuario.senha || "PMSP@2026") !== senha) {
-                    msgErro.innerText = "Credenciais inválidas."; msgErro.classList.remove('hidden'); return;
-                }
-                usuarioLogado = usuario;
-                definirUsuario(usuario);
-            } catch(err) { msgErro.innerText = "Erro ao conectar."; msgErro.classList.remove('hidden'); }
+            if(!_supabase) return;
+            const { data } = await _supabase.from('alunos').select('*');
+            const user = data.find(u => u.email?.toLowerCase() === termo.toLowerCase() || u.re === termo || u.cpf === termo);
+            if(user && (user.senha || "PMSP@2026") === senha) {
+                document.getElementById('tela-login').style.display = 'none';
+                document.getElementById('user-display-nome').innerText = `${user.posto_grad || ''} ${user.nome_guerra}`.trim();
+                document.getElementById('user-display-permissao').innerText = user.nivel_acesso || 'Aluno';
+                mudarAba('portal', document.getElementById('btn-menu-portal'));
+            } else {
+                document.getElementById('msg-erro-login').innerText = "Credenciais inválidas.";
+                document.getElementById('msg-erro-login').classList.remove('hidden');
+            }
         }
 
-        function definirUsuario(user) {
-            usuarioLogado = user;
-            document.getElementById('tela-login').style.display = 'none';
-            document.getElementById('user-display-nome').innerText = `${user.posto_grad || ''} ${user.nome_guerra}`.trim();
-            document.getElementById('user-display-permissao').innerText = user.nivel_acesso || 'Aluno';
-            mudarAba('portal', document.getElementById('btn-menu-portal'));
-        }
+        function executarLogout() { document.getElementById('tela-login').style.display = 'flex'; }
 
-        function executarLogout() { usuarioLogado = null; document.getElementById('tela-login').style.display = 'flex'; }
-
-        function mudarAba(idAba, elemento) {
-            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active-menu'));
-            if(elemento) elemento.classList.add('active-menu');
-            document.querySelectorAll('.aba-conteudo').forEach(aba => aba.classList.add('hidden'));
+        function mudarAba(idAba, el) {
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-menu'));
+            if(el) el.classList.add('active-menu');
+            document.querySelectorAll('.aba-conteudo').forEach(a => a.classList.add('hidden'));
             document.getElementById(`aba-${idAba}`).classList.remove('hidden');
             if(idAba === 'relatorios') carregarRelatoriosGerais();
+            if(idAba === 'dashboard-conduta') carregarDashboardConduta();
         }
 
-        function mudarSubAbaServicos(subAba, elemento) {
-            document.querySelectorAll('.sub-aba-btn').forEach(b => {
-                b.classList.remove('border-red-600', 'text-red-600'); b.classList.add('border-transparent', 'text-slate-500');
-            });
-            if(elemento) { elemento.classList.remove('border-transparent', 'text-slate-500'); elemento.classList.add('border-red-600', 'text-red-600'); }
+        function mudarSubAbaServicos(sub, el) {
+            document.querySelectorAll('.sub-aba-btn').forEach(b => { b.classList.remove('border-red-600', 'text-red-600'); b.classList.add('border-transparent', 'text-slate-500'); });
+            if(el) { el.classList.remove('border-transparent', 'text-slate-500'); el.classList.add('border-red-600', 'text-red-600'); }
             document.getElementById('sub-aba-guarda').classList.add('hidden');
             document.getElementById('sub-aba-estagio').classList.add('hidden');
             document.getElementById('sub-aba-faxina').classList.add('hidden');
-            document.getElementById(`sub-aba-${subAba}`).classList.remove('hidden');
+            document.getElementById(`sub-aba-${sub}`).classList.remove('hidden');
         }
 
         async function carregarAlunosDoBanco() {
-            conectarSupabase();
-            if (!_supabase) return;
+            if(!_supabase) return;
             const { data } = await _supabase.from('alunos').select('*').order('re', { ascending: true });
-            if (data) { listaAlunos = data; renderizarTabela(listaAlunos); atualizarFiltrosGlobais(); }
+            if(data) { listaAlunos = data; renderizarTabelaAlunos(); atualizarFiltrosGlobais(); }
         }
 
         async function carregarAnotacoesDoBanco() {
-            conectarSupabase();
-            if (!_supabase) return;
+            if(!_supabase) return;
             const { data } = await _supabase.from('anotacoes').select('*');
-            if (data) listaAnotacoes = data;
+            if(data) { listaAnotacoes = data; renderizarAnotacoes(); }
+        }
+
+        async function carregarRecursosDoBanco() {
+            if(!_supabase) return;
+            const { data } = await _supabase.from('recursos').select('*');
+            if(data) { listaRecursos = data; renderizarRecursos(); }
         }
 
         async function carregarMapaForca() {
-            conectarSupabase();
-            if (!_supabase) return;
+            if(!_supabase) return;
             const { data } = await _supabase.from('mapa_forca').select('*').eq('id', 1).maybeSingle();
-            if (data) {
+            if(data) {
                 document.getElementById('mf-aluno-dia').innerText = data.aluno_dia || '---';
                 document.getElementById('mf-chefe-gt').innerText = data.chefe_gt || '---';
                 document.getElementById('mf-sgt-semana').innerText = data.sgt_semana || '---';
             }
         }
 
-        // GERADOR DE ESCALA DE ESTÁGIO OFICIAL (EXATO ÀS FOTOS DAS ORDENS DE SERVIÇO)
+        function atualizarFiltrosGlobais() {
+            const pelotoes = [...new Set(listaAlunos.map(a => a.pelotao).filter(Boolean))].sort();
+            const sel = document.getElementById('filtro-pelotao');
+            if(sel) {
+                sel.innerHTML = '<option value="">Todos os Pelotões</option>';
+                pelotoes.forEach(p => sel.innerHTML += `<option value="${p}">Pelotão ${p}</option>`);
+            }
+        }
+
+        function filtrarTabela() {
+            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
+            const pel = document.getElementById('filtro-pelotao').value;
+            const filtrados = listaAlunos.filter(a => {
+                const txt = !termo || a.nome_completo?.toLowerCase().includes(termo) || a.re?.includes(termo) || a.nome_guerra?.toLowerCase().includes(termo);
+                const bPel = !pel || a.pelotao === pel;
+                return txt && bPel;
+            });
+            renderizarTabelaAlunos(filtrados);
+        }
+
+        function renderizarTabelaAlunos(dados = listaAlunos) {
+            const tbody = document.getElementById('tabela-alunos');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            dados.forEach(a => {
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad || 'AL SD PM'}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.nome_completo}</td><td class="p-3">${a.pelotao || '---'}</td><td class="p-3">${a.genero || 'M'}</td><td class="p-3"><span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">${a.status || 'Ativo'}</span></td></tr>`;
+            });
+        }
+
+        function renderizarAnotacoes() {
+            const tbody = document.getElementById('tabela-anotacoes');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            listaAnotacoes.forEach(i => {
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-semibold">${i.data_fato || '---'}</td><td class="p-3 font-mono">${i.aluno_re}</td><td class="p-3 font-bold">${i.aluno_nome}</td><td class="p-3"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-[10px]">${i.codigo}</span></td><td class="p-3">${i.origem}</td><td class="p-3">${i.anotado_por}</td><td class="p-3"><span class="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-semibold">${i.status_recurso || 'Sem Recurso'}</span></td></tr>`;
+            });
+        }
+
+        function renderizarRecursos() {
+            const tbody = document.getElementById('tabela-recursos');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            listaRecursos.forEach(i => {
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono">${i.aluno_re}</td><td class="p-3 font-bold">${i.aluno_nome}</td><td class="p-3">${i.justificativa}</td><td class="p-3"><span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-[10px]">${i.status || 'Em Análise'}</span></td><td class="p-3">${i.parecer || '---'}</td></tr>`;
+            });
+        }
+
+        function carregarDashboardConduta() {
+            document.getElementById('dash-total-anotacoes').innerText = listaAnotacoes.length;
+            document.getElementById('dash-recursos-analise').innerText = listaRecursos.filter(r => r.status === 'Em Análise' || !r.status).length;
+            document.getElementById('dash-recursos-deferidos').innerText = listaRecursos.filter(r => r.status === 'Deferido').length;
+            document.getElementById('dash-recursos-indeferidos').innerText = listaRecursos.filter(r => r.status === 'Indeferido').length;
+        }
+
+        // GUARDA
+        function gerarEscalaGuarda() {
+            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
+            const ativos = listaAlunos.filter(a => a.status === 'Ativo');
+            const dataBase = new Date(document.getElementById('guarda-data-inicio').value + 'T00:00:00');
+            escalaGuardaGerada = [];
+            const postos = ["Comandante da Guarda", "Sentinela Principal", "Ronda do Quartel", "Permanência da Cia", "Auxiliar de Guarda 1", "Auxiliar de Guarda 2"];
+
+            for(let d = 0; d < 7; d++) {
+                let dt = new Date(dataBase); dt.setDate(dataBase.getDate() + d);
+                let sem = dt.getDay();
+                let cor = "AZUL"; if(sem === 5) cor = "PRETA"; if(sem === 0 || sem === 6) cor = "VERMELHA";
+                let dtFmt = dt.toLocaleDateString('pt-BR');
+
+                postos.forEach((p, idx) => {
+                    let aluno = ativos[(d * 6 + idx) % ativos.length];
+                    escalaGuardaGerada.push({ data: dtFmt, cor: cor, re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', qra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}º`, posto: p });
+                });
+            }
+
+            const tbody = document.getElementById('tabela-escala-guarda');
+            tbody.innerHTML = '';
+            escalaGuardaGerada.forEach(i => {
+                let badge = `<span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-[10px]">AZUL</span>`;
+                if(i.cor === 'PRETA') badge = `<span class="bg-slate-900 text-white font-bold px-2 py-0.5 rounded text-[10px]">PRETA</span>`;
+                if(i.cor === 'VERMELHA') badge = `<span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded text-[10px]">VERMELHA</span>`;
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2.5 font-semibold">${i.data}</td><td class="p-2.5">${badge}</td><td class="p-2.5 font-mono font-bold">${i.re}</td><td class="p-2.5">${i.posto_grad}</td><td class="p-2.5 font-bold">${i.qra}</td><td class="p-2.5">${i.pel}</td><td class="p-2.5 text-center font-semibold">${i.posto}</td></tr>`;
+            });
+        }
+
+        // ESTÁGIO
         function gerarEscalaEstagioOficial() {
-            if (listaAlunos.length === 0) { alert("Nenhum aluno cadastrado."); return; }
+            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
             const modalidade = document.getElementById('estagio-modalidade').value;
-            const dataIso = document.getElementById('estagio-data').value;
-            const dataFmt = dataIso ? dataIso.split('-').reverse().join('').toUpperCase() : '14NOV26';
-            
-            document.getElementById('prev-est-data').innerText = dataFmt;
-            document.getElementById('prev-est-transporte').innerText = modalidade === 'MOTORIZADO' ? 'Próprio' : 'SAT';
-            document.getElementById('est-titulo-modalidade').innerText = `ATIVIDADE DE TREINAMENTO EM CAMPO - POLICIAMENTO OSTENSIVO ${modalidade}`;
+            const bpm = document.getElementById('estagio-bpm').value;
+            document.getElementById('est-titulo-modalidade').innerText = `ATIVIDADE DE TREINAMENTO EM CAMPO - ${modalidade}`;
+            document.getElementById('est-sub-bpm').innerText = bpm;
 
             const ativos = listaAlunos.filter(a => a.status === 'Ativo').sort((a,b) => (parseInt(a.re)||0) - (parseInt(b.re)||0));
-            
-            // Preceptores padrão conforme as fotos
-            const preceptoresMtr = [
+            const preceptores = modalidade.includes('MOTORIZADO') ? [
                 "Subten PM 970462-A Lourenço (11 94757-9455)",
                 "1ºSgt PM 118877-7 Neves (11 94723-4884)",
                 "2ºSgt PM 141639-1 Cavalcante (11 94722-5545)",
                 "1ºSgt PM 130340-6 Cristofer (11 94707-0461)"
-            ];
+            ] : ["POP 01", "POP 02", "POP 03", "POP 04", "POP 05", "POP 06"];
 
-            const preceptoresApe = ["POP 01", "POP 02", "POP 03", "POP 04", "POP 05", "POP 06"];
-            const listaPreceptores = modalidade === 'MOTORIZADO' ? preceptoresMtr : preceptoresApe;
+            escalaEstagioGeradaOficial = ativos.map((aluno, idx) => ({
+                qtd: idx + 1,
+                preceptor: preceptores[Math.floor(idx / 4) % preceptores.length],
+                posto_grad: aluno.posto_grad || 'AL SD PM',
+                re: aluno.re,
+                nome: aluno.nome_completo,
+                qra: aluno.nome_guerra,
+                pelotao: `${aluno.pelotao || '1'}º`
+            }));
 
-            escalaEstagioGeradaOficial = ativos.map((aluno, idx) => {
-                let preceptorAssinado = listaPreceptores[Math.floor(idx / 4) % listaPreceptores.length];
-                return {
-                    qtd: idx + 1,
-                    preceptor: preceptorAssinado,
-                    posto_grad: aluno.posto_grad || 'AL SD PM',
-                    re: aluno.re,
-                    nome_completo: aluno.nome_completo,
-                    nome_guerra: aluno.nome_guerra,
-                    pelotao: `${aluno.pelotao || '1'}º`
-                };
-            });
-
-            renderizarTabelaEstagioOficialUI();
-        }
-
-        function renderizarTabelaEstagioOficialUI() {
             const tbody = document.getElementById('tabela-escala-estagio-oficial');
-            if(!tbody) return;
             tbody.innerHTML = '';
-            escalaEstagioGeradaOficial.forEach(item => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
-                        <td class="p-2 text-center font-bold text-slate-700">${item.qtd}</td>
-                        <td class="p-2 text-[11px] text-slate-600">${item.preceptor}</td>
-                        <td class="p-2">${item.posto_grad}</td>
-                        <td class="p-2 font-mono font-bold">${item.re}</td>
-                        <td class="p-2 font-semibold text-slate-900">${item.nome_completo}</td>
-                        <td class="p-2 font-bold text-slate-800">${item.nome_guerra}</td>
-                        <td class="p-2 text-center font-bold">${item.pelotao}</td>
-                    </tr>
-                `;
+            escalaEstagioGeradaOficial.forEach(i => {
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2 text-center font-bold">${i.qtd}</td><td class="p-2 text-[11px] text-slate-600">${i.preceptor}</td><td class="p-2">${i.posto_grad}</td><td class="p-2 font-mono font-bold">${i.re}</td><td class="p-2 font-semibold">${i.nome}</td><td class="p-2 font-bold">${i.qra}</td><td class="p-2 text-center font-bold">${i.pelotao}</td></tr>`;
             });
         }
 
-        // GERADOR WORD OFICIAL EXATO ÀS FOTOS
         function exportarEstagioWordOficial() {
-            if (escalaEstagioGeradaOficial.length === 0) { alert("Gere a escala primeiro."); return; }
+            if(escalaEstagioGeradaOficial.length === 0) { alert("Gere a escala primeiro."); return; }
             const modalidade = document.getElementById('estagio-modalidade').value;
             const bpm = document.getElementById('estagio-bpm').value;
-            const dataIso = document.getElementById('estagio-data').value;
-            const dataFmt = dataIso ? dataIso.split('-').reverse().join('').toUpperCase() : '14NOV26';
 
             const tableRows = [
                 new docx.TableRow({
                     children: [
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QTD", alignment: docx.AlignmentType.CENTER })], width: { size: 5, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "PRECEPTOR", alignment: docx.AlignmentType.CENTER })], width: { size: 22, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QTD", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "PRECEPTOR", alignment: docx.AlignmentType.CENTER })], width: { size: 24, type: docx.WidthType.PERCENTAGE } }),
                         new docx.TableCell({ children: [new docx.Paragraph({ text: "GRAD", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 14, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "NOME", alignment: docx.AlignmentType.CENTER })], width: { size: 28, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 15, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 16, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "NOME", alignment: docx.AlignmentType.CENTER })], width: { size: 24, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 14, type: docx.WidthType.PERCENTAGE } }),
                         new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
                     ]
                 })
             ];
 
-            escalaEstagioGeradaOficial.forEach(item => {
-                tableRows.push(
-                    new docx.TableRow({
-                        children: [
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.qtd), alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.preceptor })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.posto_grad })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.re, alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.nome_completo })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.nome_guerra })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: item.pelotao, alignment: docx.AlignmentType.CENTER })] }),
-                        ]
-                    })
-                );
+            escalaEstagioGeradaOficial.forEach(i => {
+                tableRows.push(new docx.TableRow({
+                    children: [
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: String(i.qtd), alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.preceptor })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.posto_grad })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.re, alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.nome })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.qra })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.pelotao, alignment: docx.AlignmentType.CENTER })] }),
+                    ]
+                }));
             });
 
             const doc = new docx.Document({
@@ -724,44 +582,186 @@
                     children: [
                         new docx.Paragraph({ text: "COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_3 }),
                         new docx.Paragraph({ text: "GABINETE DE TREINAMENTO", alignment: docx.AlignmentType.CENTER, spacing: { after: 100 } }),
-                        new docx.Paragraph({ text: `ATIVIDADE DE TREINAMENTO EM CAMPO - POLICIAMENTO OSTENSIVO ${modalidade}`, alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 150 } }),
+                        new docx.Paragraph({ text: `ATIVIDADE DE TREINAMENTO EM CAMPO - ${modalidade}`, alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 150 } }),
                         new docx.Paragraph({ text: bpm, alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_2, spacing: { after: 200 } }),
                         new docx.Table({ rows: tableRows, width: { size: 100, type: docx.WidthType.PERCENTAGE } }),
-                        new docx.Paragraph({ text: `São Paulo, 12 de novembro de 2026`, alignment: docx.AlignmentType.RIGHT, spacing: { before: 300 } }),
+                        new docx.Paragraph({ text: "São Paulo, 12 de novembro de 2026", alignment: docx.AlignmentType.RIGHT, spacing: { before: 300 } }),
                         new docx.Paragraph({ text: "TIAGO SILVA GURDOS\nCap PM Ch GT", alignment: docx.AlignmentType.CENTER, spacing: { before: 200 } })
                     ]
                 })
             });
 
-            docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_Estagio_${modalidade}.docx`); });
+            docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_Estagio_Oficial.docx`); });
         }
 
-        // Demais funções utilitárias
-        function gerarEscalaGuarda() { alert("Escala de Guarda gerada com sucesso!"); }
-        function gerarEscalaFaxina() { alert("Faxinas distribuídas!"); }
-        function renderizarTabela(dados) {
-            const tbody = document.getElementById('tabela-alunos');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            dados.forEach(a => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.nome_completo}</td><td class="p-3">${a.pelotao}</td><td class="p-3">${a.genero}</td><td class="p-3">${a.turma}</td></tr>`;
+        // FAXINA
+        function gerarEscalaFaxina() {
+            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
+            const masc = listaAlunos.filter(a => (a.genero || 'M').toUpperCase() === 'M' && a.status === 'Ativo');
+            const fem = listaAlunos.filter(a => (a.genero || 'M').toUpperCase() === 'F' && a.status === 'Ativo');
+            escalaFaxinaGerada.masc = masc.slice(0, 4);
+            escalaFaxinaGerada.acad = masc.slice(4, 6);
+            escalaFaxinaGerada.fem = fem.slice(0, 2);
+
+            renderizarFaxinasUI();
+        }
+
+        function renderizarFaxinasUI() {
+            ['masc', 'acad', 'fem'].forEach(t => {
+                const box = document.getElementById(`lista-faxina-${t}`);
+                if(!box) return;
+                box.innerHTML = '';
+                (escalaFaxinaGerada[t] || []).forEach((a, idx) => {
+                    box.innerHTML += `<div class="bg-slate-50 p-2 rounded border flex justify-between items-center text-xs"><span><b>${idx+1}.</b> ${a.posto_grad || 'AL SD PM'} ${a.nome_guerra} (RE: ${a.re})</span></div>`;
+                });
             });
         }
+
+        // LEC
+        function gerarPreviaEscalaLEC() {
+            const pontuacao = {};
+            listaAnotacoes.filter(a => a.status_recurso !== 'Deferido').forEach(anot => {
+                const key = anot.aluno_id || anot.aluno_re;
+                const cod = (anot.codigo || 'S/C').toUpperCase().trim();
+                const peso = (anot.origem === 'Fora do GT') ? 2 : 1;
+                if(!pontuacao[key]) pontuacao[key] = {};
+                pontuacao[key][cod] = (pontuacao[key][cod] || 0) + peso;
+            });
+
+            escalaLECCalculada = [];
+            listaAlunos.forEach(aluno => {
+                const key = aluno.id || aluno.re;
+                const cods = pontuacao[key] || {};
+                let max = 0, modCod = '';
+                Object.entries(cods).forEach(([c, pts]) => { if(pts > max) { max = pts; modCod = c; } });
+
+                if(max >= 2) {
+                    let modalidade = max === 2 ? '24H (Parcial)' : (max === 3 ? '48H (Intermediário)' : '60H (Total)');
+                    escalaLECCalculada.push({ re: aluno.re, posto_grad: aluno.posto_grad || 'AL SD PM', nome_guerra: aluno.nome_guerra, pel: `${aluno.pelotao || '1'}º`, codigo: modCod, modalidade: modalidade });
+                }
+            });
+
+            const tbody = document.getElementById('tabela-escala-lec');
+            tbody.innerHTML = '';
+            if(escalaLECCalculada.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum aluno atinge critérios para LEC.</td></tr>`;
+                return;
+            }
+            escalaLECCalculada.forEach(i => {
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-2.5 font-mono font-bold">${i.re}</td><td class="p-2.5">${i.posto_grad}</td><td class="p-2.5 font-bold">${i.nome_guerra}</td><td class="p-2.5">${i.pel}</td><td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">${i.codigo}</span></td><td class="p-2.5 font-semibold text-red-600">${i.modalidade}</td></tr>`;
+            });
+            alert("Prévia LEC gerada com sucesso!");
+        }
+
+        function exportarEscalaWordOficial() {
+            if(escalaLECCalculada.length === 0) { alert("Gere a prévia LEC primeiro."); return; }
+            const tableRows = [
+                new docx.TableRow({
+                    children: [
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 25, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 35, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓDIGO", alignment: docx.AlignmentType.CENTER })], width: { size: 15, type: docx.WidthType.PERCENTAGE } }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: "MODALIDADE", alignment: docx.AlignmentType.CENTER })], width: { size: 25, type: docx.WidthType.PERCENTAGE } }),
+                    ]
+                })
+            ];
+            escalaLECCalculada.forEach(i => {
+                tableRows.push(new docx.TableRow({
+                    children: [
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.re, alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.nome_guerra })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.codigo, alignment: docx.AlignmentType.CENTER })] }),
+                        new docx.TableCell({ children: [new docx.Paragraph({ text: i.modalidade, alignment: docx.AlignmentType.CENTER })] }),
+                    ]
+                }));
+            });
+
+            const doc = new docx.Document({
+                sections: [{
+                    properties: { page: { margin: { top: 1000, bottom: 1000, left: 1000, right: 1000 } } },
+                    children: [
+                        new docx.Paragraph({ text: "COMANDO DE POLICIAMENTO DE ÁREA METROPOLITANO CINCO", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_3 }),
+                        new docx.Paragraph({ text: "LICENCIAMENTO ESCOLAR CASSADO (LEC)", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 200 } }),
+                        new docx.Table({ rows: tableRows, width: { size: 100, type: docx.WidthType.PERCENTAGE } })
+                    ]
+                })
+            });
+            docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_LEC_Oficial.docx`); });
+        }
+
+        // RELATÓRIOS
         function carregarRelatoriosGerais() {
             const tbody = document.getElementById('tabela-relatorios');
             if(!tbody) return;
             tbody.innerHTML = '';
             listaAlunos.forEach(a => {
-                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.pelotao}</td><td class="p-3 text-center">0</td><td class="p-3 text-center">0/0/0</td><td class="p-3 text-center">0</td><td class="p-3 text-center">0</td></tr>`;
+                const anot = listaAnotacoes.filter(x => x.aluno_re === a.re && x.status_recurso !== 'Deferido').length;
+                tbody.innerHTML += `<tr class="border-b text-xs"><td class="p-3 font-mono font-bold">${a.re}</td><td class="p-3">${a.posto_grad || 'AL SD PM'}</td><td class="p-3 font-bold">${a.nome_guerra}</td><td class="p-3">${a.pelotao || '---'}</td><td class="p-3 text-center font-bold ${anot>0?'text-red-600':''};">${anot}</td><td class="p-3 text-center">0/0/0</td><td class="p-3 text-center">0</td><td class="p-3 text-center">0</td></tr>`;
             });
         }
-        function atualizarFiltrosGlobais() {}
-        function filtrarTabela() {}
-        function filtrarServicos() {}
+
+        // MODAIS E SALVAMENTO
         function abrirModalEfetivo() { document.getElementById('modal-efetivo').classList.remove('hidden'); }
         function fecharModalEfetivo() { document.getElementById('modal-efetivo').classList.add('hidden'); }
+        async function salvarEfetivo(e) {
+            e.preventDefault();
+            const novo = {
+                re: document.getElementById('efetivo-re').value,
+                posto_grad: 'AL SD PM',
+                nome_guerra: document.getElementById('efetivo-guerra').value.toUpperCase(),
+                nome_completo: document.getElementById('efetivo-nome').value.toUpperCase(),
+                pelotao: document.getElementById('efetivo-pelotao').value,
+                genero: document.getElementById('efetivo-genero').value,
+                status: 'Ativo',
+                nivel_acesso: 'Aluno'
+            };
+            await _supabase.from('alunos').insert([novo]);
+            fecharModalEfetivo();
+            carregarAlunosDoBanco();
+        }
+
+        function abrirModalAnotacao() {
+            const sel = document.getElementById('anotacao-aluno-id');
+            sel.innerHTML = '<option value="">Selecione o Aluno...</option>';
+            listaAlunos.forEach(a => sel.innerHTML += `<option value="${a.id}">${a.re} - ${a.nome_guerra}</option>`);
+            document.getElementById('modal-anotacao').classList.remove('hidden');
+        }
+        function fecharModalAnotacao() { document.getElementById('modal-anotacao').classList.add('hidden'); }
+        async function salvarAnotacao(e) {
+            e.preventDefault();
+            const alunoId = document.getElementById('anotacao-aluno-id').value;
+            const aluno = listaAlunos.find(a => String(a.id) === String(alunoId));
+            if(!aluno) return;
+            const nova = {
+                aluno_id: aluno.id,
+                aluno_re: aluno.re,
+                aluno_nome: `${aluno.posto_grad || 'AL SD PM'} ${aluno.nome_guerra}`,
+                data_fato: document.getElementById('anotacao-data').value,
+                codigo: document.getElementById('anotacao-codigo').value.toUpperCase(),
+                origem: document.getElementById('anotacao-origem').value,
+                anotado_por: document.getElementById('anotacao-anotado-por').value,
+                sintese: document.getElementById('anotacao-sintese').value,
+                status_recurso: 'Sem Recurso'
+            };
+            await _supabase.from('anotacoes').insert([nova]);
+            fecharModalAnotacao();
+            carregarAnotacoesDoBanco();
+        }
+
         function abrirModalMapaForca() { document.getElementById('modal-mapa-forca').classList.remove('hidden'); }
         function fecharModalMapaForca() { document.getElementById('modal-mapa-forca').classList.add('hidden'); }
+        async function salvarMapaForca(e) {
+            e.preventDefault();
+            const mf = {
+                id: 1,
+                aluno_dia: document.getElementById('mf-in-aluno-dia').value,
+                chefe_gt: document.getElementById('mf-in-chefe-gt').value,
+                sgt_semana: document.getElementById('mf-in-sgt-semana').value
+            };
+            await _supabase.from('mapa_forca').upsert(mf);
+            fecharModalMapaForca();
+            carregarMapaForca();
+        }
     </script>
 </body>
 </html>
