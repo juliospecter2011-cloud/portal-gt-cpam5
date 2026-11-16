@@ -88,7 +88,7 @@
     <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center z-10">
         <div>
             <h1 class="text-base font-bold tracking-tight text-slate-900">GABINETE DE TREINAMENTO <span class="text-xs font-semibold text-red-700">CPA M-5</span></h1>
-            <p class="text-[10px] text-slate-500 uppercase">Polícia Militar do Estado de São Paulo</p>
+            <p class="text-[10px] text-slate-500 uppercase">Comando de Policiamento de Área Metropolitano 5</p>
         </div>
         
         <div class="flex items-center gap-3">
@@ -153,7 +153,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">MAPA FORÇA — GABINETE DE TREINAMENTO</h2>
-                        <p class="text-xs text-slate-500">Quadro de Serviço Atualizado ao Vivo</p>
+                        <p class="text-xs text-slate-500">Comando de Policiamento de Área Metropolitano 5</p>
                     </div>
                     <button id="btn-atualizar-mf" onclick="abrirModalMapaForca()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded-lg shadow text-xs transition flex items-center gap-2">
                         <i class="fa-solid fa-pen-to-square"></i> Preencher / Atualizar Mapa Força
@@ -418,7 +418,7 @@
 
             <!-- ABA ESCALA DE LEC -->
             <section id="aba-lec" class="aba-conteudo hidden">
-                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">ESCALA DE LICENCIAMENTO CASSADO (LEC)</h2>
                         <p class="text-xs text-slate-500">Cálculo Automático e Exportação em Word Oficial</p>
@@ -435,6 +435,17 @@
                             <i class="fa-solid fa-file-word"></i> Baixar Word Oficial
                         </button>
                     </div>
+                </div>
+
+                <!-- FILTROS DA ABA LEC -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input type="text" id="input-busca-lec" onkeyup="filtrarLEC()" placeholder="Buscar por RE, QRA..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-60 focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="filtro-pelotao-lec" onchange="filtrarLEC()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs focus:outline-none bg-white text-slate-700 font-medium">
+                        <option value="">Todos os Pelotões</option>
+                    </select>
                 </div>
 
                 <!-- CARDS DE MÉTRICAS DA ESCALA -->
@@ -481,7 +492,7 @@
                 <div id="area-impressao-lec" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                     <div class="text-center border-b pb-4 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 uppercase">POLÍCIA MILITAR DO ESTADO DE SÃO PAULO</h3>
-                        <h4 class="text-xs font-bold text-red-700 uppercase">ESCOLA SUPERIOR DE SOLDADOS "CEL PM EDUARDO ASSUMPÇÃO" — 2ª Cia Es – 1º Cens/2026</h4>
+                        <h4 class="text-xs font-bold text-red-700 uppercase">Comando de Policiamento de Área Metropolitano 5</h4>
                         <p class="text-[11px] font-semibold text-slate-600 uppercase mt-1">LICENCIAMENTO ESCOLAR CASSADO</p>
                         <p class="text-[10px] text-slate-500 mt-0.5" id="lec-subtitulo-oficial">Escala Vigente para o Próximo Final de Semana</p>
                     </div>
@@ -490,12 +501,12 @@
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider border-b border-t">
-                                    <th class="p-2.5">RE</th>
+                                    <th class="p-2.5 w-32">RE</th>
                                     <th class="p-2.5">Posto/Grad</th>
-                                    <th class="p-2.5">Nome de Guerra</th>
+                                    <th class="p-2.5 w-40">Nome de Guerra (QRA)</th>
                                     <th class="p-2.5">Pelotão</th>
                                     <th class="p-2.5">Código Motivo</th>
-                                    <th class="p-2.5">Pontos Acumulados</th>
+                                    <th class="p-2.5">Pontos</th>
                                     <th class="p-2.5">Modalidade LEC</th>
                                     <th class="p-2.5">Horário Apresentação / Término</th>
                                     <th class="p-2.5 text-center admin-only nao-imprimir">Ações / Desescalar</th>
@@ -511,27 +522,88 @@
                 </div>
             </section>
 
-            <!-- ABA SERVIÇOS & ESCALAS (ESTÁGIO E FAXINA) -->
+            <!-- ABA SERVIÇOS & ESCALAS (GUARDA, ESTÁGIO E FAXINA) -->
             <section id="aba-servicos" class="aba-conteudo hidden">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">GESTÃO DE SERVIÇOS & ESCALAS</h2>
-                        <p class="text-xs text-slate-500">Estágio (Embarcado / POP) e Escala de Faxina por Gênero</p>
+                        <p class="text-xs text-slate-500">Escala de Guarda (7 dias com controle de cores), Estágio e Faxina</p>
                     </div>
                 </div>
 
                 <!-- SUB-ABAS DE SERVIÇOS -->
                 <div class="flex gap-2 border-b border-slate-200 mb-6">
-                    <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition">
-                        <i class="fa-solid fa-graduation-cap"></i> Escala de Estágio (Embarcado / POP)
+                    <button onclick="mudarSubAbaServicos('guarda', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-red-600 text-red-600 transition">
+                        <i class="fa-solid fa-shield-halved"></i> Escala de Guarda
+                    </button>
+                    <button onclick="mudarSubAbaServicos('estagio', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
+                        <i class="fa-solid fa-graduation-cap"></i> Escala de Estágio
                     </button>
                     <button onclick="mudarSubAbaServicos('faxina', this)" class="sub-aba-btn px-4 py-2 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">
                         <i class="fa-solid fa-broom"></i> Escala de Faxina
                     </button>
                 </div>
 
-                <!-- CONTEÚDO SUB-ABA ESTÁGIO -->
-                <div id="sub-aba-estagio" class="space-y-4">
+                <!-- FILTROS GLOBAIS NA ABA SERVIÇOS -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input type="text" id="input-busca-servicos" onkeyup="filtrarServicos()" placeholder="Buscar por RE, QRA..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-60 focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="filtro-pelotao-servicos" onchange="filtrarServicos()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs focus:outline-none bg-white text-slate-700 font-medium">
+                        <option value="">Todos os Pelotões</option>
+                    </select>
+                </div>
+
+                <!-- SUB-ABA GUARDA -->
+                <div id="sub-aba-guarda" class="space-y-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Período / Semana Guarda *</label>
+                                <input type="date" id="guarda-data-inicio" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
+                            </div>
+                            <div class="text-[11px] text-slate-600">
+                                <p><span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-1"></span> <b>Escala Azul:</b> Seg a Qui</p>
+                                <p><span class="inline-block w-3 h-3 bg-slate-900 rounded-full mr-1"></span> <b>Escala Preta:</b> Sexta-feira</p>
+                                <p><span class="inline-block w-3 h-3 bg-red-600 rounded-full mr-1"></span> <b>Escala Vermelha:</b> Sáb, Dom e Feriados</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="gerarEscalaGuarda()" class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-calculator"></i> Gerar Escala de Guarda (7 Dias)
+                            </button>
+                            <button onclick="exportarGuardaExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded shadow text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel"></i> Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden p-4">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Escala de Guarda do Quartel (Semanal / Diária)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                        <th class="p-2.5">Data / Dia</th>
+                                        <th class="p-2.5">Classificação (Cor)</th>
+                                        <th class="p-2.5">RE</th>
+                                        <th class="p-2.5">Posto/Grad</th>
+                                        <th class="p-2.5">Nome de Guerra (QRA)</th>
+                                        <th class="p-2.5">Pelotão</th>
+                                        <th class="p-2.5 text-center">Posto de Guarda / Turno</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-escala-guarda" class="divide-y divide-slate-200">
+                                    <tr><td colspan="7" class="p-6 text-center text-slate-400">Clique em "Gerar Escala de Guarda" para carregar a escala de 7 dias.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA ESTÁGIO -->
+                <div id="sub-aba-estagio" class="space-y-4 hidden">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-3">
                             <div>
@@ -567,7 +639,7 @@
                                         <th class="p-2.5">Ordem</th>
                                         <th class="p-2.5">RE</th>
                                         <th class="p-2.5">Posto/Grad</th>
-                                        <th class="p-2.5">Nome de Guerra</th>
+                                        <th class="p-2.5">Nome de Guerra (QRA)</th>
                                         <th class="p-2.5">Pelotão</th>
                                         <th class="p-2.5">Função / Serviço</th>
                                         <th class="p-2.5 text-center admin-only">Ações / Dispensar</th>
@@ -581,7 +653,7 @@
                     </div>
                 </div>
 
-                <!-- CONTEÚDO SUB-ABA FAXINA -->
+                <!-- SUB-ABA FAXINA -->
                 <div id="sub-aba-faxina" class="space-y-4 hidden">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-3">
@@ -590,7 +662,7 @@
                                 <input type="date" id="faxina-data" class="border border-slate-300 p-2 rounded text-xs focus:outline-none">
                             </div>
                             <div>
-                                <p class="text-[11px] text-slate-600 font-medium">Regra automática: Vestiário Masculino e Academia (Apenas Efetivo Masculino) | Vestiário Feminino (Apenas Efetivo Feminino).</p>
+                                <p class="text-[11px] text-slate-600 font-medium">Dias úteis apenas. Vestiário Masc e Academia (Efetivo Masculino) | Vestiário Fem (Efetivo Feminino).</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -648,40 +720,50 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 tracking-tight">RELATÓRIOS & CONSOLIDAÇÃO DE SERVIÇOS</h2>
-                        <p class="text-xs text-slate-500">Contabilização Individual de Anotações, Estágios, Faxinas e Funções de Comando</p>
+                        <p class="text-xs text-slate-500">Contabilização Individual de Anotações, Guarda (Azul/Preta/Vermelha), Estágios, Faxinas e Funções</p>
                     </div>
                     <button onclick="carregarRelatoriosGerais()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-3.5 py-2 rounded-lg shadow text-xs transition flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate"></i> Atualizar Dados
                     </button>
                 </div>
 
+                <!-- FILTROS NA ABA RELATÓRIOS -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm mb-4 flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <input type="text" id="input-busca-relatorio" onkeyup="filtrarRelatorios()" placeholder="Buscar por Nome ou RE..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-60 focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                    </div>
+                    <select id="filtro-pelotao-relatorio" onchange="filtrarRelatorios()" class="border border-slate-300 px-2.5 py-1.5 rounded text-xs focus:outline-none bg-white text-slate-700 font-medium">
+                        <option value="">Todos os Pelotões</option>
+                    </select>
+                </div>
+
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-3">
-                        <div class="relative">
-                            <input type="text" id="input-busca-relatorio" onkeyup="filtrarRelatorios()" placeholder="Buscar por Nome ou RE..." class="border border-slate-300 px-3 py-1.5 pl-8 rounded text-xs w-72 focus:outline-none">
-                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
-                        </div>
-                        <span id="total-relatorio-registros" class="text-xs font-semibold text-slate-500">Integrantes Analisados: 0</span>
+                        <span class="text-xs font-semibold text-slate-500" id="total-relatorio-registros">Integrantes Analisados: 0</span>
                     </div>
 
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
-                                <th class="p-3">RE</th>
-                                <th class="p-3">Posto/Grad</th>
-                                <th class="p-3">Nome de Guerra</th>
-                                <th class="p-3">Pelotão</th>
-                                <th class="p-3 text-center">Total Anotações</th>
-                                <th class="p-3 text-center">Estágios (Emb/POP)</th>
-                                <th class="p-3 text-center">Faxinas</th>
-                                <th class="p-3 text-center">Aluno de Dia</th>
-                                <th class="p-3 text-center">Chefe de Turma</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-relatorios" class="divide-y divide-slate-200">
-                            <tr><td colspan="9" class="p-6 text-center text-slate-400">Carregando dados consolidados...</td></tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 uppercase text-[10px] tracking-wider border-b">
+                                    <th class="p-3">RE</th>
+                                    <th class="p-3">Posto/Grad</th>
+                                    <th class="p-3">Nome de Guerra (QRA)</th>
+                                    <th class="p-3">Pelotão</th>
+                                    <th class="p-3 text-center">Anotações</th>
+                                    <th class="p-3 text-center" title="Escala de Guarda Total (Azul / Preta / Vermelha)">Guarda (Az/Pr/Vm)</th>
+                                    <th class="p-3 text-center">Estágios</th>
+                                    <th class="p-3 text-center">Faxinas</th>
+                                    <th class="p-3 text-center">Aluno de Dia</th>
+                                    <th class="p-3 text-center">Chefe de Turma</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-relatorios" class="divide-y divide-slate-200">
+                                <tr><td colspan="10" class="p-6 text-center text-slate-400">Carregando dados consolidados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -1013,6 +1095,7 @@
         var escalaLECCalculada = [];
         var escalaPublicadaOficial = null;
 
+        var escalaGuardaGerada = [];
         var escalaEstagioGerada = [];
         var escalaFaxinaGerada = { masc: [], acad: [], fem: [] };
 
@@ -1027,6 +1110,7 @@
             const hojeIso = new Date().toISOString().split('T')[0];
             if(document.getElementById('estagio-data')) document.getElementById('estagio-data').value = hojeIso;
             if(document.getElementById('faxina-data')) document.getElementById('faxina-data').value = hojeIso;
+            if(document.getElementById('guarda-data-inicio')) document.getElementById('guarda-data-inicio').value = hojeIso;
         });
 
         function conectarSupabase() {
@@ -1251,9 +1335,11 @@
                 elemento.classList.add('border-red-600', 'text-red-600');
             }
 
+            document.getElementById('sub-aba-guarda').classList.add('hidden');
             document.getElementById('sub-aba-estagio').classList.add('hidden');
             document.getElementById('sub-aba-faxina').classList.add('hidden');
 
+            if(subAba === 'guarda') document.getElementById('sub-aba-guarda').classList.remove('hidden');
             if(subAba === 'estagio') document.getElementById('sub-aba-estagio').classList.remove('hidden');
             if(subAba === 'faxina') document.getElementById('sub-aba-faxina').classList.remove('hidden');
         }
@@ -1352,7 +1438,7 @@
                 if (!error && data) {
                     listaAlunos = data;
                     renderizarTabela(listaAlunos);
-                    atualizarOpcoesFiltros();
+                    atualizarOpcoesFiltrosGlobais();
                 }
             } catch(e) {}
         }
@@ -1387,14 +1473,111 @@
             } catch(e) {}
         }
 
-        // ESCALA DE ESTÁGIO (CRONOLÓGICA DE RE)
-        function gerarEscalaEstagio() {
-            if(listaAlunos.length === 0) {
-                alert("Nenhum aluno carregado.");
+        // ESCALA DE GUARDA (7 DIAS COM CONTROLE DE CORES: AZUL, PRETA, VERMELHA)
+        function gerarEscalaGuarda() {
+            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
+            const ativos = listaAlunos.filter(a => a.status === 'Ativo');
+            if(ativos.length === 0) { alert("Nenhum aluno ativo."); return; }
+
+            const dataInicioStr = document.getElementById('guarda-data-inicio').value;
+            let dataBase = dataInicioStr ? new Date(dataInicioStr + 'T00:00:00') : new Date();
+
+            escalaGuardaGerada = [];
+            const postosGuarda = ["Comandante da Guarda", "Sentinela Principal", "Ronda do Quartel", "Permanência da Cia", "Auxiliar de Guarda 1", "Auxiliar de Guarda 2"];
+
+            // Gerar 7 dias consecutivos
+            for(let d = 0; d < 7; d++) {
+                let diaAtual = new Date(dataBase);
+                diaAtual.setDate(dataBase.getDate() + d);
+                
+                let diaSemana = diaAtual.getDay(); // 0 = Dom, 6 = Sáb
+                let classificacao = "AZUL"; // Seg a Qui
+                if(diaSemana === 5) classificacao = "PRETA"; // Sexta
+                if(diaSemana === 0 || diaSemana === 6) classificacao = "VERMELHA"; // Sáb/Dom
+
+                let dataFormatada = diaAtual.toLocaleDateString('pt-BR');
+
+                // Escalar 6 alunos por dia rodando o efetivo ativo
+                postosGuarda.forEach((posto, pIdx) => {
+                    let alunoIdx = (d * 6 + pIdx) % ativos.length;
+                    let aluno = ativos[alunoIdx];
+
+                    escalaGuardaGerada.push({
+                        data: dataFormatada,
+                        dia_semana_num: diaSemana,
+                        classificacao: classificacao,
+                        aluno_id: aluno.id,
+                        re: aluno.re,
+                        posto_grad: aluno.posto_grad || 'Al Sd PM',
+                        nome_guerra: aluno.nome_guerra,
+                        pelotao: aluno.pelotao || '9',
+                        posto_guarda: posto
+                    });
+                });
+            }
+
+            renderizarTabelaGuarda(escalaGuardaGerada);
+        }
+
+        function renderizarTabelaGuarda(dados) {
+            const tbody = document.getElementById('tabela-escala-guarda');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            const termo = (document.getElementById('input-busca-servicos')?.value || '').toLowerCase().trim();
+            const pelFiltro = document.getElementById('filtro-pelotao-servicos')?.value || '';
+
+            const filtrados = dados.filter(i => {
+                const txt = !termo || i.nome_guerra.toLowerCase().includes(termo) || i.re.includes(termo);
+                const pel = !pelFiltro || i.pelotao === pelFiltro;
+                return txt && pel;
+            });
+
+            if(filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum registro encontrado para os filtros aplicados.</td></tr>`;
                 return;
             }
+
+            filtrados.forEach(item => {
+                let badgeCor = `<span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-[10px]">AZUL (Seg-Qui)</span>`;
+                if(item.classificacao === 'PRETA') badgeCor = `<span class="bg-slate-900 text-white font-bold px-2 py-0.5 rounded text-[10px]">PRETA (Sexta)</span>`;
+                if(item.classificacao === 'VERMELHA') badgeCor = `<span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded text-[10px]">VERMELHA (FDS/Feriado)</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
+                        <td class="p-2.5 font-semibold text-slate-700">${item.data}</td>
+                        <td class="p-2.5">${badgeCor}</td>
+                        <td class="p-2.5 font-mono font-bold text-slate-700">${item.re}</td>
+                        <td class="p-2.5 text-slate-600">${item.posto_grad}</td>
+                        <td class="p-2.5 font-bold text-slate-900">${item.nome_guerra}</td>
+                        <td class="p-2.5">${item.pelotao}</td>
+                        <td class="p-2.5 text-center font-semibold text-slate-700">${item.posto_guarda}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function exportarGuardaExcel() {
+            if(escalaGuardaGerada.length === 0) { alert("Nenhuma escala de guarda gerada."); return; }
+            const dados = escalaGuardaGerada.map(i => ({
+                "Data": i.data,
+                "Classificação": i.classificacao,
+                "RE": i.re,
+                "Posto/Grad": i.posto_grad,
+                "Nome de Guerra": i.nome_guerra,
+                "Pelotão": i.pelotao,
+                "Posto de Guarda": i.posto_guarda
+            }));
+            const ws = XLSX.utils.json_to_sheet(dados);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Escala_Guarda");
+            XLSX.writeFile(wb, `Escala_Guarda_Semanal.xlsx`);
+        }
+
+        // ESCALA DE ESTÁGIO (CRONOLÓGICA DE RE)
+        function gerarEscalaEstagio() {
+            if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
             const tipo = document.getElementById('estagio-tipo').value;
-            // Ordenar por RE numérico (do menor/mais antigo ao maior/mais moderno)
             const ordenados = [...listaAlunos].filter(a => a.status === 'Ativo').sort((a, b) => {
                 const reA = parseInt((a.re || '0').replace(/[^0-9]/g, '')) || 0;
                 const reB = parseInt((b.re || '0').replace(/[^0-9]/g, '')) || 0;
@@ -1407,7 +1590,7 @@
                 re: aluno.re,
                 posto_grad: aluno.posto_grad || 'Al Sd PM',
                 nome_guerra: aluno.nome_guerra,
-                pelotao: aluno.pelotao,
+                pelotao: aluno.pelotao || '9',
                 funcao: tipo,
                 desescalado: false,
                 motivo: ''
@@ -1420,40 +1603,36 @@
             const tbody = document.getElementById('tabela-escala-estagio');
             if(!tbody) return;
             tbody.innerHTML = '';
-            if(escalaEstagioGerada.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhuma escala gerada.</td></tr>`;
+            
+            const termo = (document.getElementById('input-busca-servicos')?.value || '').toLowerCase().trim();
+            const pelFiltro = document.getElementById('filtro-pelotao-servicos')?.value || '';
+
+            const filtrados = escalaEstagioGerada.filter(i => {
+                const txt = !termo || i.nome_guerra.toLowerCase().includes(termo) || i.re.includes(termo);
+                const pel = !pelFiltro || i.pelotao === pelFiltro;
+                return txt && pel;
+            });
+
+            if(filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum registro encontrado.</td></tr>`;
                 return;
             }
 
             const ehAdmin = usuarioLogado && (usuarioLogado.nivel_acesso === 'Admin' || usuarioLogado.nivel_acesso === 'Secretaria');
 
-            escalaEstagioGerada.forEach((item, idx) => {
-                if(item.desescalado) {
-                    if(ehAdmin) {
-                        tbody.innerHTML += `
-                            <tr class="bg-slate-100 text-slate-400 line-through text-xs">
-                                <td class="p-2.5">${idx+1}</td>
-                                <td class="p-2.5 font-mono">${item.re}</td>
-                                <td class="p-2.5">${item.posto_grad}</td>
-                                <td class="p-2.5 font-bold">${item.nome_guerra}</td>
-                                <td class="p-2.5">${item.pelotao}</td>
-                                <td class="p-2.5" colspan="2">DISPENSADO: ${item.motivo}</td>
-                            </tr>
-                        `;
-                    }
-                    return;
-                }
+            filtrados.forEach((item, idx) => {
+                if(item.desescalado && !ehAdmin) return;
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs ${item.desescalado ? 'bg-slate-100 text-slate-400 line-through' : ''}">
                         <td class="p-2.5 font-bold text-slate-700">${idx + 1}</td>
                         <td class="p-2.5 font-mono font-bold text-slate-700">${item.re}</td>
                         <td class="p-2.5 text-slate-600">${item.posto_grad}</td>
                         <td class="p-2.5 font-bold text-slate-900">${item.nome_guerra}</td>
                         <td class="p-2.5">${item.pelotao}</td>
-                        <td class="p-2.5 font-semibold text-red-700">${item.funcao}</td>
+                        <td class="p-2.5 font-semibold text-red-700">${item.funcao} ${item.desescalado ? '(DISPENSADO)' : ''}</td>
                         <td class="p-2.5 text-center admin-only ${ehAdmin ? '' : 'hidden'}">
-                            <button onclick="desescalarEstagio('${item.aluno_id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-2 py-1 rounded text-[10px]">Dispensar</button>
+                            ${!item.desescalado ? `<button onclick="desescalarEstagio('${item.aluno_id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-2 py-1 rounded text-[10px]">Dispensar</button>` : '---'}
                         </td>
                     </tr>
                 `;
@@ -1461,45 +1640,35 @@
         }
 
         function desescalarEstagio(alunoId) {
-            const motivo = prompt("Informe o motivo da dispensa/substituição do estágio:", "Atestado / Dispensa");
+            const motivo = prompt("Informe o motivo da dispensa:", "Atestado / Dispensa");
             if(!motivo) return;
             const item = escalaEstagioGerada.find(i => String(i.aluno_id) === String(alunoId));
-            if(item) {
-                item.desescalado = true;
-                item.motivo = motivo;
-                renderizarTabelaEstagio();
-            }
+            if(item) { item.desescalado = true; item.motivo = motivo; renderizarTabelaEstagio(); }
         }
 
         function exportarEstagioExcel() {
             const vigentes = escalaEstagioGerada.filter(i => !i.desescalado);
-            if(vigentes.length === 0) { alert("Nenhuma escala gerada para exportar."); return; }
+            if(vigentes.length === 0) { alert("Nenhuma escala gerada."); return; }
             const dados = vigentes.map((i, idx) => ({
-                "Ordem": idx + 1,
-                "RE": i.re,
-                "Posto/Grad": i.posto_grad,
-                "Nome de Guerra": i.nome_guerra,
-                "Pelotão": i.pelotao,
-                "Serviço / Estágio": i.funcao
+                "Ordem": idx + 1, "RE": i.re, "Posto/Grad": i.posto_grad, "Nome de Guerra": i.nome_guerra, "Pelotão": i.pelotao, "Serviço": i.funcao
             }));
             const ws = XLSX.utils.json_to_sheet(dados);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Escala_Estagio");
-            XLSX.writeFile(wb, `Escala_Estagio_${document.getElementById('estagio-data').value}.xlsx`);
+            XLSX.writeFile(wb, `Escala_Estagio.xlsx`);
         }
 
-        // ESCALA DE FAXINA (POR GÊNERO E VAGAS PADRÃO/MANUAL)
+        // ESCALA DE FAXINA (POR GÊNERO, DIAS ÚTEIS, 4/2/2 SEM VAGAS MANUAIS)
         function gerarEscalaFaxina() {
             if(listaAlunos.length === 0) { alert("Nenhum aluno carregado."); return; }
             const ativos = listaAlunos.filter(a => a.status === 'Ativo');
 
-            // Separar por gênero (M e F) e ordenar por RE
             const masc = ativos.filter(a => (a.genero || 'M').toUpperCase() === 'M').sort((a,b) => (parseInt(a.re)||0) - (parseInt(b.re)||0));
             const fem = ativos.filter(a => (a.genero || 'M').toUpperCase() === 'F').sort((a,b) => (parseInt(a.re)||0) - (parseInt(b.re)||0));
 
-            escalaFaxinaGerada.masc = masc.slice(0, 4); // 4 padrão masc vestiario
-            escalaFaxinaGerada.acad = masc.slice(4, 6); // 2 padrão acad masc
-            escalaFaxinaGerada.fem = fem.slice(0, 2);   // 2 padrão fem vestiario
+            escalaFaxinaGerada.masc = masc.slice(0, 4);
+            escalaFaxinaGerada.acad = masc.slice(4, 6);
+            escalaFaxinaGerada.fem = fem.slice(0, 2);
 
             renderizarFaxinasUI();
         }
@@ -1515,15 +1684,13 @@
             if(!container) return;
             container.innerHTML = '';
             const lista = escalaFaxinaGerada[tipo] || [];
-
             if(lista.length === 0) {
                 container.innerHTML = '<p class="text-[11px] text-slate-400 italic">Nenhum aluno escalado.</p>';
                 return;
             }
-
             lista.forEach((aluno, idx) => {
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-200">
+                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-200 text-xs">
                         <div>
                             <span class="font-bold text-slate-900">${idx+1}. ${aluno.posto_grad || 'Al Sd PM'} ${aluno.nome_guerra}</span>
                             <span class="text-[10px] text-slate-500 font-mono block">RE: ${aluno.re} | Pel: ${aluno.pelotao}</span>
@@ -1535,13 +1702,12 @@
         }
 
         function adicionarVagaFaxina(tipo) {
-            const reInput = prompt("Digite o RE do aluno(a) que deseja incluir manualmente na faxina:");
+            const reInput = prompt("Digite o RE do aluno(a) para incluir na faxina:");
             if(!reInput) return;
             const aluno = listaAlunos.find(a => a.re === reInput || (a.re && a.re.replace(/[^0-9]/g, '') === reInput.replace(/[^0-9]/g, '')));
-            if(!aluno) { alert("Integrante não encontrado no efetivo."); return; }
-            
-            if(tipo !== 'fem' && aluno.genero === 'F') { alert("Atenção: Este setor é exclusivo para efetivo masculino."); return; }
-            if(tipo === 'fem' && aluno.genero !== 'F') { alert("Atenção: Este setor é exclusivo para efetivo feminino."); return; }
+            if(!aluno) { alert("Integrante não encontrado."); return; }
+            if(tipo !== 'fem' && (aluno.genero||'M').toUpperCase() === 'F') { alert("Setor exclusivo para efetivo masculino."); return; }
+            if(tipo === 'fem' && (aluno.genero||'M').toUpperCase() !== 'F') { alert("Setor exclusivo para efetivo feminino."); return; }
 
             if(!escalaFaxinaGerada[tipo]) escalaFaxinaGerada[tipo] = [];
             escalaFaxinaGerada[tipo].push(aluno);
@@ -1558,33 +1724,28 @@
             ['masc', 'acad', 'fem'].forEach(tipo => {
                 const titulo = tipo === 'masc' ? 'Vestiário Masculino' : (tipo === 'acad' ? 'Academia' : 'Vestiário Feminino');
                 (escalaFaxinaGerada[tipo] || []).forEach((a, idx) => {
-                    dados.push({
-                        "Setor": titulo,
-                        "Ordem": idx + 1,
-                        "RE": a.re,
-                        "Posto/Grad": a.posto_grad,
-                        "Nome de Guerra": a.nome_guerra,
-                        "Pelotão": a.pelotao
-                    });
+                    dados.push({ "Setor": titulo, "Ordem": idx + 1, "RE": a.re, "Posto/Grad": a.posto_grad, "Nome de Guerra": a.nome_guerra, "Pelotão": a.pelotao });
                 });
             });
-            if(dados.length === 0) { alert("Nenhuma escala de faxina gerada."); return; }
+            if(dados.length === 0) { alert("Nenhuma escala de faxina."); return; }
             const ws = XLSX.utils.json_to_sheet(dados);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Escala_Faxina");
-            XLSX.writeFile(wb, `Escala_Faxina_${document.getElementById('faxina-data').value}.xlsx`);
+            XLSX.writeFile(wb, `Escala_Faxina.xlsx`);
         }
 
-        // ANOTAÇÕES E RELATÓRIOS CONSOLIDADOS
+        function filtrarServicos() {
+            renderizarTabelaGuarda(escalaGuardaGerada);
+            renderizarTabelaEstagio();
+        }
+
+        // ANOTAÇÕES E RECURSOS
         async function carregarAnotacoesDoBanco() {
             conectarSupabase();
             if (!_supabase) return;
             try {
-                const { data, error } = await _supabase.from('anotacoes').select('*').order('created_at', { ascending: false });
-                if (!error && data) {
-                    listaAnotacoes = data;
-                    renderizarAnotacoes(listaAnotacoes);
-                }
+                const { data } = await _supabase.from('anotacoes').select('*').order('created_at', { ascending: false });
+                if (data) { listaAnotacoes = data; renderizarAnotacoes(listaAnotacoes); }
             } catch(e) {}
         }
 
@@ -1592,8 +1753,8 @@
             conectarSupabase();
             if (!_supabase) return;
             try {
-                const { data, error } = await _supabase.from('recursos').select('*').order('created_at', { ascending: false });
-                if (!error && data) { listaRecursos = data; renderizarRecursos(listaRecursos); }
+                const { data } = await _supabase.from('recursos').select('*').order('created_at', { ascending: false });
+                if (data) { listaRecursos = data; renderizarRecursos(listaRecursos); }
             } catch(e) {}
         }
 
@@ -1630,12 +1791,7 @@
             };
 
             const { error } = await _supabase.from('anotacoes').insert([novaAnotacao]);
-            if(!error) {
-                fecharModalAnotacao();
-                await carregarAnotacoesDoBanco();
-            } else {
-                alert("Erro ao salvar anotação.");
-            }
+            if(!error) { fecharModalAnotacao(); await carregarAnotacoesDoBanco(); }
         }
 
         async function deletarAnotacao(id) {
@@ -1677,25 +1833,44 @@
             });
         }
 
-        // RELATÓRIOS CONSOLIDADOS
+        // RELATÓRIOS CONSOLIDADOS COM FILTROS GLOBAIS
         async function carregarRelatoriosGerais() {
             await carregarAlunosDoBanco();
             await carregarAnotacoesDoBanco();
+            renderizarTabelaRelatorios(listaAlunos);
+        }
 
+        function renderizarTabelaRelatorios(dadosAlunos) {
             const tbody = document.getElementById('tabela-relatorios');
             if(!tbody) return;
             tbody.innerHTML = '';
 
-            document.getElementById('total-relatorio-registros').innerText = `Integrantes Analisados: ${listaAlunos.length}`;
+            const termo = (document.getElementById('input-busca-relatorio')?.value || '').toLowerCase().trim();
+            const pelFiltro = document.getElementById('filtro-pelotao-relatorio')?.value || '';
 
-            if(listaAlunos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">Nenhum integrante cadastrado.</td></tr>`;
+            const filtrados = dadosAlunos.filter(a => {
+                const txt = !termo || a.nome_completo.toLowerCase().includes(termo) || a.re.includes(termo) || a.nome_guerra.toLowerCase().includes(termo);
+                const pel = !pelFiltro || a.pelotao === pelFiltro;
+                return txt && pel;
+            });
+
+            document.getElementById('total-relatorio-registros').innerText = `Integrantes Analisados: ${filtrados.length}`;
+
+            if(filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">Nenhum integrante encontrado.</td></tr>`;
                 return;
             }
 
-            listaAlunos.forEach(aluno => {
+            filtrados.forEach(aluno => {
                 const totalAnot = listaAnotacoes.filter(a => eMesmoAluno(a.aluno_id, a.aluno_re, aluno) && a.status_recurso !== 'Deferido').length;
-                // Simulação contábil baseada nas escalas geradas e cadastradas
+                
+                // Contar guardas por cor
+                const guardasAluno = escalaGuardaGerada.filter(g => String(g.aluno_id) === String(aluno.id));
+                const gAzul = guardasAluno.filter(g => g.classificacao === 'AZUL').length;
+                const gPreta = guardasAluno.filter(g => g.classificacao === 'PRETA').length;
+                const gVermelha = guardasAluno.filter(g => g.classificacao === 'VERMELHA').length;
+                const totalGuardaStr = `${gAzul}/${gPreta}/${gVermelha}`;
+
                 const totalEstagio = escalaEstagioGerada.filter(e => String(e.aluno_id) === String(aluno.id) && !e.desescalado).length;
                 const totalFaxina = (escalaFaxinaGerada.masc.some(x=>String(x.id)===String(aluno.id)) || escalaFaxinaGerada.acad.some(x=>String(x.id)===String(aluno.id)) || escalaFaxinaGerada.fem.some(x=>String(x.id)===String(aluno.id))) ? 1 : 0;
                 
@@ -1709,6 +1884,7 @@
                         <td class="p-3 font-bold">${aluno.nome_guerra}</td>
                         <td class="p-3">${aluno.pelotao || '---'}</td>
                         <td class="p-3 text-center font-bold ${totalAnot > 0 ? 'text-red-600' : 'text-slate-600'}">${totalAnot}</td>
+                        <td class="p-3 text-center font-mono font-semibold text-slate-700" title="Azul / Preta / Vermelha">${totalGuardaStr}</td>
                         <td class="p-3 text-center font-semibold text-blue-700">${totalEstagio}</td>
                         <td class="p-3 text-center font-semibold text-amber-700">${totalFaxina}</td>
                         <td class="p-3 text-center font-semibold text-slate-700">${ehAlunoDia}</td>
@@ -1719,15 +1895,60 @@
         }
 
         function filtrarRelatorios() {
-            const termo = document.getElementById('input-busca-relatorio').value.toLowerCase().trim();
-            const linhas = document.querySelectorAll('#tabela-relatorios tr');
-            linhas.forEach(linha => {
-                const texto = linha.innerText.toLowerCase();
-                linha.style.display = texto.includes(termo) ? '' : 'none';
-            });
+            renderizarTabelaRelatorios(listaAlunos);
         }
 
-        // GERADOR WORD OFICIAL LEC (COM RECURSOS DE FORMATAÇÃO E COLUNAS EXATAS)
+        // ATUALIZAR FILTROS GLOBAIS EM TODAS AS ABAS
+        function atualizarOpcoesFiltrosGlobais() {
+            const pelotoes = [...new Set(listaAlunos.map(a => a.pelotao).filter(Boolean))].sort();
+
+            ['filtro-pelotao', 'filtro-pelotao-lec', 'filtro-pelotao-servicos', 'filtro-pelotao-relatorio'].forEach(id => {
+                const sel = document.getElementById(id);
+                if(!sel) return;
+                const valAtual = sel.value;
+                sel.innerHTML = '<option value="">Todos os Pelotões</option>';
+                pelotoes.forEach(p => {
+                    sel.innerHTML += `<option value="${p}">Pelotão ${p}</option>`;
+                });
+                sel.value = valAtual;
+            });
+
+            // Filtro turma na aba efetivo
+            const selTurma = document.getElementById('filtro-turma');
+            if(selTurma) {
+                const turmas = [...new Set(listaAlunos.map(a => a.turma).filter(Boolean))].sort();
+                const valTurma = selTurma.value;
+                selTurma.innerHTML = '<option value="">Todas as Turmas / Edital</option>';
+                turmas.forEach(t => selTurma.innerHTML += `<option value="${t}">${t}</option>`);
+                selTurma.value = valTurma;
+            }
+        }
+
+        function filtrarTabela() {
+            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
+            const pel = document.getElementById('filtro-pelotao').value;
+            const turma = document.getElementById('filtro-turma').value;
+            const filtrados = listaAlunos.filter(a => {
+                const txt = !termo || (a.nome_completo && a.nome_completo.toLowerCase().includes(termo)) || (a.re && a.re.includes(termo)) || (a.nome_guerra && a.nome_guerra.toLowerCase().includes(termo));
+                const bPel = !pel || a.pelotao === pel;
+                const bTurma = !turma || a.turma === turma;
+                return txt && bPel && bTurma;
+            });
+            renderizarTabela(filtrados);
+        }
+
+        function filtrarLEC() {
+            renderizarEscalaLEC(escalaLECCalculada, null, null);
+        }
+
+        function limparFiltros() {
+            document.getElementById('input-busca').value = '';
+            document.getElementById('filtro-pelotao').value = '';
+            document.getElementById('filtro-turma').value = '';
+            renderizarTabela(listaAlunos);
+        }
+
+        // GERADOR WORD OFICIAL LEC (COM COLUNAS RE E QRA AMPLIADAS E SEM MARGENS RESTRITAS)
         function exportarEscalaWordOficial() {
             const listaParaExportar = (escalaPublicadaOficial || escalaLECCalculada).filter(i => !i.desescalado);
             if (listaParaExportar.length === 0) { alert("Não há integrantes na escala para exportar."); return; }
@@ -1750,7 +1971,7 @@
 
             const docChildren = [
                 new docx.Paragraph({ text: "SECRETARIA DA SEGURANÇA PÚBLICA", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_3, spacing: { after: 100 } }),
-                new docx.Paragraph({ text: "POLÍCIA MILITAR DO ESTADO DE SÃO PAULO\nDIRETORIA DE ENSINO E CULTURA\nESCOLA SUPERIOR DE SOLDADOS “CEL PM EDUARDO ASSUMPÇÃO“\n2ª Cia Es – 1º Cens/2026", alignment: docx.AlignmentType.CENTER, spacing: { after: 200 } }),
+                new docx.Paragraph({ text: "POLÍCIA MILITAR DO ESTADO DE SÃO PAULO\nComando de Policiamento de Área Metropolitano 5", alignment: docx.AlignmentType.CENTER, spacing: { after: 200 } }),
                 new docx.Paragraph({ text: "LICENCIAMENTO ESCOLAR CASSADO", alignment: docx.AlignmentType.CENTER, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 150 } }),
                 new docx.Paragraph({ text: "Relação dos Al Sd PM que estarão com o Licenciamento Escolar Cassado no período de atividades, conforme o que preconiza na Diretriz Geral de Ensino (D-5-PM):", alignment: docx.AlignmentType.JUSTIFIED, spacing: { after: 150 } }),
                 new docx.Paragraph({ text: "Art. 124: A cassação de licenciamento escolar é a sanção que consiste na revogação da licença de saída do discente do OAES...", alignment: docx.AlignmentType.JUSTIFIED, spacing: { after: 200 } })
@@ -1768,17 +1989,17 @@
                 const tableRows = [
                     new docx.TableRow({
                         children: [
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "3ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "4ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })] }),
-                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })] }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "ORD", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "PEL", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "Nº", alignment: docx.AlignmentType.CENTER })], width: { size: 6, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "RE", alignment: docx.AlignmentType.CENTER })], width: { size: 16, type: docx.WidthType.PERCENTAGE } }), // Coluna RE ampliada
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "QRA", alignment: docx.AlignmentType.CENTER })], width: { size: 18, type: docx.WidthType.PERCENTAGE } }), // Coluna QRA ampliada
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CÓD", alignment: docx.AlignmentType.CENTER })], width: { size: 8, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "1ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "2ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "3ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 10, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "4ª ANOTAÇÃO", alignment: docx.AlignmentType.CENTER })], width: { size: 5, type: docx.WidthType.PERCENTAGE } }),
+                            new docx.TableCell({ children: [new docx.Paragraph({ text: "CIENTE", alignment: docx.AlignmentType.CENTER })], width: { size: 5, type: docx.WidthType.PERCENTAGE } }),
                         ]
                     })
                 ];
@@ -1788,7 +2009,7 @@
                         new docx.TableRow({
                             children: [
                                 new docx.TableCell({ children: [new docx.Paragraph({ text: String(idx + 1).padStart(2, '0'), alignment: docx.AlignmentType.CENTER })] }),
-                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.pelotao || '9'), alignment: docx.AlignmentType.CENTER })] }), // Apenas número
+                                new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.pelotao || '9'), alignment: docx.AlignmentType.CENTER })] }),
                                 new docx.TableCell({ children: [new docx.Paragraph({ text: "1", alignment: docx.AlignmentType.CENTER })] }),
                                 new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.re), alignment: docx.AlignmentType.CENTER })] }),
                                 new docx.TableCell({ children: [new docx.Paragraph({ text: String(item.nome_guerra), alignment: docx.AlignmentType.CENTER })] }),
@@ -1812,11 +2033,22 @@
                 new docx.Paragraph({ text: "EDUARDO CASAGRANDI MANSOLDO FILHO\nCap PM Comandante", alignment: docx.AlignmentType.CENTER, spacing: { before: 200 } })
             );
 
-            const doc = new docx.Document({ sections: [{ properties: {}, children: docChildren }] });
+            // Margens flexíveis (sem margens restritas de documento oficial militar rígido)
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {
+                        page: {
+                            margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } // 1 polegada (margem padrão adaptável)
+                        }
+                    },
+                    children: docChildren
+                }]
+            });
+
             docx.Packer.toBlob(doc).then(blob => { saveAs(blob, `Escala_LEC_${dataStr}.docx`); });
         }
 
-        // Funções auxiliares de suporte
+        // Funções auxiliares LEC
         function calcularProximaSexta() {
             const hoje = new Date();
             const diaSemana = hoje.getDay();
@@ -1884,17 +2116,26 @@
             document.getElementById('lec-subtitulo-oficial').innerText = statusLabel || "Escala Oficial Publicada";
             tbody.innerHTML = '';
 
+            const termo = (document.getElementById('input-busca-lec')?.value || '').toLowerCase().trim();
+            const pelFiltro = document.getElementById('filtro-pelotao-lec')?.value || '';
+
+            const filtrados = dadosEscala.filter(item => {
+                const txt = !termo || item.nome_guerra.toLowerCase().includes(termo) || item.re.includes(termo);
+                const pel = !pelFiltro || item.pelotao === pelFiltro;
+                return txt && pel;
+            });
+
             let c24=0, c48=0, c60=0;
-            const ativos = dadosEscala.filter(i => !i.desescalado);
+            const ativos = filtrados.filter(i => !i.desescalado);
             if (ativos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">Nenhum integrante escalado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">Nenhum integrante escalado para os filtros aplicados.</td></tr>`;
                 document.getElementById('lec-qtd-24h').innerText = 0;
                 document.getElementById('lec-qtd-48h').innerText = 0;
                 document.getElementById('lec-qtd-60h').innerText = 0;
                 return;
             }
 
-            dadosEscala.forEach(item => {
+            filtrados.forEach(item => {
                 if (item.desescalado) {
                     if (ehAdmin) {
                         tbody.innerHTML += `<tr class="nao-imprimir bg-slate-100/70 text-slate-400 line-through text-xs"><td class="p-2.5" colspan="9">DESESCALADO: ${item.nome_guerra} - ${item.motivo_remocao}</td></tr>`;
@@ -1907,9 +2148,9 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100 text-xs">
-                        <td class="p-2.5 font-mono font-bold">${item.re}</td>
+                        <td class="p-2.5 font-mono font-bold w-32">${item.re}</td>
                         <td class="p-2.5">${item.posto_grad}</td>
-                        <td class="p-2.5 font-bold">${item.nome_guerra}</td>
+                        <td class="p-2.5 font-bold w-40">${item.nome_guerra}</td>
                         <td class="p-2.5">${item.pelotao}</td>
                         <td class="p-2.5"><span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">${item.codigo}</span></td>
                         <td class="p-2.5 font-mono font-bold">${item.pontos} pts</td>
@@ -1947,38 +2188,6 @@
             escalaPublicadaOficial = JSON.parse(JSON.stringify(escalaLECCalculada));
             renderizarEscalaLEC(escalaPublicadaOficial, null, "ESCALA OFICIAL PUBLICADA");
             alert("Publicado com sucesso!");
-        }
-
-        function atualizarOpcoesFiltros() {
-            const selPel = document.getElementById('filtro-pelotao');
-            const selTurma = document.getElementById('filtro-turma');
-            if(!selPel || !selTurma) return;
-            const pelotoes = [...new Set(listaAlunos.map(a => a.pelotao).filter(Boolean))].sort();
-            const turmas = [...new Set(listaAlunos.map(a => a.turma).filter(Boolean))].sort();
-            selPel.innerHTML = '<option value="">Todos os Pelotões</option>';
-            pelotoes.forEach(p => selPel.innerHTML += `<option value="${p}">Pelotão ${p}</option>`);
-            selTurma.innerHTML = '<option value="">Todas as Turmas</option>';
-            turmas.forEach(t => selTurma.innerHTML += `<option value="${t}">${t}</option>`);
-        }
-
-        function filtrarTabela() {
-            const termo = document.getElementById('input-busca').value.toLowerCase().trim();
-            const pel = document.getElementById('filtro-pelotao').value;
-            const turma = document.getElementById('filtro-turma').value;
-            const filtrados = listaAlunos.filter(a => {
-                const txt = !termo || (a.nome_completo && a.nome_completo.toLowerCase().includes(termo)) || (a.re && a.re.includes(termo)) || (a.nome_guerra && a.nome_guerra.toLowerCase().includes(termo));
-                const bPel = !pel || a.pelotao === pel;
-                const bTurma = !turma || a.turma === turma;
-                return txt && bPel && bTurma;
-            });
-            renderizarTabela(filtrados);
-        }
-
-        function limparFiltros() {
-            document.getElementById('input-busca').value = '';
-            document.getElementById('filtro-pelotao').value = '';
-            document.getElementById('filtro-turma').value = '';
-            renderizarTabela(listaAlunos);
         }
 
         function renderizarTabela(dados) {
